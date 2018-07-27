@@ -1,0 +1,45 @@
+---
+title: "Explixit Adaptation while Viewing the Hand"
+output: html_notebook
+---
+
+```{r load_code, include=FALSE}
+source('R/shared.R')
+source('R/learningCurves.R')
+```
+
+
+# Overview
+
+kjhfjhgfhgfjhg
+
+# Learning Curves
+
+## Show the data
+
+```{r plot_learningcurves}
+plotLearningCurves(target='inline')
+```
+
+
+## ANOVAs
+
+## Post-hoc tests
+
+# Reach aftereffects
+
+## Show the data
+
+## ANOVA
+
+## PDP-type analysis
+
+# Localization
+
+## Show the data
+
+## ANOVA on ... active?
+
+## ANOVA on passive?
+
+## Predicted Sensory Consequences?
