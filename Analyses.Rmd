@@ -1,5 +1,5 @@
 ---
-title: "Explixit Adaptation while Viewing the Hand"
+title: "Explicit Adaptation while Viewing the Hand"
 output: html_notebook
 ---
 
@@ -11,32 +11,72 @@ source('R/learningCurves.R')
 
 # Overview
 
-kjhfjhgfhgfjhg
+This document discusses figures and statistics for the Explicit (and later on the Hand View) project.
 
 # Learning Curves
 
+We aimed to determine the effects of explicit awareness of a visuomotor perturbation during reaching movements with a 30° CW rotation. 
+
+Training reaches in *Cursor Trials* for both aligned and rotated sessions were manually inspected for failing to perform the required reach, e.g. not reaching the target with a smooth and straight movement. Trials that were not useable for further analyses were removed. For the retained trials, we calculated angular deviation of the hand at the point of maximum velocity. This is the difference between a line connecting the home position to the target and a line connecting the home position to the participant's hand position at the peak of their movement velocity. Thus, in order to fully compensate for the cursor-rotation, participants had to deviate their reaches in the 30° CCW direction. We then calculated the difference between angular deviations in the first 90 trials of the rotated session and individual biases in reaches during the last 30 trials in the aligned session. This process was completed for every participant in each group.
+
+
 ## Show the data
+
+Below is a plot of the angular deviation of the hand across the first 90 trials of the rotated session. Lines represent the mean angular deviation of each group in every trial, and corresponding shaded regions represent 95% Confidence Intervals.
 
 ```{r plot_learningcurves}
 plotLearningCurves(target='inline')
 ```
 
+We see that, during training, the Instructed Group countered the rotation immediately, while the other groups took longer (within 15-20 trials) to compensate for the cursor-rotation.
 
 ## ANOVAs
 
 ## Post-hoc tests
 
+Do the stats, then interpret what it means in terms of question stated
+
 # Reach aftereffects
 
+Through the use of a process dissociation procedure (PDP) we investigated how explicit information affects participants' reaching movements when no cursor-feedback is presented.
+
+Similar to the Learning Curves section, reaches in *No Cursor Trials* for both aligned and rotated sessions were manually inspected for failing to perform the required reach. Trials that were not useable for further analyses were removed. For the retained trials, we used the endpoint angle to calculate for the angular deviation of the hand. This is the angular difference between the point where the participant's hand movement ended and the target. We then subtracted mean angular deviations after training in the aligned session from those after training in the rotated session, in order to measure the effects of adaptation training on No Cursor reaches, i.e. reach aftereffects. To implement the PDP, we calculated mean angular deviations per participant when either including any strategy they learned during adaptation training or excluding such a strategy. Thus, awareness of learning about the visuomotor rotation would be associated with a difference between exclusion and inclusion trials, while lack of awareness will have no such difference between the two types of trials.
+
 ## Show the data
+
+Below is a plot of the mean angular reach deviation of the hand for each group as a function of either excluding or including a strategy. Lines represent the mean angular deviation of each group, and corresponding shaded regions represent 95% Confidence Intervals.
+
+```{r plot_noCursor}
+plotGroupReachAfterEffects(target='inline')
+```
+
+We see from the figure that when including or excluding the strategy learned to counter the rotation, only the implicit group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, mean angular reach deviations for all groups in exclusive trials still deviated towards the direction of the rotation. This suggests that despite awareness of learning of the visuomotor rotation, implicit aftereffects were still present in all groups.
 
 ## ANOVA
 
 ## PDP-type analysis
 
+Do the stats, then interpret what it means in terms of question stated
+
 # Localization
 
+We also investigated how explicit awareness of the rotation during reaching movements affected participants' hand localization both before and after adaptation training.
+
+Responses in *Active* and *Passive Localization* trials were manually inspected for localization deviations different from the majority of responses, such that responses fell more or less along a single arc across the workspace. To obtain estimates of hand location, we calculated the angular difference between the point where the participant's unseen hand movement ended and their response on the touchscreen, i.e. their perceived hand position. However, we encountered inconsistencies with some participants' touchscreen responses due to unintentional movement of the monitor, which presented the arc stimuli in both *Active* and *Passive Localization* trials. Thus, these inconsistencies confounded measures of angular difference. To account for this, we calculated a value for the mean squared error (MSE), where error was defined as the mismatch between coordinates for touchscreen responses and coordinates for the more stable robot/unseen hand position. To correct for the mismatch, we fitted the incorrect data into a circle and optimized it with the more stable data. From this corrected data, we removed touchscreen responses too far away from the arc centre (outliers defined as beyond ±20° from the arc centre) as well as removed outliers for measures of angular differences (beyond ±3 standard deviations from the mean angular difference).
+
+
+As the points on the arc that participants move to differ and do not cover the entire workspace, we used a kernel smoothing method (width = 15°) to interpolate changes in hand localization at specific interpoints (50°, 90°, and 130°). These interpoints are the centre points of the arc stimuli presented to participants. We then used the means of these interpolated values to estimate shifts in hand localization. For each group, we calculated the difference between shifts in hand localization after training in the aligned session and from those after training in the rotated session. We then looked at shifts in hand localization based either only on proprioceptive information (measured in *Passive Localization* trials where participants did not have access to efference-based predictions) or on efference-based predictions (difference between *Passive Localization* and *Active Localization* trials).
+
+
 ## Show the data
+
+Below is a plot of the mean angular shift in hand localization for each group as a function of the three interpoints (50°, 90°, and 130°). Panel 1 shows shifts in hand localization when both proprioceptive information and efference-based predictions are available to the participant. Panel 2 shows shifts in hand localization when only proprioceptive information is available. Panel 3 shows shifts in hand localization when efference-based predictions are isolated. Lines represent the mean angular shift in localization for each group, and corresponding shaded regions represent 95% Confidence Intervals.
+
+```{r plot_localization}
+plotLocalizationShift(target='inline')
+```
+
+We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information was available to the participants (i.e., *Active Localization*). Moreover, in comparing Panels 2 and 3, we see that majority of the shifts in hand localization is accounted for by proprioceptive information. However, the lack of differences across groups show that awareness of the visuomotor rotation did not affect both proprioceptive recalibration and updating of predicted sensory consequences.
 
 ## ANOVA on ... active?
 
