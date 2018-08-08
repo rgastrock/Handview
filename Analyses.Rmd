@@ -6,6 +6,8 @@ output: html_notebook
 ```{r load_code, include=FALSE}
 source('R/shared.R')
 source('R/learningCurves.R')
+source('R/noCursor.R')
+source('R/localization.R')
 ```
 
 
