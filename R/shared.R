@@ -1,6 +1,6 @@
 library('ez')
 library('tidyr')
-# library('svglite')
+library('svglite')
 
 # colorPalette <- function() {
 #   
