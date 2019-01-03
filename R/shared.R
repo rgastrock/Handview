@@ -2,29 +2,30 @@ library('ez')
 library('tidyr')
 library('svglite')
 
-# colorPalette <- function() {
-#   
-#   # return a set of colors that adhere to lab standards
-#   
-# }
 
-#create a list containing the colourscheme per group
-
-colourscheme <- list()
-
-colourscheme[['30implicit']] <- list('S'='#ff8200ff', # pure orange
-                                     'T'='#ff82002f')    #2f gives a lighter shade of the color
-
-colourscheme[['30explicit']] <- list('S'='#e51636ff', #vivid/york red
-                                     'T'='#e516362f')
-
-colourscheme[['cursorjump']] <- list('S'='#c400c4ff', #strong magenta
-                                     'T'='#c400c42f')
-
-colourscheme[['handview']] <-   list('S'='#005de4ff', #pure blue
-                                     'T'='#005de42f')
 
 # Generic Functions -----
+
+getColourScheme <- function(groups = c('30explicit', '30implicit', 'cursorjump', 'handview')){
+  #create a list containing the colourscheme per group
+  for (group in groups){
+    colourscheme <- list()
+    
+    colourscheme[['30implicit']] <- list('S'='#ff8200ff', # pure orange
+                                         'T'='#ff82002f')    #2f gives a lighter shade of the color
+    
+    colourscheme[['30explicit']] <- list('S'='#e51636ff', #vivid/york red
+                                         'T'='#e516362f')
+    
+    colourscheme[['cursorjump']] <- list('S'='#c400c4ff', #strong magenta
+                                         'T'='#c400c42f')
+    
+    colourscheme[['handview']] <-   list('S'='#005de4ff', #pure blue
+                                         'T'='#005de42f')
+    
+  }
+  return(colourscheme)
+}
 
 t.interval <- function(data, variance = var(data, na.rm = TRUE), conf.level = 0.95) {
   #same as getConfidenceInterval, but assumes a normal t-distribution
