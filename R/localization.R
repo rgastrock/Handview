@@ -61,21 +61,19 @@ correctLocalizations <- function(df) {
   
 }
 
-getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit','cursorjump')) {
+getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit','cursorjump', 'handview')) {
   
   
   interpoints <- c(50,90,130)
   #interpoints <- seq(30,150,1)
-  # iterations <- 10000 # ideally 10000 or more? no more iterations: use t-distribution
+  #iterations <- 1000 # ideally 10000 or more? no more iterations: bootstrap function I have is enough
   percentiles <- c(0.025, 0.5, 0.975) # this is not actually used...#it is needed in confint_kernelregression
   
   for (group in groups) {
     
     df <- read.csv(sprintf('data/%s_localization.csv',group),stringsAsFactors=FALSE)
     
-    # correct using 3rd order polynomial
-    # and removing taps where the hand location is further than 20 degrees from the arc centre
-    # df <- correctLocalizationsP3(df)
+    # remove taps where the hand location is further than 20 degrees from the arc centre
     df <- correctLocalizations(df)
     # throw out rows where either hand or tap is missing
     df <- df[is.finite(df$hand_angle) & is.finite(df$tap_angle),]
@@ -125,7 +123,7 @@ getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit
         for (intpt in c(1:length(interpoints))) {
           
           #confint_kernelregression[intpt,2] <- mean(KRbiases[reachtype+1,condition+1,intpt,])
-          confint_kernelregression[intpt,c(1,2,3)] <- getConfidenceInterval(data = KRbiases[reachtype+1,condition+1,intpt,], resamples = 1000) #took out xbar in t.interval function
+          confint_kernelregression[intpt,c(1,2,3)] <- getBSConfidenceInterval(data = KRbiases[reachtype+1,condition+1,intpt,], resamples = 1000)
           
         }
         
@@ -154,7 +152,7 @@ getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit
       for (intpt in c(1:length(interpoints))) {
         
         #confint_kernelregression[intpt,2] <- mean(subdata[intpt,])
-        confint_kernelregression[intpt,c(1,2,3)] <- getConfidenceInterval(data = subdata[intpt,], resamples = 1000) #took out xbar in t.interval function
+        confint_kernelregression[intpt,c(1,2,3)] <- getBSConfidenceInterval(data = subdata[intpt,], resamples = 1000)
         
       }
       
@@ -176,7 +174,7 @@ getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit
     for (intpt in c(1:length(interpoints))) {
       
       #confint_kernelregression[intpt,2] <- mean(subdata[intpt,])
-      confint_kernelregression[intpt,c(1,2,3)] <- getConfidenceInterval(data = subdata[intpt,], resamples = 1000)
+      confint_kernelregression[intpt,c(1,2,3)] <- getBSConfidenceInterval(data = subdata[intpt,], resamples = 1000)
       
     }
     
@@ -192,7 +190,7 @@ getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit
 }
 
 
-getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit','30explicit','cursorjump')) {
+getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit','30explicit','cursorjump','handview')) {
   
   interpoints <- c(50,90,130)
   #interpoints <- seq(30,150,1)
@@ -203,9 +201,7 @@ getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit
     
     df <- read.csv(sprintf('data/%s_localization.csv',group),stringsAsFactors=FALSE)
     
-    # correct using 3rd order polynomial
-    # and removing taps where the hand location is further than 20 degrees from the arc centre
-    # df <- correctLocalizationsP3(df)
+    # remove taps where the hand location is further than 20 degrees from the arc centre
     df <- correctLocalizations(df)
     # throw out rows where either hand or tap is missing
     df <- df[is.finite(df$hand_angle) & is.finite(df$tap_angle),]
@@ -255,7 +251,7 @@ getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit
         for (intpt in c(1:length(interpoints))) {
           
           #confint_kernelregression[intpt,2] <- mean(KRbiases[reachtype+1,condition+1,intpt,])
-          confint_kernelregression[intpt,c(1,2,3)] <- t.interval(KRbiases[reachtype+1,condition+1,intpt,]) #took out xbar in t.interval function
+          confint_kernelregression[intpt,c(1,2,3)] <- t.interval(KRbiases[reachtype+1,condition+1,intpt,]) 
           
         }
         
@@ -323,14 +319,14 @@ getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit
 
 #plot containing active, passive, and predicted consequences for all groups
 #inline means it will plot here in R Studio
-plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorjump'), target='inline') {
+plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorjump','handview'), target='inline') {
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig4_localization.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_localization.svg', width=7, height=4, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
-  par(mfrow = c(1,3))
+  par(mfrow = c(1,3), mai=c(0.65,0.3,0.8,0.3)) #added this to fix margins of plot
   
   for (reachtype.idx in c(0,1)){
     reachtype <- c('Active','Passive')[reachtype.idx+1]
@@ -339,17 +335,29 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     
     #NA to create empty plot
     # could maybe use plot.new() ?
-    plot(NA, NA, xlim = c(30,150), ylim = c(2,-20), 
-         xlab = "Hand Angle (°)", ylab = "Shift in Localization (°)", frame.plot = FALSE, #frame.plot takes away borders
-         main = sprintf('%s Localization', reachtype), xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
-    abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
-    axis(1, at=c(50, 90, 130)) #tick marks for x axis
-    axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
-    
+    #removed ylab for now to make space in poster (SCAPPS 2018)
+    if (reachtype.idx == 0){
+      plot(NA, NA, xlim = c(30,150), ylim = c(2,-17), 
+           xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
+           main = sprintf('Shifts in \n %s Localization \n \n (Proprioception + Prediction)', reachtype),cex.main = 1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+      #mtext("(Proprioception + Prediction)", cex = 1)
+      abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+      axis(1, at=c(50, 90, 130)) #tick marks for x axis
+      axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
+    } else if (reachtype.idx == 1){
+      plot(NA, NA, xlim = c(30,150), ylim = c(2,-17), 
+           xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
+           main = sprintf('Shifts in \n %s Localization \n \n (Proprioception)', reachtype),cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+      #mtext("(Proprioception)", cex = 1)
+      abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+      axis(1, at=c(50, 90, 130)) #tick marks for x axis
+      axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
+    }
     #Active and Passive
     for (group in groups) {
       #read in files created by getGroupConfidenceInterval in filehandling.R
       groupconfidence <- read.csv(file=sprintf('data/%s_localization_tCI.csv',group))
+      colourscheme <- getColourScheme()
       #take only exclusive first, last and middle columns of file
       if (reachtype.idx == 0){
         lower <- groupconfidence$act_p2.5
@@ -385,9 +393,10 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  plot(NA, NA, xlim = c(30,150), ylim = c(2,-20), 
-       xlab = "Hand Angle (°)", ylab = "Shift in Localization (°)", frame.plot = FALSE, #frame.plot takes away borders
-       main = 'Predicted Consequences', xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+  plot(NA, NA, xlim = c(30,150), ylim = c(2,-17), 
+       xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
+       main = 'Shifts in Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+  #mtext("(Prediction)", cex=1)
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
   axis(1, at=c(50, 90, 130)) #tick marks for x axis
   axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
@@ -420,8 +429,8 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
   
-  legend(15,-20,legend=c('Implicit 30°','Strategy 30°','Cursor Jump'),
-         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']]),
+  legend(30,-15,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
+         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,bty='n')
   
   #close everything if you saved plot as svg

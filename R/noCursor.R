@@ -2,17 +2,16 @@ source('R/shared.R')
 
 # Analysis and Plots-----
 
-getEIGroupConfidenceInterval <- function(groups = c('30implicit', '30explicit', 'cursorjump'), type = 't'){
-  
+getEIGroupConfidenceInterval <- function(groups = c('30explicit', '30implicit', 'cursorjump', 'handview'), type){
   for (group in groups){
-    data <- read.csv(file=sprintf('data/%s_reachaftereffects.csv',group), stringsAsFactors = F)
-    
-    datat<- t(data) #transpose and make it wide format
-    newdata<- datat[-c(1),] #take away first row (participant)
+    # get the confidence intervals for each trial of each group
+    #data <- df
+    data <- read.csv(sprintf('data/%s_reachaftereffects.csv',group),stringsAsFactors=FALSE)
+    datat<- t(data)
+    newdata<- datat[-c(1),]
     #data1 <- as.matrix(data[2:dim(data)[2]])
     
     confidence <- data.frame()
-    
     
     cireaches <- unlist(newdata[1, ])
     cireaches <- as.numeric(cireaches)
@@ -51,10 +50,10 @@ getEIGroupConfidenceInterval <- function(groups = c('30implicit', '30explicit', 
 
 #plot containing reach aftereffects for all groups
 #inline means it will plot here in R Studio
-plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cursorjump'), target='inline') {
+plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'handview'), target='inline') {
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig3_reachaftereffects.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig3_reachaftereffects.svg', width=4, height=6, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -62,17 +61,18 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  plot(NA, NA, xlim = c(-0.1,1), ylim = c(-5,40), 
-       xlab = "Strategy Use", ylab = "Reach Deviation (°)", frame.plot = FALSE, #frame.plot takes away borders
-       main = "Group Reach Aftereffects", xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+  plot(NA, NA, xlim = c(-0.1,1), ylim = c(-5,35), 
+       xlab = "Strategy Use", ylab = "Angular Deviation of Hand (°)", frame.plot = FALSE, #frame.plot takes away borders
+       main = 'Group Reach Aftereffects and Strategy Use',xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   abline(h = 30, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
-  axis(1, at=c(0, 1), labels=c('Exclusive', 'Inclusive')) #tick marks for x axis
-  axis(2, at = c(0, 10, 20, 30, 40)) #tick marks for y axis
+  axis(1, at=c(0, 1), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
+  axis(2, at = c(0, 10, 20, 30)) #tick marks for y axis
   
   
   for (group in groups) {
     #read in files created by getGroupConfidenceInterval in filehandling.R
     groupconfidence <- read.csv(file=sprintf('data/%s_CI_reachaftereffects.csv',group))
+    colourscheme <- getColourScheme(group=group)
     #take only exclusive first, last and middle columns of file
     lower <- groupconfidence[,1]
     upper <- groupconfidence[,3]
@@ -96,9 +96,9 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   }
   
   #add legend
-  legend(0.5,12.5,legend=c('Implicit 30°','Instructed 30°','Cursor Jump'),
-         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']]),
-         lty=1,bty='n')
+  legend(0.12,8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
+         lty=1,bty='n',cex=0.85)
   
   #close everything if you saved plot as svg
   if (target=='svg') {
