@@ -19,7 +19,7 @@ This document discusses figures and statistics for the Explicit (and later on th
 
 We aimed to determine the effects of explicit awareness of a visuomotor perturbation during reaching movements with a 30° CW rotation. 
 
-Training reaches in *Cursor Trials* for both aligned and rotated sessions were manually inspected for failing to perform the required reach, e.g. not reaching the target with a smooth and straight movement. Trials that were not useable for further analyses were removed. For the retained trials, we calculated angular deviation of the hand at the point of maximum velocity. This is the difference between a line connecting the home position to the target and a line connecting the home position to the participant's hand position at the peak of their movement velocity. Thus, in order to fully compensate for the cursor-rotation, participants had to deviate their reaches in the 30° CCW direction. We then calculated the difference between angular deviations in the first 90 trials of the rotated session and individual biases in reaches during the last 30 trials in the aligned session. This process was completed for every participant in each group.
+Training reaches in *Cursor Trials* for both aligned and rotated sessions were manually inspected for failing to perform the required reach, e.g. not reaching the target with a smooth and straight movement. Trials that were not useable for further analyses were removed. For the remaining trials, we calculated angular deviation of the hand at the point of maximum velocity. This is the angular difference between a line connecting the home position to the target and a line connecting the home position to the participant's hand position at the peak of their movement velocity. Thus, in order to fully compensate for the cursor-rotation, participants had to deviate their reaches in the 30° CCW direction. We then calculated the difference between angular deviations in the first 90 trials of the rotated session and individual biases in reaches during the last 30 trials in the aligned session. This process was completed for every participant in each group.
 
 
 ## Show the data
@@ -31,13 +31,34 @@ plotLearningCurves(target='inline')
 plotBlockedLearningCurves(target='inline')
 ```
 
-We see that, during training, the Instructed Group countered the rotation immediately, while the other groups took longer (within 15-20 trials) to compensate for the cursor-rotation.
+We see that, during training, the Instructed Group countered the rotation immediately, while the other groups took longer (within 15-20 trials) to compensate for the cursor-rotation. The Cursor Jump group's rate of learning seems to suggest that they learn to compensate much faster than the Non-instructed, control group(i.e. the slope of the learning curve is steep). Lastly, all groups perform similar reaching movements at the end of training.
 
 ## ANOVAs
 
+We aimed to analyze the effects of explicit knowledge of the visual perturbation on learning during the first 90 trials of training with a visuomotor rotation. To do this, we blocked the rotated training data into three sets. The first set consisted of the first three trials, the second consisted of the next three trials, and the third consisted of the last 15 trials of rotated training. We then investigated how the four groups and their performance during adaptation, compared with each other, for each of these three blocks. We performed a 3X4 mixed ANOVA with block as a within-subject factor (blocks 1, 2, and 3) and group as a between-subject factor (Non-instructed, Instructed, Cursor Jump, Hand View). All tests had alpha level set to 0.05 and, when necessary, Greenhouse Geisser corrections were applied.
+
+```{r}
+learningCurveANOVA()
+```
+We see that the main effects of group and block, and their interaction, were significant. This suggests that the rate of learning of at least one group differs from the other groups and that this difference depends on the block of trials. Hence, it is appropriate to look at differences between groups in each block. Particularly, we only look into the first 2 blocks, since it is observed from our plots that the groups do not differ in the last block.
+
 ## Post-hoc tests
 
-Do the stats, then interpret what it means in terms of question stated
+We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Non-instructed group as a reference (since it is the control group) and compare all groups to it. We then compare all groups to the non-instructed group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using Tukey's HSD.
+
+```{r}
+learningcurveComparisonMeans()
+```
+
+
+```{r}
+learningcurveComparisons(method='Tukey')
+```
+
+In comparing all groups to the Non-instructed group, regardless of block, only the Instructed group differed significantly. We observed the same conclusion when comparing all groups to the non-instructed group in block one. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor.In block two, however, only the cursor jump group significantly differed from the non-instructed group, suggesting that the cursor jump group learned to counter for the rotation of the cursor faster than the non-instructed group. The hand view group however,did not differ significantly from the non-instructed group, and hence did not show a similar rate of learning to the cursor jump group. It is important to note that when running the analyses without Tukey's HSD adjustment, we get almost similar conclusions. The only difference is that the instructed group will also differ significantly from the non-instructed group in block two.
+
+To summarize, explicit knowledge of the perturbation has an effect on learning to adapt reaching movements when experiencing a visuomotor rotation. Particularly, being instructed on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, explicit knowledge from experiencing different stimuli that show the mismatch between actual hand position and the cursor, does not produce a similar initial advantage.
+
 
 # Reach aftereffects
 

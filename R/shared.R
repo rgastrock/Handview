@@ -1,7 +1,8 @@
 library('ez')
-#library('tidyr')
 library('svglite')
-
+library('phia')
+library('afex')
+library('lsmeans')
 
 
 # Generic Functions -----

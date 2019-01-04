@@ -150,8 +150,223 @@ plotBlockedLearningCurves <- function(target='inline') {
 
 
 # Statistics-----
+
+getStyle <- function() {
+  
+  
+  # I don't use these for my plots, but helpful function to organize data into format for ANOVA.
+  # Colors removed because not necessary to complete other ANOVA functions.
+  groups    =  c('30implicit', 
+                 '30explicit', 
+                 'cursorjump', 
+                 'handview')
+  rotations =  c(30,
+                 30,          
+                 30,               
+                 30)
+  # solidcolors =  c(rgb(229, 22,  54,  255, max = 255), 
+  #                  rgb(255, 128, 0,   255, max = 255), 
+  #                  rgb(136, 0,   238, 255, max = 255),
+  #                  rgb(136, 153, 255, 255, max = 255))
+  # 
+  # transcolors =  c(rgb(229, 22,  54,  47,  max = 255), 
+  #                  rgb(255, 128, 0,   47,  max = 255), 
+  #                  rgb(136, 0,   238, 47,  max = 255),
+  #                  rgb(136, 153, 255, 47,  max = 255))
+  # 
+  # linestyles = c(2,
+  #                1,
+  #                2,
+  #                1)
+  labels <-    c('non-instructed',
+                 'instructed',
+                 'cursorjump',
+                 'handview')
+  
+  
+  styles <- data.frame(groups,rotations,labels, stringsAsFactors = FALSE) #added stringsasfactors to not create levels
+  colnames(styles) <- c('group','rotation','label')
+  
+  return(styles)
+  
+}
+
+getBlockedLearningCurves <- function(group, blockdefs) {
+  #function reads in learningcurves csv file then creates an array with 3 columns for each participant.
+  #Each column is the mean of the blocked trials (first three, second three, last 15)
+  curves <- read.csv(sprintf('data/%s_learningcurves.csv',group), stringsAsFactors=FALSE)  
+  
+  #R <- dim(curves)[1] # not needed, checks if rows=90 (correct trial numbers)
+  curves <- curves[,-1] #take away trial column
+  N <- dim(curves)[2] #gets the number of columns (i.e., participants)
+  
+  blocked <- array(NA, dim=c(N,length(blockdefs))) #empty array where every participant will get 3 corresponding columns
+  
+  for (pp in c(1:N)) {
+    
+    for (block in c(1:length(blockdefs))) {
+      
+      blockdef <- blockdefs[[block]] #creates a list which specifies start trial of every block, and how many trials in total for this block
+      blockstart <- blockdef[1] #either trial 1, 4, or 76
+      blockend <- blockstart + blockdef[2] - 1 #either trial 3, 6, or 90
+      samples <- curves[blockstart:blockend,pp] #gets corresponding reach angle per participant
+      blocked[pp,block] <- mean(samples, na.rm=TRUE) #compute the mean for it and put it in array
+      
+    }
+    
+  }
+  
+  return(blocked)
+  
+}
+
+getLearningCurves4ANOVA <- function(styles, blockdefs) {
+  
+  # set up vectors that will form a data frame for the ANOVA(s):
+  #agegroup       <- c()
+  #instructed     <- c()
+  diffgroup      <- c()
+  participant    <- c()
+  block          <- c()
+  reachdeviation <- c()
+  
+  
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    # keeping count of unique participants (this is the start of the counter; I fix for unique IDs later on):
+    startingID <- 1
+    
+    group <- styles$group[groupno] #loop through groups from styles data frame
+    
+    # I only need groups for handview experiment
+    # set up some basic descriptors that apply to the group:
+    # if (substr(group, 1, 5) == 'aging') {
+    #   thisagegroup <- 'older'
+    # } else {
+    #   thisagegroup <- 'younger'
+    # }
+    # thisinstructed <- grepl('explicit', group)
+    
+    # block the data:
+    blocked <- getBlockedLearningCurves(group, blockdefs) #blocked reach angles from group
+    
+    
+    # we need to know the number of participants to replicate some values:
+    N <- dim(blocked)[1]
+    
+    for (blockno in c(1:length(blockdefs))) {
+      
+      #agegroup        <- c(agegroup, rep(thisagegroup, N))
+      #instructed      <- c(instructed, rep(thisinstructed, N))
+      # these create the values inside cells for the df to be created
+      diffgroup       <- c(diffgroup, rep(group, N))
+      participant     <- c(participant, c(startingID : (startingID + N - 1)))
+      block           <- c(block, rep(blockno, N))
+      reachdeviation  <- c(reachdeviation, blocked[,blockno])
+      
+    }
+    
+    startingID <- startingID + N #for counter to continue
+    
+  }
+  
+  # put it in a data frame:
+  LCaov <- data.frame(diffgroup, participant, block, reachdeviation)
+  # make participant numbers uniqe per group: (will look like - group.ppno)
+  LCaov$participant <- sprintf('%s.%d', diffgroup, LCaov$participant)
+  
+  # need to make certain columns as factors for ANOVA:
+  #LCaov$agegroup <- as.factor(LCaov$agegroup)
+  #LCaov$instructed <- as.factor(LCaov$instructed)
+  LCaov$diffgroup <- as.factor(LCaov$diffgroup)
+  LCaov$block <- as.factor(LCaov$block)
+  
+  return(LCaov)
+  
+}
+
 learningCurveANOVA <- function() {
   
-  # write code!
+  styles <- getStyle()
+  blockdefs <- list(c(1,3),c(4,3),c(76,15))
   
+  LC4aov <- getLearningCurves4ANOVA(styles, blockdefs)                      
+  
+  #looking into interaction below:
+  #interaction.plot(LC4aov$diffgroup, LC4aov$block, LC4aov$reachdeviation)
+  
+  #learning curve ANOVA's
+  # for ez, case ID should be a factor:
+  LC4aov$participant <- as.factor(LC4aov$participant)
+  firstAOV <- ezANOVA(data=LC4aov, wid=participant, dv=reachdeviation, within=block,between=diffgroup,type=3, return_aov = TRUE) #which type of SS is appropriate?
+  print(firstAOV[1:3]) #so that it doesn't print the aov object as well
+}
+
+
+#use a Tukey HSD (see R Tutorials 6)
+
+learningcurveComparisonMeans <- function(){
+  
+  #can plot interaction just to eyeball it:
+  #plot(interactionMeans(lm(reachdeviation ~ block * diffgroup, data=LC4aov), factors=c('diffgroup', 'block'), atx='block'))
+  
+  
+  #main effects of group and block. interaction effect as well (only makes sense to look into interaction)
+  #need to use afex (Analysis of Factorial Experiments) because this acccepts input from ezANOVA(), while phia does not
+  
+  
+  #library(emmeans) #changed from lsmeans
+  
+  styles <- getStyle()
+  blockdefs <- list(c(1,3),c(4,3),c(76,15))
+  
+  LC4aov <- getLearningCurves4ANOVA(styles, blockdefs) 
+  secondAOV <- aov_ez("participant","reachdeviation",LC4aov,within="block",between="diffgroup")
+  #nice(secondAOV, correction = 'none') #correction set to none since first AOV reveals no violation of sphericity
+  #summary(secondAOV) #shows all results
+  #run code above for figuring out df
+  #output is the same
+  #follow-ups using lsmeans
+  
+  
+  #cellmeans <- emmeans(secondAOV,specs=c('diffgroup','block'))
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup','block'))
+  print(cellmeans)
+}
+
+learningcurveComparisons <- function(method='Tukey'){
+  styles <- getStyle()
+  blockdefs <- list(c(1,3),c(4,3),c(76,15))
+  
+  LC4aov <- getLearningCurves4ANOVA(styles, blockdefs) 
+  secondAOV <- aov_ez("participant","reachdeviation",LC4aov,within="block",between="diffgroup")
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  EXvsIM <- c(1,-1,0,0,1,-1,0,0,1,-1,0,0)
+  CJvsIM <- c(0,-1,1,0,0,-1,1,0,0,-1,1,0)
+  HVvsIM <- c(0,-1,0,1,0,-1,0,1,0,-1,0,1)
+  #CJvsHV <- c(0,0,1,-1,0,0,1,-1,0,0,1,-1) #remember to add this to the list
+  #only explicit is significantly different
+  
+  #again compare all groups to implicit but in block 1 only
+  EXvsIM_b1 <- c(1,-1,0,0,0,0,0,0,0,0,0,0)
+  CJvsIM_b1 <- c(0,-1,1,0,0,0,0,0,0,0,0,0)
+  HVvsIM_b1 <- c(0,-1,0,1,0,0,0,0,0,0,0,0)
+  #only explicit is significantly different
+  
+  #all groups to implicit but in block 2 only
+  EXvsIM_b2 <- c(0,0,0,0,1,-1,0,0,0,0,0,0)
+  CJvsIM_b2 <- c(0,0,0,0,0,-1,1,0,0,0,0,0)
+  HVvsIM_b2 <- c(0,0,0,0,0,-1,0,1,0,0,0,0)
+  #only cursor jump differs
+  
+  contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-Instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM,
+                       'Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1, 
+                       'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup','block')), contrastList, adjust=method)
+  
+  print(comparisons)
 }
