@@ -6,6 +6,45 @@ library('lsmeans')
 
 
 # Generic Functions -----
+getStyle <- function() {
+  
+  
+  # I don't use these for my plots, but helpful function to organize data into format for ANOVA.
+  # Colors removed because not necessary to complete other ANOVA functions.
+  groups    =  c('30implicit', 
+                 '30explicit', 
+                 'cursorjump', 
+                 'handview')
+  rotations =  c(30,
+                 30,          
+                 30,               
+                 30)
+  # solidcolors =  c(rgb(229, 22,  54,  255, max = 255), 
+  #                  rgb(255, 128, 0,   255, max = 255), 
+  #                  rgb(136, 0,   238, 255, max = 255),
+  #                  rgb(136, 153, 255, 255, max = 255))
+  # 
+  # transcolors =  c(rgb(229, 22,  54,  47,  max = 255), 
+  #                  rgb(255, 128, 0,   47,  max = 255), 
+  #                  rgb(136, 0,   238, 47,  max = 255),
+  #                  rgb(136, 153, 255, 47,  max = 255))
+  # 
+  # linestyles = c(2,
+  #                1,
+  #                2,
+  #                1)
+  labels <-    c('non-instructed',
+                 'instructed',
+                 'cursorjump',
+                 'handview')
+  
+  
+  styles <- data.frame(groups,rotations,labels, stringsAsFactors = FALSE) #added stringsasfactors to not create levels
+  colnames(styles) <- c('group','rotation','label')
+  
+  return(styles)
+  
+}
 
 getColourScheme <- function(groups = c('30explicit', '30implicit', 'cursorjump', 'handview')){
   #create a list containing the colourscheme per group
