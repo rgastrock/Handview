@@ -2,11 +2,44 @@ source('R/shared.R')
 
 # Analysis and Plots-----
 
+loadRAE <- function(group, baselinecorrect = TRUE){
+  
+  NoCdat <- read.csv(file = sprintf('data/%s_nocursor.csv', group), stringsAsFactors = F)
+  
+  if (baselinecorrect == TRUE){
+    #this method of baseline correction is different from the older one (see previous section)
+    #values are close to old version, but different by a few decimal places
+    #because old version takes median of all exclusive from all target angles
+    #this takes median of values for each angle, corrects for baseline, then takes the mean of all 3 angle values
+    #note that we take the mean at the end for this new version, opposed to median in the first
+    NoCdat$exclusive <- NoCdat$exclusive - NoCdat$aligned
+    NoCdat$inclusive <- NoCdat$inclusive - NoCdat$aligned
+    NoCdat <- NoCdat[,-3] #remove aligned column
+    
+    exc <- aggregate(as.formula('exclusive ~ participant'), NoCdat, median, na.rm = TRUE)
+    inc <- aggregate(as.formula('inclusive ~ participant'), NoCdat, median, na.rm = TRUE)
+    NoCdat <- cbind(exc,inc)
+    NoCdat <- NoCdat[-3]
+    return(NoCdat)
+  } else if (baselinecorrect == FALSE){
+    NoCdat <- NoCdat[,-5]
+    aligned <- aggregate(as.formula('aligned ~ participant'), NoCdat, median, na.rm = TRUE)
+    exc <- aggregate(as.formula('exclusive ~ participant'), NoCdat, median, na.rm = TRUE)
+    NoCdat <- cbind(aligned, exc)
+    NoCdat <- NoCdat[,-3]
+    return(NoCdat)
+  }
+  
+  
+}
+
+#when using older version of No Cursor data baseline correction, take not of function names before running this
 getEIGroupConfidenceInterval <- function(groups = c('30explicit', '30implicit', 'cursorjump', 'handview'), type){
   for (group in groups){
     # get the confidence intervals for each trial of each group
     #data <- df
-    data <- read.csv(sprintf('data/%s_reachaftereffects.csv',group),stringsAsFactors=FALSE)
+    #data <- getGroupReachAftereffects(group = group)
+    data <- loadRAE(group = group, baselinecorrect = TRUE)
     datat<- t(data)
     newdata<- datat[-c(1),]
     #data1 <- as.matrix(data[2:dim(data)[2]])
