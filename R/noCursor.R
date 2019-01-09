@@ -140,8 +140,127 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
 }
 
 # Statistics-----
-reachAftereffectsANOVA <- function() {
+
+getNoC4ANOVA <- function(styles) {
   
-  # write code!
+  diffgroup      <- c()
+  participant    <- c()
+  session       <- c()
+  reachdeviation <- c()
   
+  for (groupno in c(1:length(styles$group))) {
+    
+    # keeping count of unique participants (this is the start of the counter; I fix for unique IDs later on):
+    startingID <- 1
+    
+    group <- styles$group[groupno] #loop through groups from styles data frame
+    
+    df <- loadRAE(group = group, baselinecorrect = FALSE) #no baseline correction
+    
+    # we need to know the number of participants to replicate some values:
+    N <- dim(df)[1]
+    
+    for (currentsession in c('aligned','exclusive')) {
+      
+      #agegroup        <- c(agegroup, rep(thisagegroup, N))
+      #instructed      <- c(instructed, rep(thisinstructed, N))
+      # these create the values inside cells for the df to be created
+      diffgroup       <- c(diffgroup, rep(group, N))
+      participant     <- c(participant, c(startingID : (startingID + N - 1)))
+      session         <- c(session, rep(currentsession, N))
+      reachdeviation  <- c(reachdeviation, df[,currentsession])
+      
+    }
+    
+    startingID <- startingID + N #for counter to continue
+    
+  }
+  
+  # put it in a data frame:
+  NoCaov <- data.frame(diffgroup, participant, session, reachdeviation)
+  # make participant numbers uniqe per group: (will look like - group.ppno)
+  NoCaov$participant <- sprintf('%s.%d', diffgroup, NoCaov$participant)
+  
+  # need to make certain columns as factors for ANOVA:
+  NoCaov$diffgroup <- as.factor(NoCaov$diffgroup)
+  NoCaov$session <- as.factor(NoCaov$session)
+  
+  return(NoCaov)
+}
+
+NoCANOVA <- function() {
+  
+  styles <- getStyle()
+  
+  NoC4aov <- getNoC4ANOVA(styles)                      
+  
+  # for ez, case ID should be a factor:
+  NoC4aov$participant <- as.factor(NoC4aov$participant)
+  NoCursorAOV <- ezANOVA(data=NoC4aov, wid=participant, dv=reachdeviation, within=session, between=diffgroup,type=3, return_aov = TRUE)
+  #No Mauchly's and Sphericity Corrections because session has just 2 levels
+  print(NoCursorAOV[1]) #so that it doesn't print the aov object as well
+  
+}
+
+#post-hoc for NoCursorAOV???
+
+
+getRAE4ANOVA <- function(styles) {
+  
+  diffgroup      <- c()
+  participant    <- c()
+  strategy       <- c()
+  reachdeviation <- c()
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    # keeping count of unique participants (this is the start of the counter; I fix for unique IDs later on):
+    startingID <- 1
+    
+    group <- styles$group[groupno] #loop through groups from styles data frame
+    
+    df <- loadRAE(group = group, baselinecorrect = TRUE) #no baseline correction
+    
+    # we need to know the number of participants to replicate some values:
+    N <- dim(df)[1]
+    
+    for (strategyuse in c('exclusive','inclusive')) {
+      
+      #agegroup        <- c(agegroup, rep(thisagegroup, N))
+      #instructed      <- c(instructed, rep(thisinstructed, N))
+      # these create the values inside cells for the df to be created
+      diffgroup       <- c(diffgroup, rep(group, N))
+      participant     <- c(participant, c(startingID : (startingID + N - 1)))
+      strategy         <- c(strategy, rep(strategyuse, N))
+      reachdeviation  <- c(reachdeviation, df[,strategyuse])
+      
+    }
+    
+    startingID <- startingID + N #for counter to continue
+    
+  }
+  
+  # put it in a data frame:
+  RAEaov <- data.frame(diffgroup, participant, strategy, reachdeviation)
+  # make participant numbers uniqe per group: (will look like - group.ppno)
+  RAEaov$participant <- sprintf('%s.%d', diffgroup, RAEaov$participant)
+  
+  # need to make certain columns as factors for ANOVA:
+  RAEaov$diffgroup <- as.factor(RAEaov$diffgroup)
+  RAEaov$strategy <- as.factor(RAEaov$strategy)
+  
+  return(RAEaov)
+  
+}
+
+RAEANOVA <- function() {
+  
+  styles <- getStyle()
+  
+  RAE4aov <- getRAE4ANOVA(styles)
+  
+  RAE4aov$participant <- as.factor(RAE4aov$participant)
+  RAEaov <- ezANOVA(data=RAE4aov, wid=participant, dv=reachdeviation, within=strategy, between=diffgroup,type=3, return_aov = TRUE)
+  #No Mauchly's and Sphericity Correction because strategy only has 2 levels
+  print(RAEaov[1])
 }
