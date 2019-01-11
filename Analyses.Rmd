@@ -13,7 +13,11 @@ source('R/localization.R')
 
 # Overview
 
-This document discusses figures and statistics for the Explicit (and later on the Hand View) project.
+This document discusses figures and statistics for the Hand View project. Currently, figures and statistics are presented for learning curves and no cursor data. Statistics for Localization data will follow. 
+
+A few things to note:
+1) post-hoc tests used are supposed to be Tukey, but currently defaults to Sidak method. I will figure out how to switch this.
+2) background information and interpretations between R chunks are currently a very rough draft. I will still come back and fix these write-ups
 
 # Learning Curves
 
@@ -74,13 +78,41 @@ Below is a plot of the mean angular reach deviation of the hand for each group a
 plotGroupReachAfterEffects(target='inline')
 ```
 
-We see from the figure that when including or excluding the strategy learned to counter the rotation, only the implicit group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, mean angular reach deviations for all groups in exclusive trials still deviated towards the direction of the rotation. This suggests that despite awareness of learning of the visuomotor rotation, implicit aftereffects were still present in all groups.
+We see from the figure that when including or excluding the strategy learned to counter the rotation, only the non-instructed group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, mean angular reach deviations for all groups in exclusive trials still deviated towards the direction of the rotation. This suggests that despite awareness of learning of the visuomotor rotation, implicit aftereffects were still present in all groups.
 
-## ANOVA
+## Test for Reach Aftereffects
 
-## PDP-type analysis
+First, we test whether or not adaptation led to reach aftereffects. To do this, we compare the rotated no cursor trials to the aligned no cursor trials.Particularly, we use rotated no cursor trials where participants do not make use of a strategy. We perform a 2X4 mixed ANOVA with session (aligned or rotated) as a within-subject factor and group as a between-subject factor.
 
-Do the stats, then interpret what it means in terms of question stated
+```{r}
+NoCANOVA()
+```
+
+We see that there are implicit reach aftereffects after adaptation due to the significant main effect of session. However, since the interaction between group and session was also significant, it is possible that the effect of session is modulated by groups (i.e. the effect of session occurs for some groups but not the others). Thus, we run a post-hoc analysis comparing each group in one session to the other session.
+
+```{r}
+NoCursorComparisonMeans()
+NoCursorComparisons(method = 'tukey')
+```
+
+Post-hoc analysis shows that the aligned and rotated sessions differed significantly for each group. Therefore, the possibility of the effect of session being modulated by groups is ruled out.
+
+## PDP-type analysis (Strategy Use)
+
+After confirming that reach aftereffects are present in all groups, we test whether instructions or the presence of explicit stimuli brought about explicit learning. We run 2X4 mixed ANOVA with strategy use as a within-subject factor (with or without strategy) and group as a between-subject factor.
+
+```{r}
+RAEANOVA()
+```
+
+We see that the main effects of group and strategy, as well as their interaction are significant. This suggests that there is at least one group that differs in terms of angular reach deviations from the other groups, when using or not using a strategy. However, post-hoc tests are necessary to determine which of the groups differ.
+
+```{r}
+RAEComparisonMeans()
+RAEComparisons(method = 'tukey')
+```
+
+The tests confirm our conclusions from the figure. All groups, except the non-instructed group, showed significantly different angular deviations when using a strategy. This suggests unawareness of learning in the non-instructed group.
 
 # Localization
 

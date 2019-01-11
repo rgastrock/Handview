@@ -202,10 +202,74 @@ NoCANOVA <- function() {
   
 }
 
-#post-hoc for NoCursorAOV???
+#post-hoc
+NoCursorComparisonMeans <- function(){
+  
+  #can plot interaction just to eyeball it:
+  #plot(interactionMeans(lm(reachdeviation ~ session * diffgroup, data=NoC4aov), factors=c('diffgroup', 'session'), atx='session'))
+  
+  
+  #main effects of group and block. interaction effect as well (only makes sense to look into interaction)
+  #need to use afex (Analysis of Factorial Experiments) because this acccepts input from ezANOVA(), while phia does not
+  
+  
+  #library(emmeans) #changed from lsmeans
+  
+  styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  NoC4aov <- getNoC4ANOVA(styles)
+  secondAOV <- aov_ez("participant","reachdeviation",NoC4aov,within="session",between="diffgroup")
+  #nice(secondAOV, correction = 'none') #correction set to none since first AOV reveals no violation of sphericity
+  #summary(secondAOV) #shows all results
+  #run code above for figuring out df
+  #output is the same
+  #follow-ups using lsmeans
+  
+  
+  #cellmeans <- emmeans(secondAOV,specs=c('diffgroup','block'))
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup','session'))
+  print(cellmeans)
+}
+
+NoCursorComparisons <- function(method='Tukey'){
+  styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  NoC4aov <- getNoC4ANOVA(styles) 
+  secondAOV <- aov_ez("participant","reachdeviation",NoC4aov,within="session",between="diffgroup")
+  
+  EX_alvsEX_ex <- c(1,0,0,0,-1,0,0,0)
+  IM_alvsIM_ex <- c(0,1,0,0,0,-1,0,0)
+  CJ_alvsCJ_ex <- c(0,0,1,0,0,0,-1,0)
+  HV_alvsHV_ex <- c(0,0,0,1,0,0,0,-1)
+  
+  
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  
+  contrastList <- list('AL.Instr vs. ROT.Instr'=EX_alvsEX_ex, 'AL.Non-Instr vs. ROT.Non-Instr'=IM_alvsIM_ex, 'AL.Cursor Jump vs. ROT.Cursor Jump'=CJ_alvsCJ_ex,
+                       'AL.Handview vs. ROT.Handview'=HV_alvsHV_ex)
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup','session')), contrastList, adjust=method)
+  
+  print(comparisons)
+}
+
+#So ANOVA has everything significant (main effects of group and session, interaction of group and session). 
+#So it is possible that effect of session can be happening for some groups but not the others
+#hence we do the post-hoc test, where we compare whether sessions differed for each group
+#and they do. so the possibility is ruled out, and at the same time we show that all groups learned/adapted
+#change sidak method to Tukey's!!!!
+
+
+
 
 
 getRAE4ANOVA <- function(styles) {
+  
+  styles <- getStyle()
   
   diffgroup      <- c()
   participant    <- c()
@@ -219,7 +283,7 @@ getRAE4ANOVA <- function(styles) {
     
     group <- styles$group[groupno] #loop through groups from styles data frame
     
-    df <- loadRAE(group = group, baselinecorrect = TRUE) #no baseline correction
+    df <- loadRAE(group = group, baselinecorrect = TRUE) #with baseline correction
     
     # we need to know the number of participants to replicate some values:
     N <- dim(df)[1]
@@ -263,4 +327,60 @@ RAEANOVA <- function() {
   RAEaov <- ezANOVA(data=RAE4aov, wid=participant, dv=reachdeviation, within=strategy, between=diffgroup,type=3, return_aov = TRUE)
   #No Mauchly's and Sphericity Correction because strategy only has 2 levels
   print(RAEaov[1])
+}
+
+#post-hoc
+
+RAEComparisonMeans <- function(){
+  
+  #can plot interaction just to eyeball it:
+  #plot(interactionMeans(lm(reachdeviation ~ session * diffgroup, data=NoC4aov), factors=c('diffgroup', 'session'), atx='session'))
+  
+  
+  #main effects of group and block. interaction effect as well (only makes sense to look into interaction)
+  #need to use afex (Analysis of Factorial Experiments) because this acccepts input from ezANOVA(), while phia does not
+  
+  
+  #library(emmeans) #changed from lsmeans
+  
+  styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  RAE4aov <- getRAE4ANOVA(styles)
+  secondAOV <- aov_ez("participant","reachdeviation",RAE4aov,within="strategy",between="diffgroup")
+  #nice(secondAOV, correction = 'none') #correction set to none since first AOV reveals no violation of sphericity
+  #summary(secondAOV) #shows all results
+  #run code above for figuring out df
+  #output is the same
+  #follow-ups using lsmeans
+  
+  
+  #cellmeans <- emmeans(secondAOV,specs=c('diffgroup','block'))
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup','strategy'))
+  print(cellmeans)
+}
+
+RAEComparisons <- function(method='tukey'){
+  styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  RAE4aov <- getRAE4ANOVA(styles) 
+  secondAOV <- aov_ez("participant","reachdeviation",RAE4aov,within="strategy",between="diffgroup")
+  
+  EX_wovsEX_w <- c(1,0,0,0,-1,0,0,0)
+  IM_wovsIM_w <- c(0,1,0,0,0,-1,0,0)
+  CJ_wovsCJ_w <- c(0,0,1,0,0,0,-1,0)
+  HV_wovsHV_w <- c(0,0,0,1,0,0,0,-1)
+  
+  
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  
+  contrastList <- list('WO.Instr vs. WITH.Instr'=EX_wovsEX_w, 'WO.Non-Instr vs. WITH.Non-Instr'=IM_wovsIM_w, 'WO.Cursor Jump vs. WITH.Cursor Jump'=CJ_wovsCJ_w,
+                       'WO.Handview vs. WITH.Handview'=HV_wovsHV_w)
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup','strategy')), contrastList, adjust=method)
+  
+  print(comparisons)
 }
