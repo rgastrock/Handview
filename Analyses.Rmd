@@ -95,7 +95,7 @@ NoCursorComparisonMeans()
 NoCursorComparisons(method = 'tukey')
 ```
 
-Post-hoc analysis shows that the aligned and rotated sessions differed significantly for each group. Therefore, the possibility of the effect of session being modulated by groups is ruled out.
+Post-hoc analysis shows that the aligned and rotated sessions differed significantly for each group. Therefore, the possibility of the effect of session being modulated by groups is ruled out. (!!!Change this statement: We are unable to rule it out, because the hand view group could still be lower than the others. You might need to add a separate post-hoc test to see how it is modulated by groups).
 
 ## PDP-type analysis (Strategy Use)
 
