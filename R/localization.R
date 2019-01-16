@@ -440,8 +440,229 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
 }
 
 # Statistics-----
-reachAftereffectsANOVA <- function() {
+
+getLocalization4ANOVA <- function(styles, shifts = FALSE) {
   
-  # write code!
+  LOCaov <- NA
+  
+  for (groupno in c(1:length(styles$group))){
+    #startingID <- 1
+    
+    group <- styles$group[groupno]
+    
+    df <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group),stringsAsFactors=F) #loc_p3 files correct for biases when generated
+    #then we want the mean bias_deg for each pp
+    df <- aggregate(bias_deg ~ participant * rotated_b * passive_b, data=df, FUN=mean)
+    #below is basically a short-cut way of baseline correcting, when shifts = TRUE
+    #it subtracts the aligned from the rotated
+    #but will only do it if data is in correct order, because it compares first and second, second and third, etc.
+    if (shifts) {
+      df <- aggregate(bias_deg ~ participant * passive_b, data=df, FUN=diff)
+    }
+    dat <- data.frame(group,df)
+    
+    if (is.data.frame(LOCaov)) {
+      LOCaov <- rbind(LOCaov, dat)
+    } else {
+      LOCaov <- dat
+    }
+    
+  }
+  #set relevant columns as factors:
+  LOCaov$group <- as.factor(LOCaov$group)
+  LOCaov$passive_b <- as.factor(LOCaov$passive_b)
+  #LOCaov$rotated_b <- as.factor(LOCaov$rotated_b)
+  if (!shifts) {
+    LOCaov$rotated_b  <- as.factor(LOCaov$rotated_b) #when shifts != TRUE it still adds the session in
+  }
+  return(LOCaov)
+}
+
+localizationANOVA <- function(test = 'omnibus') {
+  
+  styles <- getStyle()
+  
+  if (test == 'omnibus'){
+    LOC4aov <- getLocalization4ANOVA(styles)
+    LOC4aov$participant <- as.factor(LOC4aov$participant)
+    LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, within=c(rotated_b,passive_b), between=group, type=3, return_aov=TRUE) 
+    #can remove: between=group, but adding it in gives a complete picture
+    #note that for this we only care about main effect of rotated_b (session)
+    
+    print(LocalizationAOV[1])
+  }
+  
+  if (test == 'shifts') {
+    
+    LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+    LOC4aov$participant <- as.factor(LOC4aov$participant)
+    LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, within=passive_b, between=group, type=3, return_aov=TRUE)
+    
+    print(LocalizationAOV[1])
+    
+  }
+  
+  if (test == 'passive') {
+    LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+    LOC4aov <- LOC4aov[which(LOC4aov$passive_b == 1),] #get just passive reaches (proprioceptive information only)
+    LOC4aov$participant <- as.factor(LOC4aov$participant)
+    LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, between=group, type=3, return_aov=TRUE)
+    
+    print(LocalizationAOV[1:2])
+    
+  }
+  
+  #added below just to see results in active
+  # if (test == 'active') {
+  #   LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+  #   LOC4aov <- LOC4aov[which(LOC4aov$passive_b == 0),] #get just passive reaches (proprioceptive information only)
+  #   LOC4aov$participant <- as.factor(LOC4aov$participant)
+  #   LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, between=group, type=3, return_aov=TRUE)
+  #   
+  #   print(LocalizationAOV[1:2])
+  #   
+  # }
+}
+
+#omnibus ANOVA test
+#note that rotated means session (aligned or rotated) and passive is the movement type (active or passive)
+#there is a main effect of rotated_b suggesting change in localization after rotation training
+#have the full version and we just care about rotated_b main effect
+
+#shifts ANOVA test
+#main effect of group and passive_b(movement type)
+#this suggests a difference between groups and a difference between active and passive movement type
+#however there is no interaction
+
+#proprioceptive recalibration affected by groups(explicit knowledge)?
+#proprioception ANOVA test (basically a One-way ANOVA)
+#No difference between groups
+#if I run the active version there is a difference (probably handview) - do a post-hoc, if we want this
+#these basically confirm the plots we do for active and passive
+
+#so next we ask whether Predicted Sensory COnsequences are affected by groups(explicit knowledge)?
+
+getPredictedSensoryConsequences <- function(styles) {
+  
+  #first, combine all data from all groups
+  alldf <- NA
+  
+  for (groupno in c(1:length(styles$group))){
+    group <- styles$group[groupno]
+    df <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group),stringsAsFactors=F)
+    
+    if (is.data.frame(alldf)) {
+      alldf <- rbind(alldf, df)
+    } else {
+      alldf <- df
+    }
+  }
+  
+  #then get the updates in predicted sensory consequences
+  group       <- c()
+  participant <- c()
+  handangle   <- c()
+  pred_update <- c()
+  
+  handangles <- unique(alldf$handangle_deg)
+  groups <- unique(alldf$group)
+  
+  for (grp in groups) {
+    
+    participants <- unique(alldf$participant[which(alldf$group == grp)])
+    
+    for (pp in participants) {
+      
+      for (angle in handangles) {
+        #get data needed
+        subdf <- alldf[which(alldf$group == grp & alldf$participant == pp & alldf$handangle_deg == angle),]
+        
+        # get all the localization responses for this participant at this angle:
+        AlAct <- subdf$bias_deg[which(subdf$rotated_b == 0 & subdf$passive_b == 0)]
+        AlPas <- subdf$bias_deg[which(subdf$rotated_b == 0 & subdf$passive_b == 1)]
+        RotAct <- subdf$bias_deg[which(subdf$rotated_b == 1 & subdf$passive_b == 0)]
+        RotPas <- subdf$bias_deg[which(subdf$rotated_b == 1 & subdf$passive_b == 1)]
+        
+        # get the update in predicted sensory consequences:
+        #first the difference of rotated and aligned in both active and passive
+        #then the difference between active and passive to get UPSC
+        UPSC <- (RotAct - AlAct) - (RotPas - AlPas)
+        
+        # store in new vectors:
+        group <- c(group, grp)
+        participant <- c(participant, pp)
+        handangle <- c(handangle, angle)
+        pred_update <- c(pred_update, UPSC)
+      }
+    }
+  }
+  
+  alldf <- data.frame(group, participant, handangle, pred_update)
+  alldf$group  <- as.factor(alldf$group)
+  alldf$handangle   <- as.factor(alldf$handangle)
+  alldf$participant <- as.character(alldf$participant) 
+  
+  return(alldf)
   
 }
+
+predictedConsequencesANOVA <- function() {
+  
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant * group, data=df, FUN=mean)
+  df$participant <- as.factor(df$participant)
+  PSC <- ezANOVA(data = df, wid=participant, dv=pred_update, between=group, type=3, return_aov=TRUE)
+  print(PSC[1:2])
+  
+}
+
+#We find that groups do not differ in predicted sensory consequences
+#This does not make sense to me, in active there is a difference
+#but when we isolate prop and pred, there are none
+#Anyway we don't really care about Active anyway - so proceed
+
+#so we don't see a group effect in Pred Cons
+#but our plot makes it seem that hand view is lower than other groups
+#So now we test each group and its difference from 0 (t-test)
+
+predConsTtests <- function() {
+  #Hand view t-test
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == 'handview'),]
+  
+  cat('Hand View group predicted sensory consequences compared to 0:\n')
+  print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  
+  #Instructed t-test
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == '30explicit'),]
+  
+  cat('Instructed group predicted sensory consequences compared to 0:\n')
+  print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  
+  #Non-instructed t-test
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == '30implicit'),]
+  
+  cat('Non-Instructed group predicted sensory consequences compared to 0:\n')
+  print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  
+  #Cursor Jump t-test
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == 'cursorjump'),]
+  
+  cat('Cursor Jump group predicted sensory consequences compared to 0:\n')
+  print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  
+}
+
+#So only hand view was not significant
+#Ho: mu greater than or equal to 0; Ha: mu less than 0
+#suggests that mean predicted sensory consequences for hand view group was equal or greater than 0
+#So no group effect on Predicted Sensory Consequences, but only hand view group does not significantly differ from 0
+
+
