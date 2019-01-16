@@ -132,9 +132,17 @@ Below is a plot of the mean angular shift in hand localization for each group as
 plotLocalizationShift(target='inline')
 ```
 
-We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information was available to the participants (i.e., *Active Localization*). Moreover, in comparing Panels 2 and 3, we see that majority of the shifts in hand localization is accounted for by proprioceptive information. However, the lack of differences across groups show that awareness of the visuomotor rotation did not affect both proprioceptive recalibration and updating of predicted sensory consequences.
+We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information was available to the participants (i.e., *Active Localization*). However, for the hand view group, this does not seem to be the case, as both active and passive localization shifts seem to be around the same values. In comparing Panels 2 and 3, we see that majority of the shifts in hand localization is accounted for by proprioceptive information, as the shifts in predicted sensory consequences are quite near 0. However, the lack of differences across groups show that awareness of the visuomotor rotation did not affect both proprioceptive recalibration and updating of predicted sensory consequences.
 
-## ANOVA on ... active?
+## Localization shifts after rotated training
+
+First, we want to test whether localization did shift after training with the rotated cursor. We run a 2X2X4 mixed ANOVA with session (*rotated_b* in data; aligned and rotated) and movement type (*passive_b* in data; active and passive) as within-subjects factors and group (instructed, non-instructed, cursor jump, and hand view) as a between-subject factor.
+
+```{r}
+localizationANOVA(test='omnibus')
+```
+
+To answer the question, we see that rotated_b had a significant main effect, which suggests that localization after rotated training differed from localization before training. We also see other effects which we will investigate further.
 
 ## ANOVA on passive?
 
