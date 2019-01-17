@@ -337,7 +337,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     # could maybe use plot.new() ?
     #removed ylab for now to make space in poster (SCAPPS 2018)
     if (reachtype.idx == 0){
-      plot(NA, NA, xlim = c(30,150), ylim = c(2,-17), 
+      plot(NA, NA, xlim = c(30,175), ylim = c(2,-17), 
            xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
            main = sprintf('Shifts in \n %s Localization \n \n (Proprioception + Prediction)', reachtype),cex.main = 1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception + Prediction)", cex = 1)
@@ -345,7 +345,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
       axis(1, at=c(50, 90, 130)) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
     } else if (reachtype.idx == 1){
-      plot(NA, NA, xlim = c(30,150), ylim = c(2,-17), 
+      plot(NA, NA, xlim = c(30,175), ylim = c(2,-17), 
            xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
            main = sprintf('Shifts in \n %s Localization \n \n (Proprioception)', reachtype),cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
@@ -363,6 +363,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
         lower <- groupconfidence$act_p2.5
         upper <- groupconfidence$act_p97.5
         mid <- groupconfidence$act_p50
+        
       } else if (reachtype.idx == 1){
         lower <- groupconfidence$pas_p2.5
         upper <- groupconfidence$pas_p97.5
@@ -385,6 +386,27 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
       stuff<-(meanlocalizationshifts[[group]])
       lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
     }
+    
+    for (group in groups){
+      
+      col <- colourscheme[[group]][['S']]
+      
+      #add average dots and CIs
+      localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+      localization <- localization[which(localization$passive_b == (reachtype.idx)),] #removed -1 in reachtype.idx
+      localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+      shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+      
+      groupno <- which(groups == group)
+      xloc <- 155 + (groupno*4)
+      CI <- t.interval(shift)
+      #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color_solid[groupno]), lty=styles$linestyle[groupno])
+      lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
+      lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
+      lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
+      #lines(c(xloc-1.5, xloc+1.5), c(CI[2], CI[2]), col=col)
+      points(xloc, mean(shift), col=col, pch=19)
+    }
   }
   
   
@@ -393,7 +415,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  plot(NA, NA, xlim = c(30,150), ylim = c(2,-17), 
+  plot(NA, NA, xlim = c(30,175), ylim = c(2,-17), 
        xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
        main = 'Shifts in Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   #mtext("(Prediction)", cex=1)
@@ -428,7 +450,32 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     stuff<-(meanlocalizationshifts[[group]])
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
-  
+
+  for (group in groups) {
+    
+    shifts <- list()
+    col <-colourscheme[[group]][['S']]
+    
+    for (reachtype.idx in c(0,1)) {
+      localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+      localization <- localization[which(localization$passive_b == (reachtype.idx)),]
+      localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+      shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+      shifts[[reachtype.idx+1]] <- shift
+    }
+    
+    shift <- shifts[[1]] - shifts[[2]]
+    
+    groupno <- which(groups == group)
+    xloc <- 155 + (groupno*4)
+    CI <- t.interval(shift)
+    #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color[groupno]), lty=styles$linestyle[groupno])
+    lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
+    lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
+    lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
+    points(xloc, mean(shift), col=col, pch=19)
+    
+  }
   legend(30,-15,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,bty='n')
