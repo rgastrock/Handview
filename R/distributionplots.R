@@ -4,14 +4,15 @@ source('R/shared.R')
 plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorjump','handview'), target = 'inline'){
   
   #but we can save plot as svg file
-  if (target=='svg') {
-    svglite(file='doc/fig/Fig5_RAEdists.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
-  }
+  # if (target=='svg') {
+  #   svglite(file='doc/fig/Fig5_RAEdists.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
+  # }
   
+  #par(mfrow=c(2,2))
   for (group in groups){
     #pdf(file='data/testRAEgroupvioplots1.pdf') 
     #participants <- getGroupParticipants(group=group)
-    #par(mfrow=c(10,2), mar=c(1,1,1,1))
+    #par(mfrow=c(2,2))#, mar=c(1,1,1,1))
     #for (pp in participants){
     data <- read.csv(sprintf('data/%s_nocursor.csv', group))
     data <- loadRAE(group=group, baselinecorrect=TRUE)
@@ -49,9 +50,9 @@ plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorju
   }
   
   #close everything if you saved plot as svg
-  if (target=='svg') {
-    dev.off()
-  }
+  # if (target=='svg') {
+  #   dev.off()
+  # }
 }
 
 #Localization----
@@ -83,7 +84,14 @@ getMeanPpDistribution <- function(group){
   return(allppavg)
 } # end group loop
 
-plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','cursorjump','handview')){
+plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','cursorjump','handview'), target='inline'){
+  
+  #but we can save plot as svg file
+  # if (target=='svg') {
+  #   svglite(file='doc/fig/Fig6_LOCdists.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
+  # }
+  # 
+  # par(mfrow=c(2,2), new=TRUE)
   for (group in groups){
     #pdf(file= sprintf('data/%s_locdist.pdf', group))
     meanlocshifts <- getMeanPpDistribution(group=group)
@@ -115,5 +123,8 @@ plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','curso
     vioplot(pasdata, col='#005de42f', horizontal=TRUE, at= 1, add=TRUE,lty=2, border=NA)
     #dev.off()
   }
-  
+  #close everything if you saved plot as svg
+  # if (target=='svg') {
+  #   dev.off()
+  # }
 }
