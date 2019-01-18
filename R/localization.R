@@ -638,7 +638,7 @@ getPredictedSensoryConsequences <- function(styles) {
 }
 
 predictedConsequencesANOVA <- function() {
-  
+  styles <- getStyle()
   df <- getPredictedSensoryConsequences(styles)
   df <- aggregate(pred_update ~ participant * group, data=df, FUN=mean)
   df$participant <- as.factor(df$participant)
@@ -652,6 +652,7 @@ predictedConsequencesANOVA <- function() {
 #So we test each group and its difference from 0 (t-test)
 
 predConsTtests <- function() {
+  styles <- getStyle()
   #Hand view t-test
   df <- getPredictedSensoryConsequences(styles)
   df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
