@@ -571,22 +571,6 @@ localizationANOVA <- function(test = 'omnibus') {
   # }
 }
 
-#omnibus ANOVA test
-#note that rotated means session (aligned or rotated) and passive is the movement type (active or passive)
-#there is a main effect of rotated_b suggesting change in localization after rotation training
-#have the full version and we just care about rotated_b main effect
-
-#shifts ANOVA test
-#main effect of group and passive_b(movement type)
-#this suggests a difference between groups and a difference between active and passive movement type
-#however there is no interaction
-
-#proprioceptive recalibration affected by groups(explicit knowledge)?
-#proprioception ANOVA test (basically a One-way ANOVA)
-#No difference between groups
-#if I run the active version there is a difference (probably handview) - do a post-hoc, if we want this
-#these basically confirm the plots we do for active and passive
-
 #so next we ask whether Predicted Sensory COnsequences are affected by groups(explicit knowledge)?
 
 getPredictedSensoryConsequences <- function(styles) {
@@ -663,14 +647,9 @@ predictedConsequencesANOVA <- function() {
   
 }
 
-#We find that groups do not differ in predicted sensory consequences
-#This does not make sense to me, in active there is a difference
-#but when we isolate prop and pred, there are none
-#Anyway we don't really care about Active anyway - so proceed
-
-#so we don't see a group effect in Pred Cons
-#but our plot makes it seem that hand view is lower than other groups
-#So now we test each group and its difference from 0 (t-test)
+#we don't see a group effect in Pred Cons
+#but our plot for Pred Cons makes it seem that hand view is almost at 0
+#So we test each group and its difference from 0 (t-test)
 
 predConsTtests <- function() {
   #Hand view t-test
@@ -706,10 +685,3 @@ predConsTtests <- function() {
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
   
 }
-
-#So only hand view was not significant
-#Ho: mu greater than or equal to 0; Ha: mu less than 0
-#suggests that mean predicted sensory consequences for hand view group was equal or greater than 0
-#So no group effect on Predicted Sensory Consequences, but only hand view group does not significantly differ from 0
-
-

@@ -3,6 +3,7 @@ library('svglite')
 library('phia')
 library('afex')
 library('lsmeans')
+library('vioplot')
 
 
 # Generic Functions -----

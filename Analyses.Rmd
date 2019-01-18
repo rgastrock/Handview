@@ -8,12 +8,13 @@ source('R/shared.R')
 source('R/learningCurves.R')
 source('R/noCursor.R')
 source('R/localization.R')
+source('R/distributionplots.R')
 ```
 
 
 # Overview
 
-This document discusses figures and statistics for the Hand View project. Currently, figures and statistics are presented for learning curves and no cursor data. Statistics for Localization data will follow. 
+This document discusses figures and statistics for the Hand View project. The three main sections are for Learning Curves, Reach Aftereffects, and Localization. An extra section is added at the end to display some of the plots we generated for distributions in data for reach aftereffects and localization. 
 
 A few things to note:
 1) post-hoc tests used are supposed to be Tukey, but currently defaults to Sidak method. I will figure out how to switch this.
@@ -144,6 +145,70 @@ localizationANOVA(test='omnibus')
 
 To answer the question, we see that rotated_b had a significant main effect, which suggests that localization after rotated training differed from localization before training. We also see other effects which we will investigate further.
 
-## ANOVA on passive?
+## Effect of explicit learning and movement type on localization shifts
 
-## Predicted Sensory Consequences?
+Since localization estimates shifted after rotated training, we then test whether these shifts were affected by our different groups (i.e. our manipulation of explicit learning) and by the movement type executed (i.e. active or passive). We run a 2X4 mixed ANOVA with movement type (*passive_b*) as a within-subject factor and groups as a between-subject factor. 
+
+```{r}
+localizationANOVA(test = 'shifts')
+```
+
+We see that there is a main effect of group and movement type, but no significant interaction. This suggests that movement type differentially affects the levels of group. 
+
+## Proprioceptive Recalibration
+
+As previously stated, during active localization, participants have access to both information on proprioception and predicted sensory consequences. On the other hand, during passive localization, participants only have access to proprioceptive information. We are interested in testing the effect of the different levels of explicit learning (group) on either proprioceptive recalibration or updates in predicted sensory  consequences.
+
+First, we run a one way ANOVA to test for the effect of group on passive localization changes (proprioceptive recalibration).
+
+```{r}
+localizationANOVA(test='passive')
+```
+
+We see that there is no significant difference between the groups. This suggests that passive localization changes are not affected by level of explicit learning.
+
+NOTE: In the instance that we might be interested in testing for the effect of group on active localization changes, the function can also run the one way ANOVA on active localization changes. I do not show it here, but in that test, there is a significant difference between groups.
+
+## Predicted Sensory Consequences
+
+Next, we run a one way ANOVA to test for the effect of group on changes in predicted sensory consequences. For this ANOVA, we obtain changes in predicted sensory consequences by subtracting the shifts in passive localization from active localization.
+
+```{r}
+predictedConsequencesANOVA()
+```
+
+There is no significant difference between the groups, suggesting that changes in predicted sensory consequences are not affected by level of explicit learning.
+
+However, from the plot we generated above, it seems that only the Hand View group is at the 0 mark for changes in predicted sensory consequences. Thus, we test whether each group shows any predicted sensory consequences at all, especially for the Hand View group. We run t-tests that compare each group's magnitude of changes in predicted sensory consequences against 0.
+
+```{r}
+predConsTtests()
+```
+
+From the tests, we see that only the Hand View group did not significantly differ from 0, suggesting that the Hand View group did not show any updates in predicted sensory consequences.
+
+NOTE: Include effect sizes for tests.
+
+## Plots for Distributions
+
+This part is extra to the analyses and plots we conduct above. I am keeping them here, in case the need for them arises in the future.
+
+### Reach aftereffects  
+
+First, we looked at the distributions of responses for each participant during *no cursor* trials where they either use and not use a strategy. The data I show are the distributions for all participants in a group. Boxplots and vioplots show the distributions of their responses. Individual participants are plotted as points. Mean angular deviation of the hand is compared between using and not using a strategy and is shown through the red line. 
+
+```{r}
+plotGroupDistribution()
+```
+
+There are no bimodal distributions for each group and we see the robustness of the overall effect we are testing for each group.
+
+### Localization
+
+We do the same check for localization shifts in each group for both active and passive localization trials. Boxplots and vioplots show the distributions for the shifts. Individual points show mean shift for each participant.
+
+```{r}
+plotLocGroupDistribution()
+```
+
+Some distributions show a bit of a skew, but in general, there is nothing of concern for our data analyses.
