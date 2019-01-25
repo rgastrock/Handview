@@ -1,6 +1,8 @@
 ---
 title: "Explicit Adaptation while Viewing the Hand"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 ```{r load_code, include=FALSE}
@@ -49,7 +51,7 @@ We see that the main effects of group and block, and their interaction, were sig
 
 ## Post-hoc tests
 
-We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Non-instructed group as a reference (since it is the control group) and compare all groups to it. We then compare all groups to the non-instructed group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using Tukey's HSD.
+We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Non-instructed group as a reference (since it is the control group) and compare all groups to it. We then compare all groups to the non-instructed group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using the Sidak method (default in R).
 
 ```{r}
 learningcurveComparisonMeans()
@@ -60,9 +62,9 @@ learningcurveComparisonMeans()
 learningcurveComparisons(method='Tukey')
 ```
 
-In comparing all groups to the Non-instructed group, regardless of block, only the Instructed group differed significantly. We observed the same conclusion when comparing all groups to the non-instructed group in block one. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor.In block two, however, only the cursor jump group significantly differed from the non-instructed group, suggesting that the cursor jump group learned to counter for the rotation of the cursor faster than the non-instructed group. The hand view group however,did not differ significantly from the non-instructed group, and hence did not show a similar rate of learning to the cursor jump group. It is important to note that when running the analyses without Tukey's HSD adjustment, we get almost similar conclusions. The only difference is that the instructed group will also differ significantly from the non-instructed group in block two.
+In comparing all groups to the Non-instructed group, regardless of block, only the Instructed group differed significantly. We observed the same conclusion when comparing all groups to the non-instructed group in block one. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor.In block two, however, only the cursor jump group significantly differed from the non-instructed group, suggesting that the cursor jump group learned to counter for the rotation of the cursor faster than the non-instructed group. The hand view group however,did not differ significantly from the non-instructed group, and did not show a similar rate of learning to the cursor jump group. It is important to note that when running the analyses without Tukey's HSD adjustment, we get almost similar conclusions. The only difference is that the instructed group will also differ significantly from the non-instructed group in block two.
 
-To summarize, explicit knowledge of the perturbation has an effect on learning to adapt reaching movements when experiencing a visuomotor rotation. Particularly, being instructed on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, explicit knowledge from experiencing different stimuli that show the mismatch between actual hand position and the cursor, does not produce a similar initial advantage.
+To summarize, explicit knowledge of the perturbation has an effect on learning to adapt reaching movements when experiencing a visuomotor rotation. Particularly, being instructed on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, explicit knowledge from experiencing different stimuli that show the mismatch between actual hand position and the cursor, do not produce a similar initial advantage.
 
 
 # Reach aftereffects
@@ -79,7 +81,7 @@ Below is a plot of the mean angular reach deviation of the hand for each group a
 plotGroupReachAfterEffects(target='inline')
 ```
 
-We see from the figure that when including or excluding the strategy learned to counter the rotation, only the non-instructed group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, mean angular reach deviations for all groups in exclusive trials still deviated towards the direction of the rotation. This suggests that despite awareness of learning of the visuomotor rotation, implicit aftereffects were still present in all groups.
+We see from the figure that when including or excluding the strategy learned to counter the rotation, only the non-instructed group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, all groups still showed angular deviations of their hand to some degree during exclusive trials. This suggests that despite awareness of learning of the visuomotor rotation, implicit reach aftereffects were still observed in all groups.
 
 ## Test for Reach Aftereffects
 
@@ -96,7 +98,7 @@ NoCursorComparisonMeans()
 NoCursorComparisons(method = 'tukey')
 ```
 
-Post-hoc analysis shows that the aligned and rotated sessions differed significantly for each group. Therefore, the possibility of the effect of session being modulated by groups is ruled out. (!!!Change this statement: We are unable to rule it out, because the hand view group could still be lower than the others. You might need to add a separate post-hoc test to see how it is modulated by groups).
+Post-hoc analysis shows that the aligned and rotated sessions differed significantly for each group. Note that this test does not definitively tell us which of the groups differed from the others, in terms of differences between sessions. However, we see from our figure that it is the Hand View group which exhibited a lower angular deviation of the hand in exclusive trials compared to the other three groups. For the purpose of answering the question we are investigating in this subsection, it is sufficient that the post-hoc analysis showed that sessions differed for each group. 
 
 ## PDP-type analysis (Strategy Use)
 
@@ -106,14 +108,14 @@ After confirming that reach aftereffects are present in all groups, we test whet
 RAEANOVA()
 ```
 
-We see that the main effects of group and strategy, as well as their interaction are significant. This suggests that there is at least one group that differs in terms of angular reach deviations from the other groups, when using or not using a strategy. However, post-hoc tests are necessary to determine which of the groups differ.
+We see that the main effects of group and strategy, as well as their interaction are significant. This suggests that angular reach deviations from at least one group differs from the other groups, when either using or not using a strategy. However, post-hoc tests are necessary to determine which of the groups differ.
 
 ```{r}
 RAEComparisonMeans()
 RAEComparisons(method = 'tukey')
 ```
 
-The tests confirm our conclusions from the figure. All groups, except the non-instructed group, showed significantly different angular deviations when using a strategy. This suggests unawareness of learning in the non-instructed group.
+The tests confirm our conclusions from the figure. All groups, except the non-instructed group, showed significantly different angular reach deviations when comparing reaches using a strategy to reaches when they are not using a strategy. This suggests unawareness of learning in the non-instructed group.
 
 # Localization
 
@@ -133,17 +135,17 @@ Below is a plot of the mean angular shift in hand localization for each group as
 plotLocalizationShift(target='inline')
 ```
 
-We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information was available to the participants (i.e., *Active Localization*). However, for the hand view group, this does not seem to be the case, as both active and passive localization shifts seem to be around the same values. In comparing Panels 2 and 3, we see that majority of the shifts in hand localization is accounted for by proprioceptive information, as the shifts in predicted sensory consequences are quite near 0. However, the lack of differences across groups show that awareness of the visuomotor rotation did not affect both proprioceptive recalibration and updating of predicted sensory consequences.
+We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information was available to the participants (i.e., *Active Localization*). However, for the hand view group, this does not seem to be the case, as both active and passive localization shifts seem to be around the same values. In comparing Panels 2 and 3, we see that majority of the shifts in hand localization is accounted for by proprioceptive information, as the shifts in predicted sensory consequences are quite near 0. However, the lack of differences across groups show that our conditions of explicit learning did not affect both proprioceptive recalibration and updating of predicted sensory consequences.
 
 ## Localization shifts after rotated training
 
-First, we want to test whether localization did shift after training with the rotated cursor. We run a 2X2X4 mixed ANOVA with session (*rotated_b* in data; aligned and rotated) and movement type (*passive_b* in data; active and passive) as within-subjects factors and group (instructed, non-instructed, cursor jump, and hand view) as a between-subject factor.
+First, we want to test whether localization estimates did shift after training with the rotated cursor. We run a 2X2X4 mixed ANOVA with session (*rotated_b* in data; aligned and rotated) and movement type (*passive_b* in data; active and passive) as within-subjects factors and group (instructed, non-instructed, cursor jump, and hand view) as a between-subject factor.
 
 ```{r}
 localizationANOVA(test='omnibus')
 ```
 
-To answer the question, we see that rotated_b had a significant main effect, which suggests that localization after rotated training differed from localization before training. We also see other effects which we will investigate further.
+To answer the question, we see that rotated_b had a significant main effect, which suggests that estimates of localization after rotated training differed from localization estimates before training. We also see other effects which we will investigate further.
 
 ## Effect of explicit learning and movement type on localization shifts
 
@@ -153,11 +155,11 @@ Since localization estimates shifted after rotated training, we then test whethe
 localizationANOVA(test = 'shifts')
 ```
 
-We see that there is a main effect of group and movement type, but no significant interaction. This suggests that movement type differentially affects the levels of group. 
+We see that there is a main effect of group and movement type, but no significant interaction. This suggests that movement type differentially affects the levels of group. However, our main research question aims to see changes in estimates of hand location due to proprioceptive recalibration and updating of predicted sensory consequences. That is what we investigate next.
 
 ## Proprioceptive Recalibration
 
-As previously stated, during active localization, participants have access to both information on proprioception and predicted sensory consequences. On the other hand, during passive localization, participants only have access to proprioceptive information. We are interested in testing the effect of the different levels of explicit learning (group) on either proprioceptive recalibration or updates in predicted sensory  consequences.
+As previously stated, during active localization, participants have access to both information on proprioception and predicted sensory consequences. On the other hand, during passive localization, participants only have access to proprioceptive information. We are interested in testing the effect of the different levels of explicit learning (group) on both proprioceptive recalibration and updates in predicted sensory  consequences.
 
 First, we run a one way ANOVA to test for the effect of group on passive localization changes (proprioceptive recalibration).
 
@@ -165,9 +167,18 @@ First, we run a one way ANOVA to test for the effect of group on passive localiz
 localizationANOVA(test='passive')
 ```
 
-We see that there is no significant difference between the groups. This suggests that passive localization changes are not affected by level of explicit learning.
+We see that there is no significant difference between the groups. This suggests that passive localization changes are not affected by level of explicit learning. NOTE: (In the instance that we might be interested in testing for the effect of group on active localization changes, the function can also run the one way ANOVA on active localization changes. I do not show it here, but in that test, there is a significant difference between groups).
 
-NOTE: In the instance that we might be interested in testing for the effect of group on active localization changes, the function can also run the one way ANOVA on active localization changes. I do not show it here, but in that test, there is a significant difference between groups.
+Next, we want to test whether each group shows any recalibration in proprioception. We run t-tests that compare each group's magnitude of shifts in passive localization estimates against 0.
+
+```{r}
+pasLocTtests()
+```
+
+From the tests, we see that all groups differed significantly from 0, suggesting that all groups showed changes in proprioceptive estimates.
+
+NOTE: Handview p-value differs from other groups. Include effect size!
+
 
 ## Predicted Sensory Consequences
 

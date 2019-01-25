@@ -686,3 +686,106 @@ predConsTtests <- function() {
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
   
 }
+
+#run t-tests for passive localization as well
+#this function is exactly the same as getPredictedSensoryConsequences
+#but now we only want Passive reaches in Rotated minus Aligned
+getPasLocShifts <- function(styles){
+  
+  #first, combine all data from all groups
+  alldf <- NA
+  
+  for (groupno in c(1:length(styles$group))){
+    group <- styles$group[groupno]
+    df <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group),stringsAsFactors=F)
+    
+    if (is.data.frame(alldf)) {
+      alldf <- rbind(alldf, df)
+    } else {
+      alldf <- df
+    }
+  }
+  
+  #then get the shifts in proprioception
+  group       <- c()
+  participant <- c()
+  handangle   <- c()
+  prop_recal <- c()
+  
+  handangles <- unique(alldf$handangle_deg)
+  groups <- unique(alldf$group)
+  
+  for (grp in groups) {
+    
+    participants <- unique(alldf$participant[which(alldf$group == grp)])
+    
+    for (pp in participants) {
+      
+      for (angle in handangles) {
+        #get data needed
+        subdf <- alldf[which(alldf$group == grp & alldf$participant == pp & alldf$handangle_deg == angle),]
+        
+        # get all the localization responses for this participant at this angle:
+        AlAct <- subdf$bias_deg[which(subdf$rotated_b == 0 & subdf$passive_b == 0)]
+        AlPas <- subdf$bias_deg[which(subdf$rotated_b == 0 & subdf$passive_b == 1)]
+        RotAct <- subdf$bias_deg[which(subdf$rotated_b == 1 & subdf$passive_b == 0)]
+        RotPas <- subdf$bias_deg[which(subdf$rotated_b == 1 & subdf$passive_b == 1)]
+        
+        # get the update in predicted sensory consequences:
+        #first the difference of rotated and aligned in both active and passive
+        #then the difference between active and passive to get UPSC
+        PR <- RotPas - AlPas
+        
+        # store in new vectors:
+        group <- c(group, grp)
+        participant <- c(participant, pp)
+        handangle <- c(handangle, angle)
+        prop_recal <- c(prop_recal, PR)
+      }
+    }
+  }
+  
+  alldf <- data.frame(group, participant, handangle, prop_recal)
+  alldf$group  <- as.factor(alldf$group)
+  alldf$handangle   <- as.factor(alldf$handangle)
+  alldf$participant <- as.character(alldf$participant) 
+  
+  return(alldf)
+} 
+  
+pasLocTtests <- function() {
+  styles <- getStyle()
+  
+  #Hand view t-test
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == 'handview'),]
+  
+  cat('Hand View group proprioceptive recalibration compared to 0:\n')
+  print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  
+  #Instructed t-test
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == '30explicit'),]
+  
+  cat('Instructed group proprioceptive recalibration compared to 0:\n')
+  print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  
+  #Non-instructed t-test
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == '30implicit'),]
+  
+  cat('Non-Instructed group proprioceptive recalibration compared to 0:\n')
+  print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  
+  #Cursor Jump t-test
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[which(df$group == 'cursorjump'),]
+  
+  cat('Cursor Jump group proprioceptive recalibration compared to 0:\n')
+  print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  
+}
