@@ -166,7 +166,7 @@ getNoC4ANOVA <- function(styles) {
       #instructed      <- c(instructed, rep(thisinstructed, N))
       # these create the values inside cells for the df to be created
       diffgroup       <- c(diffgroup, rep(group, N))
-      participant     <- c(participant, c(startingID : (startingID + N - 1)))
+      participant     <- c(participant, df$participant)#c(participant, c(startingID : (startingID + N - 1)))
       session         <- c(session, rep(currentsession, N))
       reachdeviation  <- c(reachdeviation, df[,currentsession])
       
@@ -179,7 +179,7 @@ getNoC4ANOVA <- function(styles) {
   # put it in a data frame:
   NoCaov <- data.frame(diffgroup, participant, session, reachdeviation)
   # make participant numbers uniqe per group: (will look like - group.ppno)
-  NoCaov$participant <- sprintf('%s.%d', diffgroup, NoCaov$participant)
+  #NoCaov$participant <- sprintf('%s.%d', diffgroup, NoCaov$participant)
   
   # need to make certain columns as factors for ANOVA:
   NoCaov$diffgroup <- as.factor(NoCaov$diffgroup)
@@ -294,7 +294,7 @@ getRAE4ANOVA <- function(styles) {
       #instructed      <- c(instructed, rep(thisinstructed, N))
       # these create the values inside cells for the df to be created
       diffgroup       <- c(diffgroup, rep(group, N))
-      participant     <- c(participant, c(startingID : (startingID + N - 1)))
+      participant     <- c(participant, df$participant)#c(participant, c(startingID : (startingID + N - 1)))
       strategy         <- c(strategy, rep(strategyuse, N))
       reachdeviation  <- c(reachdeviation, df[,strategyuse])
       
@@ -307,7 +307,8 @@ getRAE4ANOVA <- function(styles) {
   # put it in a data frame:
   RAEaov <- data.frame(diffgroup, participant, strategy, reachdeviation)
   # make participant numbers uniqe per group: (will look like - group.ppno)
-  RAEaov$participant <- sprintf('%s.%d', diffgroup, RAEaov$participant)
+  #deleted the line below because I've anonymized participant names in uploaded file already
+  #RAEaov$participant <- sprintf('%s.%d', diffgroup, RAEaov$participant)
   
   # need to make certain columns as factors for ANOVA:
   RAEaov$diffgroup <- as.factor(RAEaov$diffgroup)

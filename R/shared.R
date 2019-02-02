@@ -4,7 +4,7 @@ library('phia')
 library('afex')
 library('lsmeans')
 library('vioplot')
-
+library('scales')
 
 # Generic Functions -----
 getStyle <- function() {
