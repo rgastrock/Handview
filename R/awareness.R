@@ -24,7 +24,7 @@ getGroupAwarenessScores <- function(groups = c('30implicit','30explicit','cursor
 }
 
 plotAwareness <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'handview'), target='inline') {
-  
+  #for future reference: might also want to plot only low and high - this will merge scores 0 and 1
   #but we can save plot as svg file
   if (target=='svg') {
     svglite(file='doc/fig/Fig6_awareness.svg', width=8, height=5, pointsize=10, system_fonts=list(sans="Arial"))
