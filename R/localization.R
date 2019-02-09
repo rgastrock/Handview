@@ -887,7 +887,7 @@ plotGroupCorrelations <- function(target='inline'){
 getRAEPropCorrelation <- function(){
   styles <- getStyle()
   dat <- getPropExcData(styles)
-  plot(dat$reachdeviation, dat$prop_recal)
+  #plot(dat$reachdeviation, dat$prop_recal)
   print(cor.test(dat$reachdeviation, dat$prop_recal))
   
 }

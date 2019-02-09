@@ -11,6 +11,7 @@ source('R/learningCurves.R')
 source('R/noCursor.R')
 source('R/localization.R')
 source('R/distributionplots.R')
+source('R/awareness.R')
 ```
 
 
@@ -201,26 +202,18 @@ From the tests, we see that only the Hand View group did not significantly diffe
 NOTE: Include effect sizes for tests.
 
 #Pearson correlations between implicit reach aftereffects and passive localization
-First, we test for the presence of a correlation, then show the data and results from a simple regression model.
 
-## Correlation test
-Here, we test whether the shifts in passive localization are correlated with the angular reach deviations of the hand in *No Cursor - Without Strategy* trials. First, we generate a rough plot to see whether there seems to be a relationship between the two variables. Then, run the test, which includes all particiants regardless of group.
-
-```{r}
-getRAEPropCorrelation()
-```
-
-We find a negative relationship between afferent-based changes in localization and reach aftereffects when excluding a strategy.
-
-## Show the Data and Regression
-
-Then, we show the data more formally. We plot the relationship of reach aftereffects in exclusive trials with the shifts in passive localization. Our plot will show data points from all participants, separated by group. However, we also plot a regression line with 95% confidence intervals for all participants, regardless of group.
+Here, we test whether the shifts in passive localization are correlated with the angular reach deviations of the hand in *No Cursor - Without Strategy* trials. First, we show the relationship of these two variables with a plot. Our plot will show data points from all participants, separated by group. We also plot a regression line with 95% confidence intervals for all participants, regardless of group. Then, we run the correlation test, which includes all particiants regardless of group.
 
 ```{r}
 plotGroupCorrelations()
 ```
 
-We see from the plot the negative relationship confirmed from the correlation test. Moreover, the simple regression model shows that reach aftereffects in exclusive No Cursor trials are a significant predictor (p = 0.0008, r-squared = 0.12) of shifts in passive localization.
+```{r}
+getRAEPropCorrelation()
+```
+
+We find a negative relationship (r = -0.35) between afferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.001, r-squared = 0.12). This relationship suggests that proprioceptive recalibration could be contributing to reach aftereffects.
 
 #Awareness Scores
 
