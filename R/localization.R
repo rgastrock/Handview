@@ -105,15 +105,15 @@ getLocalizationConfidenceIntervals <- function(groups=c('30implicit','30explicit
           tap  <- subdf[subdf$participant == p, 'tap_angle']
           hand <- subdf[subdf$participant == p, 'hand_angle']
           bias <- tap - hand
-          
+
           # select non-outliers:
           bias.sd <- sd(bias)
           idx <- intersect(which(bias > (mean(bias) - (3 * bias.sd))), which(bias < (mean(bias) + (3 * bias.sd))))
-          
+
           # remove outliers for every participant?
           bias <- bias[idx]
           hand <- hand[idx]
-          
+
           # collect all the kernel regression interpolated points to later do confidence intervals on:
           KRbiases[reachtype+1,condition+1,,ppno] <- kernelRegression(x=hand,y=bias,width=15,interpoints=interpoints)
           
@@ -323,7 +323,7 @@ getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit
 plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorjump','handview'), target='inline') {
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig4_localization.svg', width=7, height=4, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_localization.svg', width=8, height=3.5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot

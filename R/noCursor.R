@@ -96,7 +96,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   # could maybe use plot.new() ?
   plot(NA, NA, xlim = c(-0.1,1), ylim = c(-5,35), 
        xlab = "Strategy Use", ylab = "Angular Deviation of Hand (°)", frame.plot = FALSE, #frame.plot takes away borders
-       main = 'Group Reach Aftereffects and Strategy Use',xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+       main='Reach Aftereffects and Strategy Use',xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   abline(h = 30, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
   axis(1, at=c(0, 1), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
   axis(2, at = c(0, 10, 20, 30)) #tick marks for y axis
@@ -129,9 +129,9 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   }
   
   #add legend
-  legend(0.12,8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
-         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
-         lty=1,bty='n',cex=0.85)
+  #legend(0.12,8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  #       col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
+  #       lty=1,bty='n',cex=0.85)
   
   #close everything if you saved plot as svg
   if (target=='svg') {

@@ -113,10 +113,10 @@ plotBlockedLearningCurves <- function(target='inline') {
   styles <- data.frame(groups,rotations,colors,linestyles,labels)
   colnames(styles) <- c('group','rotation','color','linestyle','label')
   
-  par(mar=c(4,4,0.5,0.2))
+  par(mar=c(4,4,1,0.2))
   
   ylims=c(-.2*max(styles$rotation),max(styles$rotation)+(.2*max(styles$rotation)))
-  plot(c(-1,36),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Deviation of Hand (°)",xaxt='n',yaxt='n',bty='n')
+  plot(c(-1,36),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Deviation of Hand (°)",main='Reach Adaptation across Trials',xaxt='n',yaxt='n',bty='n')
   abline(h = c(0,30), col = 8, lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -140,7 +140,7 @@ plotBlockedLearningCurves <- function(target='inline') {
   axis(side=2, at=c(0,10,20,30),cex.axis=0.85)
   
   
-  legend(17,12,styles$label,col=as.character(styles$color),lty=styles$linestyle,bty='n', cex=0.85)
+  legend(17,12,styles$label,col=as.character(styles$color),lty=styles$linestyle,bty='n', cex=0.85, lwd=5)
   
   #close everything if you saved plot as svg
   if (target=='svg') {
