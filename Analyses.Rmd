@@ -1,8 +1,10 @@
 ---
 title: "Explicit Adaptation while Viewing the Hand"
 output:
-  pdf_document: default
+  html_document:
+    df_print: paged
   html_notebook: default
+  pdf_document: default
 ---
 
 ```{r load_code, include=FALSE}
@@ -58,10 +60,12 @@ We first display the means and 95% CI's for each group in each block. This table
 learningcurveComparisonMeans()
 ```
 
-
 ```{r}
-learningcurveComparisons(method='Tukey')
+getComparisonEffSize(method='sidak')
 ```
+
+
+***Sidak method is used because Tukey would be inappropriate for this dataset (probably due to within-subjects factors), but we are going with sidak as it is less conservative than bonferroni. Nevertheless, results will not change.***
 
 In comparing all groups to the Non-instructed group, regardless of block, only the Instructed group differed significantly. We observed the same conclusion when comparing all groups to the non-instructed group in block one. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor.In block two, however, only the cursor jump group significantly differed from the non-instructed group, suggesting that the cursor jump group learned to counter for the rotation of the cursor faster than the non-instructed group. The hand view group however,did not differ significantly from the non-instructed group, and did not show a similar rate of learning to the cursor jump group. It is important to note that when running the analyses without Tukey's HSD adjustment, we get almost similar conclusions. The only difference is that the instructed group will also differ significantly from the non-instructed group in block two.
 
@@ -96,7 +100,7 @@ We see that there are implicit reach aftereffects after adaptation due to the si
 
 ```{r}
 NoCursorComparisonMeans()
-NoCursorComparisons(method = 'tukey')
+getNoCurComparisonEffSize(method='sidak')
 ```
 
 Post-hoc analysis shows that the aligned and rotated sessions differed significantly for each group. Note that this test does not definitively tell us which of the groups differed from the others, in terms of differences between sessions. However, we see from our figure that it is the Hand View group which exhibited a lower angular deviation of the hand in exclusive trials compared to the other three groups. For the purpose of answering the question we are investigating in this subsection, it is sufficient that the post-hoc analysis showed that sessions differed for each group. 
@@ -113,7 +117,7 @@ We see that the main effects of group and strategy, as well as their interaction
 
 ```{r}
 RAEComparisonMeans()
-RAEComparisons(method = 'tukey')
+getRAEComparisonEffSize(method='sidak')
 ```
 
 The tests confirm our conclusions from the figure. All groups, except the non-instructed group, showed significantly different angular reach deviations when comparing reaches using a strategy to reaches when they are not using a strategy. This suggests unawareness of learning in the non-instructed group.
@@ -170,7 +174,7 @@ localizationANOVA(test='passive')
 
 We see that there is no significant difference between the groups. This suggests that passive localization changes are not affected by level of explicit learning. NOTE: (In the instance that we might be interested in testing for the effect of group on active localization changes, the function can also run the one way ANOVA on active localization changes. I do not show it here, but in that test, there is a significant difference between groups).
 
-Next, we want to test whether each group shows any recalibration in proprioception. We run t-tests that compare each group's magnitude of shifts in passive localization estimates against 0.
+Next, we want to test whether each group shows any recalibration in proprioception. We run t-tests that compare each group's magnitude of shifts in passive localization estimates against 0. These are one-tailed t-tests, such that rejecting the null hypothesis (mean is greater than 0) suggests an alternative hypothesis that the mean is less than 0. Hence confidence intervals are all from minus infinity. Note that we do not need to control for multiplicity here, as each group is independently compared to zero (i.e., these are not pairwise comparisons).
 
 ```{r}
 pasLocTtests()

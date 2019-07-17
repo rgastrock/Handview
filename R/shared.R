@@ -5,6 +5,7 @@ library('afex')
 library('lsmeans')
 library('vioplot')
 library('scales')
+library('lsr')
 
 # Generic Functions -----
 getStyle <- function() {

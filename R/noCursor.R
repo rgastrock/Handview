@@ -231,8 +231,10 @@ NoCursorComparisonMeans <- function(){
   cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup','session'))
   print(cellmeans)
 }
-
-NoCursorComparisons <- function(method='Tukey'){
+#tukey would be an inappropriate test > will always deafult to sidak
+#so I am choosing to set sidak as default, since it is less conservative than the bonferroni
+#bonferroni and sidak will not change any of the results
+NoCursorComparisons <- function(method='sidak'){
   styles <- getStyle()
   blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
   
@@ -257,11 +259,26 @@ NoCursorComparisons <- function(method='Tukey'){
   print(comparisons)
 }
 
+getNoCurComparisonEffSize <- function(method = 'sidak'){
+  comparisons <- NoCursorComparisons(method=method)
+  #we can use eta-squared as effect size
+  #% of variance in DV(angular deviation of hand) accounted for 
+  #by the difference between group1 and group2
+  comparisonsdf <- as.data.frame(comparisons)
+  etasq <- ((comparisonsdf$t.ratio)^2)/(((comparisonsdf$t.ratio)^2)+(comparisonsdf$df))
+  comparisons1 <- cbind(comparisonsdf,etasq)
+  
+  effectsize <- data.frame(comparisons1$contrast, comparisons1$etasq)
+  colnames(effectsize) <- c('contrast', 'etasquared')
+  #print(comparisons)
+  print(effectsize)
+}
+#effectsize is interpreted as % of variance in angular deviation of hand accounted for by difference in session
 #So ANOVA has everything significant (main effects of group and session, interaction of group and session). 
 #So it is possible that effect of session can be happening for some groups but not the others
-#hence we do the post-hoc test, where we compare whether sessions differed for each group
+#hence we do the planned comparison test, where we compare whether sessions differed for each group
 #and they do. so the possibility is ruled out, and at the same time we show that all groups learned/adapted
-#change sidak method to Tukey's!!!!
+
 
 
 
@@ -360,8 +377,10 @@ RAEComparisonMeans <- function(){
   cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup','strategy'))
   print(cellmeans)
 }
-
-RAEComparisons <- function(method='tukey'){
+#tukey would be an inappropriate test > will always deafult to sidak
+#so I am choosing to set sidak as default, since it is less conservative than the bonferroni
+#bonferroni and sidak will not change any of the results
+RAEComparisons <- function(method='sidak'){
   styles <- getStyle()
   blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
   
@@ -385,3 +404,19 @@ RAEComparisons <- function(method='tukey'){
   
   print(comparisons)
 }
+
+getRAEComparisonEffSize <- function(method = 'sidak'){
+  comparisons <- RAEComparisons(method=method)
+  #we can use eta-squared as effect size
+  #% of variance in DV(angular deviation of hand) accounted for 
+  #by the difference between group1 and group2
+  comparisonsdf <- as.data.frame(comparisons)
+  etasq <- ((comparisonsdf$t.ratio)^2)/(((comparisonsdf$t.ratio)^2)+(comparisonsdf$df))
+  comparisons1 <- cbind(comparisonsdf,etasq)
+  
+  effectsize <- data.frame(comparisons1$contrast, comparisons1$etasq)
+  colnames(effectsize) <- c('contrast', 'etasquared')
+  #print(comparisons)
+  print(effectsize)
+}
+#effect size is interpreted as % of variance in angular deviation of hand accounted for by difference in strategy use

@@ -661,6 +661,8 @@ predConsTtests <- function() {
   
   cat('Hand View group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$pred_update, mu=0))
   
   #Instructed t-test
   df <- getPredictedSensoryConsequences(styles)
@@ -669,6 +671,8 @@ predConsTtests <- function() {
   
   cat('Instructed group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$pred_update, mu=0))
   
   #Non-instructed t-test
   df <- getPredictedSensoryConsequences(styles)
@@ -677,6 +681,8 @@ predConsTtests <- function() {
   
   cat('Non-Instructed group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$pred_update, mu=0))
   
   #Cursor Jump t-test
   df <- getPredictedSensoryConsequences(styles)
@@ -685,7 +691,8 @@ predConsTtests <- function() {
   
   cat('Cursor Jump group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
-  
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$pred_update, mu=0))
 }
 
 #run t-tests for passive localization as well
@@ -764,6 +771,8 @@ pasLocTtests <- function() {
   
   cat('Hand View group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$prop_recal, mu=0))
   
   #Instructed t-test
   df <- getPasLocShifts(styles)
@@ -772,6 +781,8 @@ pasLocTtests <- function() {
   
   cat('Instructed group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$prop_recal, mu=0))
   
   #Non-instructed t-test
   df <- getPasLocShifts(styles)
@@ -780,6 +791,8 @@ pasLocTtests <- function() {
   
   cat('Non-Instructed group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$prop_recal, mu=0))
   
   #Cursor Jump t-test
   df <- getPasLocShifts(styles)
@@ -788,7 +801,8 @@ pasLocTtests <- function() {
   
   cat('Cursor Jump group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
-  
+  cat('Effect Size - Cohen d:\n')
+  print(cohensD(subdf$prop_recal, mu=0))
 }
 
 #Correlation Section -----
