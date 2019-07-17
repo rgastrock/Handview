@@ -4,11 +4,18 @@ source('R/shared.R')
 plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorjump','handview'), target = 'inline'){
   
   #but we can save plot as svg file
-  # if (target=='svg') {
-  #   svglite(file='doc/fig/Fig5_RAEdists.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
-  # }
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig8_RAEdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+  }
   
   #par(mfrow=c(2,2))
+  
+  plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
+       ylab="Angular Deviation of Hand", xlab="Strategy",
+       main='Reach Aftereffects and Strategy Use', bty='n', ylim=c(-10, 50), yaxt='n')
+  axis(1, at=c(1.25, 2.75), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
+  axis(2, at = c(-10, 0, 10, 20, 30, 40, 50))
+  
   for (group in groups){
     #pdf(file='data/testRAEgroupvioplots1.pdf') 
     #participants <- getGroupParticipants(group=group)
@@ -20,9 +27,81 @@ plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorju
     
     alldat <- stack(data)
     
-    xcoord <- rep(0, length(alldat$ind))
-    xcoord[alldat$ind=="exclusive"]<- 1.6
-    xcoord[alldat$ind=="inclusive"]<- 2.4
+    colourscheme <- getColourScheme(group=group)
+    width <- .5
+    #col <- colourscheme[[group]][['S']]
+    
+    #change x coordinates to change positions of each group (xccord, line (if with mean), vioplot)
+    #add an average of .4 to each location
+    if (group == '30implicit'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(alldat$ind))
+      xcoord[alldat$ind=="exclusive"]<- 1#1.3
+      xcoord[alldat$ind=="inclusive"]<- 2.5#2.7
+      points(xcoord,alldat$values, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1,2.5), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(data$exclusive, col=col, horizontal=FALSE, at=1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(data$inclusive, col=col, horizontal=FALSE, at=2.5, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    } else if (group == '30explicit'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(alldat$ind))
+      xcoord[alldat$ind=="exclusive"]<- 1.2#1.6
+      xcoord[alldat$ind=="inclusive"]<- 2.7#2.4
+      points(xcoord,alldat$values, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1.2,2.7), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(data$exclusive, col=col, horizontal=FALSE, at=1.2, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(data$inclusive, col=col, horizontal=FALSE, at=2.7, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    } else if (group == 'cursorjump'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(alldat$ind))
+      xcoord[alldat$ind=="exclusive"]<- 1.4#1.6
+      xcoord[alldat$ind=="inclusive"]<- 2.9#2.4
+      points(xcoord,alldat$values, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1.4,2.9), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(data$exclusive, col=col, horizontal=FALSE, at=1.4, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(data$inclusive, col=col, horizontal=FALSE, at=2.9, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    } else if (group == 'handview'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(alldat$ind))
+      xcoord[alldat$ind=="exclusive"]<- 1.6#1.6
+      xcoord[alldat$ind=="inclusive"]<- 3.1#2.4
+      points(xcoord,alldat$values, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1.6,3.1), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(data$exclusive, col=col, horizontal=FALSE, at=1.6, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(data$inclusive, col=col, horizontal=FALSE, at=3.1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    }
+    
+    # xcoord <- rep(0, length(alldat$ind))
+    # xcoord[alldat$ind=="exclusive"]<- 1.3#1.6
+    # xcoord[alldat$ind=="inclusive"]<- 2.7#2.4
     
     
     #boxplot(data$angular_deviation ~ data$set, names = c('Without Strategy', 'With Strategy'),
@@ -32,27 +111,32 @@ plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorju
     # xcoord[data$exclusive]<- 1.6
     # xcoord[data$inclusive]<- 2.4
     #par(new=T)
-    maintitle <- sprintf('Reach Aftereffects: %s', group)
+    #maintitle <- sprintf('Reach Aftereffects: %s', group)
+
+    # plot(xcoord, alldat$values, xlim=c(0.5, 3.5), axes=F, 
+    #      ylab="Angular Deviation", xlab="Strategy", col = col,#rgb(red = 0, green = 0, blue = 0, alpha = 0.8),
+    #      main=maintitle, bty='n', ylim=c(-10, 60), yaxt='n')
     
-    plot(xcoord, alldat$values, xlim=c(0.5, 3.5), axes=F, 
-         ylab="Angular Deviation", xlab="Strategy", col = rgb(red = 0, green = 0, blue = 0, alpha = 0.8),
-         main=maintitle, bty='n', ylim=c(-10, 60), yaxt='n')
-    
-    axis(1, at=c(1.3, 2.7), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
-    axis(2, at = c(-10, 0, 10, 20, 30, 40, 50, 60))
-    
-    vioplot(data$exclusive, col='#005de42f', horizontal=FALSE, at= 1, add=TRUE,lty=2, border=NA, pchMed='-')
-    vioplot(data$inclusive, col='#005de42f', horizontal=FALSE, at=3, add=TRUE,lty=2, border=NA, pchMed='-')
-    meanexcludedata <- mean(data$exclusive, na.rm=T)
-    meanincludedata <- mean(data$inclusive, na.rm=T)
-    lines(x=c(1.6,2.4), y = c(meanexcludedata, meanincludedata), lty=1, col='red')
+    # points(xcoord,alldat$values, col = col)
+    # 
+    # meanexcludedata <- mean(data$exclusive, na.rm=T)
+    # meanincludedata <- mean(data$inclusive, na.rm=T)
+    # lines(x=c(1.3,2.7), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+    # 
+    # axis(1, at=c(1.3, 2.7), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
+    # axis(2, at = c(-10, 0, 10, 20, 30, 40, 50, 60))
+    # 
+    # col <- colourscheme[[group]][['T']]
+    # vioplot(data$exclusive, col=col, horizontal=FALSE, at=1.3, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left') #pchMed='-')
+    # vioplot(data$inclusive, col=col, horizontal=FALSE, at=2.7, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left') #pchMed='-')
+
     #dev.off()
   }
   
   #close everything if you saved plot as svg
-  # if (target=='svg') {
-  #   dev.off()
-  # }
+  if (target=='svg') {
+    dev.off()
+  }
 }
 
 #Localization----
@@ -87,44 +171,104 @@ getMeanPpDistribution <- function(group){
 plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','cursorjump','handview'), target='inline'){
   
   #but we can save plot as svg file
-  # if (target=='svg') {
-  #   svglite(file='doc/fig/Fig6_LOCdists.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
-  # }
-  # 
-  # par(mfrow=c(2,2), new=TRUE)
-  for (group in groups){
-    #pdf(file= sprintf('data/%s_locdist.pdf', group))
-    meanlocshifts <- getMeanPpDistribution(group=group)
-    par(mfrow = c(1,2))
-    ycoord <- rep(0,length(meanlocshifts))
-    ycoord[meanlocshifts$passive == 0] <- 1.6
-    
-    maintitle <- sprintf('Active: %s', group)
-    
-    plot(meanlocshifts$meanshift, ycoord, ylim=c(0.5, 3.5), axes=F,
-         xlab="Localization Shifts (Deg.)", ylab='Active', col = rgb(red = 0, green = 0, blue = 0, alpha = 0.8),
-         main=maintitle, bty='n', xlim=c(-30, 20), yaxt='n')
-    
-    axis(1, at = c(-25,-20, -15, -10, -5, 0, 5, 10, 15, 20))
-    actdata <- (meanlocshifts$meanshift[which(meanlocshifts$passive == 0)])
-    vioplot(actdata, col='#005de42f', horizontal=TRUE, at= 1, add=TRUE,lty=2, border=NA)
-    
-    ycoord <- rep(0,length(meanlocshifts))
-    ycoord[meanlocshifts$passive == 1] <- 1.6
-    
-    maintitle <- sprintf('Passive: %s', group)
-    
-    plot(meanlocshifts$meanshift, ycoord, ylim=c(0.5, 3.5), axes=F,
-         xlab="Localization Shifts (Deg.)",ylab = 'Passive', col = rgb(red = 0, green = 0, blue = 0, alpha = 0.8),
-         main=maintitle, bty='n', xlim=c(-30, 20), yaxt='n')
-    
-    axis(1, at = c(-25,-20, -15, -10, -5, 0, 5, 10, 15, 20))
-    pasdata <- (meanlocshifts$meanshift[which(meanlocshifts$passive == 1)])
-    vioplot(pasdata, col='#005de42f', horizontal=TRUE, at= 1, add=TRUE,lty=2, border=NA)
-    #dev.off()
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig9_LOCdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
   }
+
+  #par(mfrow=c(2,2), new=TRUE)
+  
+  plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
+       ylab="Localization Shift", xlab="Movement Type",
+       main='Shifts in Active and Passive Localization', bty='n', ylim=c(-25, 10), yaxt='n')
+  axis(1, at=c(1.25, 2.75), labels=c('Active', 'Passive')) #tick marks for x axis
+  axis(2, at = c(-25, -20, -15, -10, -5, 0, 5, 10))
+  
+  for (group in groups){
+    #pdf(file='data/testRAEgroupvioplots1.pdf') 
+    #participants <- getGroupParticipants(group=group)
+    #par(mfrow=c(2,2))#, mar=c(1,1,1,1))
+    #for (pp in participants){
+    meanlocshifts <- getMeanPpDistribution(group=group)
+    colourscheme <- getColourScheme(group=group)
+    width <- .5
+    #col <- colourscheme[[group]][['S']]
+    
+    #change x coordinates to change positions of each group (xccord, line (if with mean), vioplot)
+    #add an average of .4 to each location
+    if (group == '30implicit'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(meanlocshifts))
+      xcoord[meanlocshifts$passive == 0]<- 1#1.3
+      xcoord[meanlocshifts$passive == 1]<- 2.5#2.7
+      points(xcoord,meanlocshifts$meanshift, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1,2.5), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      actms <- meanlocshifts[meanlocshifts$passive == 0,]
+      pasms <- meanlocshifts[meanlocshifts$passive == 1,]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(actms$meanshift, col=col, horizontal=FALSE, at=1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(pasms$meanshift, col=col, horizontal=FALSE, at=2.5, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    } else if (group == '30explicit'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(meanlocshifts))
+      xcoord[meanlocshifts$passive == 0]<- 1.2#1.3
+      xcoord[meanlocshifts$passive == 1]<- 2.7#2.7
+      points(xcoord,meanlocshifts$meanshift, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1.2,2.7), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      actms <- meanlocshifts[meanlocshifts$passive == 0,]
+      pasms <- meanlocshifts[meanlocshifts$passive == 1,]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(actms$meanshift, col=col, horizontal=FALSE, at=1.2, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(pasms$meanshift, col=col, horizontal=FALSE, at=2.7, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    } else if (group == 'cursorjump'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(meanlocshifts))
+      xcoord[meanlocshifts$passive == 0]<- 1.4#1.3
+      xcoord[meanlocshifts$passive == 1]<- 2.9#2.7
+      points(xcoord,meanlocshifts$meanshift, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1.4,2.9), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      actms <- meanlocshifts[meanlocshifts$passive == 0,]
+      pasms <- meanlocshifts[meanlocshifts$passive == 1,]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(actms$meanshift, col=col, horizontal=FALSE, at=1.4, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(pasms$meanshift, col=col, horizontal=FALSE, at=2.9, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    } else if (group == 'handview'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(meanlocshifts))
+      xcoord[meanlocshifts$passive == 0]<- 1.6#1.3
+      xcoord[meanlocshifts$passive == 1]<- 3.1#2.7
+      points(xcoord,meanlocshifts$meanshift, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1.6,3.1), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      actms <- meanlocshifts[meanlocshifts$passive == 0,]
+      pasms <- meanlocshifts[meanlocshifts$passive == 1,]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(actms$meanshift, col=col, horizontal=FALSE, at=1.6, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(pasms$meanshift, col=col, horizontal=FALSE, at=3.1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+    }
+    
+  }
+  
   #close everything if you saved plot as svg
-  # if (target=='svg') {
-  #   dev.off()
-  # }
+  if (target=='svg') {
+    dev.off()
+  }
 }
