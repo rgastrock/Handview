@@ -233,6 +233,13 @@ plotAwareness()
 
 This part is extra to the analyses and plots we conduct above. I am keeping them here, in case the need for them arises in the future.
 
+### Learning Rates by Blocks
+
+```{r}
+plotRateDist()
+```
+
+
 ### Reach aftereffects  
 
 First, we looked at the distributions of responses for each participant during *no cursor* trials where they either use and not use a strategy. The data I show are the distributions for all participants in a group. Boxplots and vioplots show the distributions of their responses. Individual participants are plotted as points. Mean angular deviation of the hand is compared between using and not using a strategy and is shown through the red line. 

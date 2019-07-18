@@ -1,14 +1,132 @@
 source('R/shared.R')
+source('R/learningCurves.R')
+source('R/noCursor.R')
 
 #Learning Curves-----
-
+plotRateDist <- function(groups = c('30implicit','30explicit','cursorjump','handview'), target = 'inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig8_LCdists.svg', width=7, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  #data <- read.csv(sprintf('data/%s_learningcurves_long.csv',group))
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  LC4aov <- getBlockedLearningCurves(blockdefs=blockdefs)  
+  
+  plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
+       ylab="Angular Deviation of Hand", xlab="Block",
+       main='Rate of Learning by Blocks', bty='n', ylim=c(-20, 65), yaxt='n')
+  axis(1, at=c(1, 2, 3), labels=c('First', 'Second', 'Last')) #tick marks for x axis
+  axis(2, at = c(-10, 0, 10, 20, 30, 40, 50, 60))
+  
+  for (group in groups){
+    
+    ndat <- subset(LC4aov, diffgroup == group)
+    ndat <- ndat[,3:4]
+    colourscheme <- getColourScheme(group=group)
+    width <- .5
+    
+    if (group == '30implicit'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(ndat))
+      #separate by active and passive, regardless of session (aligned or rotated)
+      xcoord[ndat$block == 'first']<- .7#1.3
+      xcoord[ndat$block == 'second']<- 1.7#2.7
+      xcoord[ndat$block == 'last']<- 2.7
+      points(xcoord,ndat$reachdev, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1,2.5), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      block1 <- ndat[ndat$block == 'first',]
+      block2 <- ndat[ndat$block == 'second',]
+      block3 <- ndat[ndat$block == 'last',]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(block1$reachdev, col=col, horizontal=FALSE, at=.7, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block2$reachdev, col=col, horizontal=FALSE, at=1.7, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block3$reachdev, col=col, horizontal=FALSE, at=2.7, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')    
+    } else if (group == '30explicit'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(ndat))
+      #separate by active and passive, regardless of session (aligned or rotated)
+      xcoord[ndat$block == 'first']<- .9#1.3
+      xcoord[ndat$block == 'second']<- 1.9#2.7
+      xcoord[ndat$block == 'last']<- 2.9
+      points(xcoord,ndat$reachdev, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1,2.5), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      block1 <- ndat[ndat$block == 'first',]
+      block2 <- ndat[ndat$block == 'second',]
+      block3 <- ndat[ndat$block == 'last',]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(block1$reachdev, col=col, horizontal=FALSE, at=.9, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block2$reachdev, col=col, horizontal=FALSE, at=1.9, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block3$reachdev, col=col, horizontal=FALSE, at=2.9, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')    
+    } else if (group == 'cursorjump'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(ndat))
+      #separate by active and passive, regardless of session (aligned or rotated)
+      xcoord[ndat$block == 'first']<- 1.1#1.3
+      xcoord[ndat$block == 'second']<- 2.1#2.7
+      xcoord[ndat$block == 'last']<- 3.1
+      points(xcoord,ndat$reachdev, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1,2.5), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      block1 <- ndat[ndat$block == 'first',]
+      block2 <- ndat[ndat$block == 'second',]
+      block3 <- ndat[ndat$block == 'last',]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(block1$reachdev, col=col, horizontal=FALSE, at=1.1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block2$reachdev, col=col, horizontal=FALSE, at=2.1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block3$reachdev, col=col, horizontal=FALSE, at=3.1, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')    
+    } else if (group == 'handview'){
+      col <- colourscheme[[group]][['S']]
+      xcoord <- rep(0, length(ndat))
+      #separate by active and passive, regardless of session (aligned or rotated)
+      xcoord[ndat$block == 'first']<- 1.3#1.3
+      xcoord[ndat$block == 'second']<- 2.3#2.7
+      xcoord[ndat$block == 'last']<- 3.3
+      points(xcoord,ndat$reachdev, col = col)
+      
+      # meanexcludedata <- mean(data$exclusive, na.rm=T)
+      # meanincludedata <- mean(data$inclusive, na.rm=T)
+      # lines(x=c(1,2.5), y = c(meanexcludedata, meanincludedata), lty=1, col=col)
+      
+      block1 <- ndat[ndat$block == 'first',]
+      block2 <- ndat[ndat$block == 'second',]
+      block3 <- ndat[ndat$block == 'last',]
+      
+      col <- colourscheme[[group]][['T']]
+      vioplot(block1$reachdev, col=col, horizontal=FALSE, at=1.3, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block2$reachdev, col=col, horizontal=FALSE, at=2.3, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')
+      vioplot(block3$reachdev, col=col, horizontal=FALSE, at=3.3, add=TRUE,lty=2, border=NA, drawRect=F, rectCol=col, lineCol=col, axes=F, side='left', wex=width) #pchMed='-')    
+    }
+    
+  }
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
 
 #Reach Aftereffects-----
 plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorjump','handview'), target = 'inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig8_RAEdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig9_RAEdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   #par(mfrow=c(2,2))
@@ -175,7 +293,7 @@ plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','curso
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig9_LOCdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig10_LOCdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
   }
 
   #par(mfrow=c(2,2), new=TRUE)
