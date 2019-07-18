@@ -203,3 +203,34 @@ t.interval <- function(data, variance = var(data, na.rm = TRUE), conf.level = 0.
   return(c(xbar - z * sdx, xbar, xbar + z * sdx)) 
   
 }
+
+loadRAE <- function(group, baselinecorrect = TRUE){
+  
+  NoCdat <- read.csv(file = sprintf('data/%s_nocursor.csv', group), stringsAsFactors = F)
+  
+  if (baselinecorrect == TRUE){
+    #this method of baseline correction is different from the older one (see previous section)
+    #values are close to old version, but different by a few decimal places
+    #because old version takes median of all exclusive from all target angles
+    #this takes median of values for each angle, corrects for baseline, then takes the mean of all 3 angle values
+    #note that we take the mean at the end for this new version, opposed to median in the first
+    NoCdat$exclusive <- NoCdat$exclusive - NoCdat$aligned
+    NoCdat$inclusive <- NoCdat$inclusive - NoCdat$aligned
+    NoCdat <- NoCdat[,-3] #remove aligned column
+    
+    exc <- aggregate(as.formula('exclusive ~ participant'), NoCdat, median, na.rm = TRUE)
+    inc <- aggregate(as.formula('inclusive ~ participant'), NoCdat, median, na.rm = TRUE)
+    NoCdat <- cbind(exc,inc)
+    NoCdat <- NoCdat[-3]
+    return(NoCdat)
+  } else if (baselinecorrect == FALSE){
+    NoCdat <- NoCdat[,-5]
+    aligned <- aggregate(as.formula('aligned ~ participant'), NoCdat, median, na.rm = TRUE)
+    exc <- aggregate(as.formula('exclusive ~ participant'), NoCdat, median, na.rm = TRUE)
+    NoCdat <- cbind(aligned, exc)
+    NoCdat <- NoCdat[,-3]
+    return(NoCdat)
+  }
+  
+  
+}
