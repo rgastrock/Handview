@@ -16,7 +16,7 @@ plotRateDist <- function(groups = c('30implicit','30explicit','cursorjump','hand
   LC4aov <- getBlockedLearningCurves(blockdefs=blockdefs)  
   
   plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
-       ylab="Angular Deviation of Hand", xlab="Block",
+       ylab="Angular Deviation of Hand (°)", xlab="Block",
        main='Rate of Learning by Blocks', bty='n', ylim=c(-20, 65), yaxt='n')
   axis(1, at=c(1, 2, 3), labels=c('First', 'Second', 'Last')) #tick marks for x axis
   axis(2, at = c(-10, 0, 10, 20, 30, 40, 50, 60))
@@ -132,7 +132,7 @@ plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorju
   #par(mfrow=c(2,2))
   
   plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
-       ylab="Angular Deviation of Hand", xlab="Strategy",
+       ylab="Angular Deviation of Hand (°)", xlab="Strategy",
        main='Reach Aftereffects and Strategy Use', bty='n', ylim=c(-10, 50), yaxt='n')
   axis(1, at=c(1.25, 2.75), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
   axis(2, at = c(-10, 0, 10, 20, 30, 40, 50))
@@ -299,7 +299,7 @@ plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','curso
   #par(mfrow=c(2,2), new=TRUE)
   
   plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
-       ylab="Localization Shift", xlab="Movement Type",
+       ylab="Localization Shift (°)", xlab="Movement Type",
        main='Shifts in Active and Passive Localization', bty='n', ylim=c(-25, 10), yaxt='n')
   axis(1, at=c(1.25, 2.75), labels=c('Active', 'Passive')) #tick marks for x axis
   axis(2, at = c(-25, -20, -15, -10, -5, 0, 5, 10))
