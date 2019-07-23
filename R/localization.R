@@ -327,7 +327,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   }
   
   # create plot
-  par(mfrow = c(1,3), mai=c(0.65,0.3,0.8,0.3)) #added this to fix margins of plot
+  par(mfrow = c(1,3), mai=c(0.65,0.65,0.8,0.3))  #mai=c(0.65,0.3,0.8,0.3)) #added this to fix margins of plot
   
   for (reachtype.idx in c(0,1)){
     reachtype <- c('Active','Passive')[reachtype.idx+1]
@@ -338,17 +338,17 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     # could maybe use plot.new() ?
     #removed ylab for now to make space in poster (SCAPPS 2018)
     if (reachtype.idx == 0){
-      plot(NA, NA, xlim = c(30,175), ylim = c(2,-17), 
-           xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
-           main = sprintf('Shifts in \n %s Localization \n \n (Proprioception + Prediction)', reachtype),cex.main = 1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+      plot(NA, NA, xlim = c(30,180), ylim = c(2,-17), 
+           xlab = "", ylab="Localization Shift (°)", frame.plot = FALSE, #frame.plot takes away borders
+           main = sprintf('%s Localization \n \n \n (Proprioception + Prediction)', reachtype),cex.main = 1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception + Prediction)", cex = 1)
       abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130)) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
     } else if (reachtype.idx == 1){
-      plot(NA, NA, xlim = c(30,175), ylim = c(2,-17), 
+      plot(NA, NA, xlim = c(30,180), ylim = c(2,-17), 
            xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
-           main = sprintf('Shifts in \n %s Localization \n \n (Proprioception)', reachtype),cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+           main = sprintf('%s Localization \n \n \n (Proprioception)', reachtype),cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
       abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130)) #tick marks for x axis
@@ -399,7 +399,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
       shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
       
       groupno <- which(groups == group)
-      xloc <- 155 + (groupno*4)
+      xloc <- 145 + (groupno*8)
       CI <- t.interval(shift)
       #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color_solid[groupno]), lty=styles$linestyle[groupno])
       lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
@@ -416,9 +416,9 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  plot(NA, NA, xlim = c(30,175), ylim = c(2,-17), 
+  plot(NA, NA, xlim = c(30,180), ylim = c(2,-17), 
        xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
-       main = 'Shifts in Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+       main = 'Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   #mtext("(Prediction)", cex=1)
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
   axis(1, at=c(50, 90, 130)) #tick marks for x axis
@@ -468,7 +468,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     shift <- shifts[[1]] - shifts[[2]]
     
     groupno <- which(groups == group)
-    xloc <- 155 + (groupno*4)
+    xloc <- 145 + (groupno*8)
     CI <- t.interval(shift)
     #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color[groupno]), lty=styles$linestyle[groupno])
     lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)

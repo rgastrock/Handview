@@ -1,8 +1,27 @@
 source('R/shared.R')
 source('R/learningCurves.R')
 source('R/noCursor.R')
+source('R/localization.R')
 
 #Learning Curves-----
+
+plotLCforMS <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig11_LearningCurve_MS.svg', width=10, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  par(mfrow=c(1,2))
+  plotBlockedLearningCurves()
+  plotRateDist()
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
 plotRateDist <- function(groups = c('30implicit','30explicit','cursorjump','handview'), target = 'inline'){
   
   #but we can save plot as svg file
@@ -20,6 +39,7 @@ plotRateDist <- function(groups = c('30implicit','30explicit','cursorjump','hand
        main='Rate of Learning by Blocks', bty='n', ylim=c(-20, 65), yaxt='n')
   axis(1, at=c(1, 2, 3), labels=c('First', 'Second', 'Last')) #tick marks for x axis
   axis(2, at = c(-10, 0, 10, 20, 30, 40, 50, 60))
+  abline(h = c(0,30), col = 8, lty = 2) 
   
   for (group in groups){
     
@@ -122,20 +142,39 @@ plotRateDist <- function(groups = c('30implicit','30explicit','cursorjump','hand
 }
 
 #Reach Aftereffects-----
+
+plotRAEforMS <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig12_RAE_MS.svg', width=10, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  par(mfrow=c(1,2))
+  plotGroupReachAfterEffects()
+  plotGroupDistribution()
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
 plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorjump','handview'), target = 'inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig9_RAEdists.svg', width=6, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig9_RAEdists.svg', width=7, height=6, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   #par(mfrow=c(2,2))
   
   plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
-       ylab="Angular Deviation of Hand (°)", xlab="Strategy",
-       main='Reach Aftereffects and Strategy Use', bty='n', ylim=c(-10, 50), yaxt='n')
+       ylab="Angular Deviation of Hand (°)", xlab="Strategy Use",
+       main='Distribution of Individual Participants', bty='n', ylim=c(-10, 50), yaxt='n')
   axis(1, at=c(1.25, 2.75), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
   axis(2, at = c(-10, 0, 10, 20, 30, 40, 50))
+  abline(h = 30, col = 8, lty = 2)
   
   for (group in groups){
     #pdf(file='data/testRAEgroupvioplots1.pdf') 
@@ -265,6 +304,25 @@ plotGroupDistribution <- function(groups = c('30implicit','30explicit','cursorju
 }
 
 #Localization----
+
+# plotLOCforMS <- function(target='inline'){
+#   
+#   #but we can save plot as svg file
+#   if (target=='svg') {
+#     svglite(file='doc/fig/Fig13_LOC_MS.svg', width=10, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+#   }
+#   
+#  
+#   par(mfrow=c(1,2))
+#   plotLocalizationShift()
+#   plotLocGroupDistribution()
+#   
+#   #close everything if you saved plot as svg
+#   if (target=='svg') {
+#     dev.off()
+#   }
+# }
+
 getMeanPpDistribution <- function(group){
   
   shifts <- list()
@@ -303,6 +361,7 @@ plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','curso
        main='Shifts in Active and Passive Localization', bty='n', ylim=c(-25, 10), yaxt='n')
   axis(1, at=c(1.25, 2.75), labels=c('Active', 'Passive')) #tick marks for x axis
   axis(2, at = c(-25, -20, -15, -10, -5, 0, 5, 10))
+  abline(h = 0, col = 8, lty = 2)
   
   for (group in groups){
     #pdf(file='data/testRAEgroupvioplots1.pdf') 
