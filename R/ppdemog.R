@@ -45,6 +45,9 @@ getDemographics <- function(type = c('all','grouped'), groups = c('30explicit','
 
 source('R/shared.R')
 
+#Deleted Trials from Selection-----
+#note that this is dependent on raw data (in Explicit Project, which is not shared on github)
+#function getParticipantTaskData is reliant on different directory, so I changed path to make this work here
 countGroupDeletedTrials<- function (group, session, task) {
   #session: aligned or rotated, task: train or nocursor
   #get list of participants in group

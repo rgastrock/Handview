@@ -6,6 +6,7 @@ library('lsmeans')
 library('vioplot')
 library('scales')
 library('lsr')
+library('tools')
 
 # Generic Functions -----
 getStyle <- function() {
@@ -88,7 +89,7 @@ rotateTrajectory <- function(X,Y,angle) {
 
 getGroupParticipants <- function(group) {
   
-  all_part <- read.csv(file = "C:/Users/Raphael/Documents/Science/Explicit/data/participants_files.csv")
+  all_part <- read.csv(file = "D:/Documents/Science/Explicit/data/participants_files.csv")
   #return all participant ID's for whichever group specified
   participants_grouped <- as.vector(all_part$ID[which(all_part$folder == group)]) 
   return (participants_grouped)
@@ -98,7 +99,7 @@ getGroupParticipants <- function(group) {
 #to avoid having to change filenames all the time
 getParticipantTaskData <- function(group, id, session, task) {
   
-  all_part <- read.csv(file = "C:/Users/Raphael/Documents/Science/Explicit/data/participants_files.csv")
+  all_part <- read.csv(file = "D:/Documents/Science/Explicit/data/participants_files.csv")
   condition <- sprintf('%s_%s', session, task) #builds up which condition to look in the file
   filename <- as.character(all_part[all_part$ID == id, condition]) #get specified particiant id, session, task
   
@@ -106,7 +107,7 @@ getParticipantTaskData <- function(group, id, session, task) {
   #note that library('tools') needs to be loaded
   ext <- file_ext(filename)
   
-  filepath <- sprintf('data/%s/%s/%s', group, id, filename) #creates the file path relative to current directory
+  filepath <- sprintf('D:/Documents/Science/Explicit/data/%s/%s/%s', group, id, filename) #creates the file path relative to current directory
   
   #if file extension is csv (from PySelector), do this:
   if (ext %in% "csv"){
