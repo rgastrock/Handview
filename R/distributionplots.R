@@ -358,7 +358,7 @@ plotLocGroupDistribution <- function(groups = c('30explicit','30implicit','curso
   
   plot(NA, NA, xlim=c(0.5, 3.5), axes=F,
        ylab="Localization Shift (°)", xlab="Movement Type",
-       main='Shifts in Active and Passive Localization', bty='n', ylim=c(-25, 10), yaxt='n')
+       main='Shifts in Active and Passive Localization', bty='n', ylim=c(10,-25), yaxt='n')
   axis(1, at=c(1.25, 2.75), labels=c('Active', 'Passive')) #tick marks for x axis
   axis(2, at = c(-25, -20, -15, -10, -5, 0, 5, 10))
   abline(h = 0, col = 8, lty = 2)
