@@ -7,6 +7,7 @@ library('vioplot')
 library('scales')
 library('lsr')
 library('tools')
+library('SMCL')
 
 # Generic Functions -----
 getStyle <- function() {
@@ -179,9 +180,9 @@ getParticipantTaskData <- function(group, id, session, task) {
 }
 
 getBSConfidenceInterval <- function(data, resamples) {
-  
+
   data <- data[which(is.finite(data))] #need is.finite due to NA values
-  
+
   #bootstrap to 95% CI with replacement (done when normal t-distribution is not assumed)
   #so multiplies data times 1000 and replaces the values
   samplematrix <- matrix(sample(data, size = resamples*length(data), replace = TRUE), nrow = resamples)
@@ -190,7 +191,7 @@ getBSConfidenceInterval <- function(data, resamples) {
   #95% confidence that data falls within range
   #2.5% to 97.5%, with 50% being the median mean, which is close to actual mean
   return(quantile(BS, probs = c(0.025, 0.50, 0.975)))
-  
+
 }
 
 t.interval <- function(data, variance = var(data, na.rm = TRUE), conf.level = 0.95) {
@@ -202,5 +203,46 @@ t.interval <- function(data, variance = var(data, na.rm = TRUE), conf.level = 0.
   sdx <- sqrt(variance/length(data))
   
   return(c(xbar - z * sdx, xbar, xbar + z * sdx)) 
+  
+}
+
+#below is a function that integrates the two functions above
+#it does the same thing, but the one below is helpful for plotting bootstrapped means for individual data
+getConfidenceInterval <- function(data, variance = var(data), conf.level = 0.95, method='t-distr', resamples=1000, FUN=mean, returndist=FALSE) {
+  
+  if (method %in% c('t-distr','t')) {
+    
+    z = qt((1 - conf.level)/2, df = length(data) - 1, lower.tail = FALSE)
+    
+    xbar = mean(data)
+    sdx = sqrt(variance/length(data))
+    
+    return(c(xbar - z * sdx, xbar + z * sdx))
+    
+  }
+  
+  # add sample z-distribution?
+  
+  # for bootstrapping:
+  
+  if (method %in% c('bootstrap','b')) {
+    
+    data <- data[which(is.finite(data))] #need is.finite due to NA values
+    
+    samplematrix <- matrix(sample(data, size = resamples*length(data), replace = TRUE), nrow = resamples)
+    BS <- apply(samplematrix, c(1), FUN=FUN) 
+    
+    lo <- (1-conf.level)/2.
+    hi <- 1 - lo
+    
+    if (returndist) {
+      percentiles <- data.frame(percentile=seq(.01,.99,.01),value=quantile(BS, probs=seq(.01,.99,.01)))
+      densdist <- density(BS, bw='SJ', from=min(percentiles$value), to=max(percentiles$value))  
+      return(list('percentiles'=percentiles, 'density'=densdist, 'CI95'=quantile(BS, probs = c(lo,hi))))
+    } else {
+      return(quantile(BS, probs = c(lo,hi)))
+    }
+    
+  }
   
 }
