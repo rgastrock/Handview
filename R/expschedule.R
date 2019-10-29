@@ -129,35 +129,43 @@ plotExpSched <- function(target='inline'){
        xlab = '', ylab = '', main = 'Aligned Session',
        xlim = c(0,636), ylim = c(-0.2,1.2))
   
+  #set variables for colours
+  drkbl <- "#1261A0"
+  lgtbl <- "#3895D3"
+  drkgr <- "#36802D"
+  grcur <- "#dadada"
+  midgr <- "#77ab59"
+  lgtgr <- "#c9df8a"
+  
   #localization
-  rect(X1[1], Y[1], X1[2], Y[2], border = "#005B9A", col = "#005B9A")#blue diff shade
-  rect(X2[1], Y[1], X2[2], Y[2], border = "#6497b1", col = "#6497b1")#light blue
-  rect(X3[1], Y[1], X3[2], Y[2], border = "#005B9A", col = "#005B9A")
-  rect(X4[1], Y[1], X4[2], Y[2], border = "#6497b1", col = "#6497b1")
-  rect(X5[1], Y[1], X5[2], Y[2], border = "#005B9A", col = "#005B9A")
-  rect(X6[1], Y[1], X6[2], Y[2], border = "#6497b1", col = "#6497b1")
-  rect(X7[1], Y[1], X7[2], Y[2], border = "#005B9A", col = "#005B9A")
-  rect(X8[1], Y[1], X8[2], Y[2], border = "#6497b1", col = "#6497b1")
+  rect(X1[1], Y[1], X1[2], Y[2], border = drkbl, col = drkbl)#blue diff shade
+  rect(X2[1], Y[1], X2[2], Y[2], border = lgtbl, col = lgtbl)#light blue
+  rect(X3[1], Y[1], X3[2], Y[2], border = drkbl, col = drkbl)
+  rect(X4[1], Y[1], X4[2], Y[2], border = lgtbl, col = lgtbl)
+  rect(X5[1], Y[1], X5[2], Y[2], border = drkbl, col = drkbl)
+  rect(X6[1], Y[1], X6[2], Y[2], border = lgtbl, col = lgtbl)
+  rect(X7[1], Y[1], X7[2], Y[2], border = drkbl, col = drkbl)
+  rect(X8[1], Y[1], X8[2], Y[2], border = lgtbl, col = lgtbl)
   
   #nocursor
-  rect(X1nc[1], Y[1], X1nc[2], Y[2], border = "#76BA1B", col = "#76BA1B")#mid green
-  rect(X2nc[1], Y[1], X2nc[2], Y[2], border = "#76BA1B", col = "#76BA1B")
-  rect(X3nc[1], Y[1], X3nc[2], Y[2], border = "#76BA1B", col = "#76BA1B")
-  rect(X4nc[1], Y[1], X4nc[2], Y[2], border = "#76BA1B", col = "#76BA1B")
+  rect(X1nc[1], Y[1], X1nc[2], Y[2], border = drkgr, col = drkgr)#dark green
+  rect(X2nc[1], Y[1], X2nc[2], Y[2], border = drkgr, col = drkgr)
+  rect(X3nc[1], Y[1], X3nc[2], Y[2], border = drkgr, col = drkgr)
+  rect(X4nc[1], Y[1], X4nc[2], Y[2], border = drkgr, col = drkgr)
   
   #cursor trials
-  rect(X1c[1], Y[1], X1c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")#pale yellow was FFFF99, now its light greay
-  rect(X2c[1], Y[1], X2c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X3c[1], Y[1], X3c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X4c[1], Y[1], X4c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X5c[1], Y[1], X5c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X6c[1], Y[1], X6c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X7c[1], Y[1], X7c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X8c[1], Y[1], X8c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X9c[1], Y[1], X9c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X10c[1], Y[1], X10c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X11c[1], Y[1], X11c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X12c[1], Y[1], X12c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
+  rect(X1c[1], Y[1], X1c[2], Y[2], border = grcur, col = grcur)#pale yellow was FFFF99, now its light greay
+  rect(X2c[1], Y[1], X2c[2], Y[2], border = grcur, col = grcur)
+  rect(X3c[1], Y[1], X3c[2], Y[2], border = grcur, col = grcur)
+  rect(X4c[1], Y[1], X4c[2], Y[2], border = grcur, col = grcur)
+  rect(X5c[1], Y[1], X5c[2], Y[2], border = grcur, col = grcur)
+  rect(X6c[1], Y[1], X6c[2], Y[2], border = grcur, col = grcur)
+  rect(X7c[1], Y[1], X7c[2], Y[2], border = grcur, col = grcur)
+  rect(X8c[1], Y[1], X8c[2], Y[2], border = grcur, col = grcur)
+  rect(X9c[1], Y[1], X9c[2], Y[2], border = grcur, col = grcur)
+  rect(X10c[1], Y[1], X10c[2], Y[2], border = grcur, col = grcur)
+  rect(X11c[1], Y[1], X11c[2], Y[2], border = grcur, col = grcur)
+  rect(X12c[1], Y[1], X12c[2], Y[2], border = grcur, col = grcur)
   
   # lines(c(0:44), rep(0.1,45), lwd=3)
   # lines(c(63:71), rep(0.1,9), lwd=3)
@@ -177,9 +185,9 @@ plotExpSched <- function(target='inline'){
   # axis(side=2, at=c(0.1,0.9), labels=c('0','30'))
   #Ncols <- ceiling(6/4) #6 labels, 4 rows
   
-  legend(350,1.3,legend=c('Cursor Training', 'No Cursor', 'No Cursor: Without Strategy', 'No Cursor: With Strategy','Active Localization','Passive Localization',''),
-         col=c("#cdc8b1","#76BA1B","#4C9A2A","#A4DE02","#005B9A","#6497b1",'#ffffff'),
-         #text.col=c("#000000","#76BA1B","#4C9A2A","#A4DE02","#005B9A","#6497b1",'#ffffff'),
+  legend(350,1.3,legend=c('Cursor', 'No Cursor', 'No Cursor: Without Strategy', 'No Cursor: With Strategy','Active Localization','Passive Localization',''),
+         col=c(grcur,drkgr,midgr,lgtgr,drkbl,lgtbl,'#ffffff'),
+         #text.col=c("#000000","#76BA1B","#4C9A2A","#A4DE02",drkbl,lgtbl),
          lty=1,bty='n',cex=1,lwd=5, ncol=2)
   
   
@@ -226,38 +234,38 @@ plotExpSched <- function(target='inline'){
        xlim = c(0,635), ylim = c(-0.2,1.2))
   
   #localization
-  rect(X1[1], Y[1], X1[2], Y[2], border = "#005B9A", col = "#005B9A")#diff blue shade
-  rect(X2[1], Y[1], X2[2], Y[2], border = "#6497b1", col = "#6497b1")#light blue
-  rect(X3[1], Y[1], X3[2], Y[2], border = "#005B9A", col = "#005B9A")
-  rect(X4[1], Y[1], X4[2], Y[2], border = "#6497b1", col = "#6497b1")
-  rect(X5[1], Y[1], X5[2], Y[2], border = "#005B9A", col = "#005B9A")
-  rect(X6[1], Y[1], X6[2], Y[2], border = "#6497b1", col = "#6497b1")
-  rect(X7[1], Y[1], X7[2], Y[2], border = "#005B9A", col = "#005B9A")
-  rect(X8[1], Y[1], X8[2], Y[2], border = "#6497b1", col = "#6497b1")
+  rect(X1[1], Y[1], X1[2], Y[2], border = drkbl, col = drkbl)#diff blue shade
+  rect(X2[1], Y[1], X2[2], Y[2], border = lgtbl, col = lgtbl)#light blue
+  rect(X3[1], Y[1], X3[2], Y[2], border = drkbl, col = drkbl)
+  rect(X4[1], Y[1], X4[2], Y[2], border = lgtbl, col = lgtbl)
+  rect(X5[1], Y[1], X5[2], Y[2], border = drkbl, col = drkbl)
+  rect(X6[1], Y[1], X6[2], Y[2], border = lgtbl, col = lgtbl)
+  rect(X7[1], Y[1], X7[2], Y[2], border = drkbl, col = drkbl)
+  rect(X8[1], Y[1], X8[2], Y[2], border = lgtbl, col = lgtbl)
   
   #nocursor
-  rect(X1nc_e[1], Y[1], X1nc_e[2], Y[2], border = "#4C9A2A", col = "#4C9A2A") #darker green
-  rect(X1nc_i[1], Y[1], X1nc_i[2], Y[2], border = "#A4DE02", col = "#A4DE02")#lighter green
-  rect(X2nc_e[1], Y[1], X2nc_e[2], Y[2], border = "#A4DE02", col = "#A4DE02")
-  rect(X2nc_i[1], Y[1], X2nc_i[2], Y[2], border = "#4C9A2A", col = "#4C9A2A")
-  rect(X3nc_e[1], Y[1], X3nc_e[2], Y[2], border = "#4C9A2A", col = "#4C9A2A")
-  rect(X3nc_i[1], Y[1], X3nc_i[2], Y[2], border = "#A4DE02", col = "#A4DE02")
-  rect(X4nc_e[1], Y[1], X4nc_e[2], Y[2], border = "#A4DE02", col = "#A4DE02")
-  rect(X4nc_i[1], Y[1], X4nc_i[2], Y[2], border = "#4C9A2A", col = "#4C9A2A")
+  rect(X1nc_e[1], Y[1], X1nc_e[2], Y[2], border = midgr, col = midgr) #mid green
+  rect(X1nc_i[1], Y[1], X1nc_i[2], Y[2], border = lgtgr, col = lgtgr)#lighter green
+  rect(X2nc_e[1], Y[1], X2nc_e[2], Y[2], border = lgtgr, col = lgtgr)
+  rect(X2nc_i[1], Y[1], X2nc_i[2], Y[2], border = midgr, col = midgr)
+  rect(X3nc_e[1], Y[1], X3nc_e[2], Y[2], border = midgr, col = midgr)
+  rect(X3nc_i[1], Y[1], X3nc_i[2], Y[2], border = lgtgr, col = lgtgr)
+  rect(X4nc_e[1], Y[1], X4nc_e[2], Y[2], border = lgtgr, col = lgtgr)
+  rect(X4nc_i[1], Y[1], X4nc_i[2], Y[2], border = midgr, col = midgr)
   
   #cursor trials
-  rect(X1c[1], Y[1], X1c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")#pale yellow
-  rect(X2c[1], Y[1], X2c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X3c[1], Y[1], X3c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X4c[1], Y[1], X4c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X5c[1], Y[1], X5c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X6c[1], Y[1], X6c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X7c[1], Y[1], X7c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X8c[1], Y[1], X8c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X9c[1], Y[1], X9c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X10c[1], Y[1], X10c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X11c[1], Y[1], X11c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")
-  rect(X12c[1], Y[1], X12c[2], Y[2], border = "#cdc8b1", col = "#cdc8b1")#alternatively, FCF38E
+  rect(X1c[1], Y[1], X1c[2], Y[2], border = grcur, col = grcur)#pale yellow
+  rect(X2c[1], Y[1], X2c[2], Y[2], border = grcur, col = grcur)
+  rect(X3c[1], Y[1], X3c[2], Y[2], border = grcur, col = grcur)
+  rect(X4c[1], Y[1], X4c[2], Y[2], border = grcur, col = grcur)
+  rect(X5c[1], Y[1], X5c[2], Y[2], border = grcur, col = grcur)
+  rect(X6c[1], Y[1], X6c[2], Y[2], border = grcur, col = grcur)
+  rect(X7c[1], Y[1], X7c[2], Y[2], border = grcur, col = grcur)
+  rect(X8c[1], Y[1], X8c[2], Y[2], border = grcur, col = grcur)
+  rect(X9c[1], Y[1], X9c[2], Y[2], border = grcur, col = grcur)
+  rect(X10c[1], Y[1], X10c[2], Y[2], border = grcur, col = grcur)
+  rect(X11c[1], Y[1], X11c[2], Y[2], border = grcur, col = grcur)
+  rect(X12c[1], Y[1], X12c[2], Y[2], border = grcur, col = grcur)#alternatively, FCF38E
   
   # lines(c(0:89), rep(0.9,90), lwd=3)
   # lines(c(108:137), rep(0.9,30), lwd=3)

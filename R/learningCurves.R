@@ -114,8 +114,8 @@ plotBlockedLearningCurves <- function(target='inline') {
   colnames(styles) <- c('group','rotation','color','linestyle','label')
   
   par(mar=c(4,4,1,0.2))
-  ylims=c(-.1*max(styles$rotation),max(styles$rotation)+(.2*max(styles$rotation)))
-  plot(c(-15,50),c(0,0),col=rgb(0.5,0.5,0.5),xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Deviation of Hand (°)",main='Reach Adaptation across Trials',xaxt='n',yaxt='n',bty='n')
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #was -.1 and .2 before
+  plot(c(-15,50),c(0,0),col=rgb(0.5,0.5,0.5),xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Deviation of Hand (°)",xaxt='n',yaxt='n',bty='n')
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -198,7 +198,7 @@ plotLearningCurves <- function(target='inline') {
   # panel A: Learning Curves for all groups across 90 trials
   plotBlockedLearningCurves()
   #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   
   # # # # # # # # # #
@@ -206,11 +206,11 @@ plotLearningCurves <- function(target='inline') {
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
-  ylims=c(-.1*max(styles$rotation),max(styles$rotation)+(.2*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='First Block',ylab='Angular Deviation of Hand (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 1 - 3',ylab='Angular Deviation of Hand (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   blockdefs <- list(c(1,3))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -263,11 +263,11 @@ plotLearningCurves <- function(target='inline') {
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
-  ylims=c(-.1*max(styles$rotation),max(styles$rotation)+(.2*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Second Block',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 4 - 6',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('C', side=3, outer=FALSE, at=c(2.5/7,1), line=-1, adj=0, padj=1)
-  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   blockdefs <- list(c(4,3))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -320,11 +320,11 @@ plotLearningCurves <- function(target='inline') {
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
-  ylims=c(-.1*max(styles$rotation),max(styles$rotation)+(.2*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Last Block',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 76 - 90',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('D', side=3, outer=TRUE, at=c(4.7/7,1), line=-1, adj=0, padj=1)
-  mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   blockdefs <- list(c(76,15))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))

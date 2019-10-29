@@ -327,7 +327,8 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   }
   
   # create plot
-  par(mfrow = c(1,3), mai=c(0.65,0.65,0.8,0.3))  #mai=c(0.65,0.3,0.8,0.3)) #added this to fix margins of plot
+  #par(mfrow = c(1,3), mai=c(0.65,0.65,0.8,0.3))  #mai=c(0.65,0.3,0.8,0.3)) #added this to fix margins of plot
+  par(mfrow = c(1,3), mar=c(4,4,5,0.25))
   
   for (reachtype.idx in c(0,1)){
     reachtype <- c('Active','Passive')[reachtype.idx+1]
@@ -337,22 +338,24 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     #NA to create empty plot
     # could maybe use plot.new() ?
     #removed ylab for now to make space in poster (SCAPPS 2018)
+    ylims=c(-.35*-15,-15+(.35*-15)) #as -.1 and .2 before; -15 is the constant here
     if (reachtype.idx == 0){
-      plot(NA, NA, xlim = c(30,180), ylim = c(2,-17), 
+      plot(NA, NA, xlim = c(40,140), ylim = ylims, 
            xlab = "", ylab="Localization Shift (°)", frame.plot = FALSE, #frame.plot takes away borders
-           main = sprintf('%s Localization \n \n \n (Proprioception + Prediction)', reachtype),cex.main = 1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+           main = sprintf('%s Localization \n \n \n (Proprioception + Prediction)', reachtype),cex.main = 1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception + Prediction)", cex = 1)
       abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
-      axis(1, at=c(50, 90, 130)) #tick marks for x axis
-      axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
+      axis(1, at=c(50, 90, 130),cex.axis=0.85) #tick marks for x axis
+      axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
+      mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
     } else if (reachtype.idx == 1){
-      plot(NA, NA, xlim = c(30,180), ylim = c(2,-17), 
+      plot(NA, NA, xlim = c(40,140), ylim = ylims, 
            xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
-           main = sprintf('%s Localization \n \n \n (Proprioception)', reachtype),cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+           main = sprintf('%s Localization \n \n \n (Proprioception)', reachtype),cex.main=1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
       abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
-      axis(1, at=c(50, 90, 130)) #tick marks for x axis
-      axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
+      axis(1, at=c(50, 90, 130), cex.axis=0.85) #tick marks for x axis
+      axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
     }
     #Active and Passive
     for (group in groups) {
@@ -388,26 +391,26 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
       lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
     }
     
-    for (group in groups){
-      
-      col <- colourscheme[[group]][['S']]
-      
-      #add average dots and CIs
-      localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
-      localization <- localization[which(localization$passive_b == (reachtype.idx)),] #removed -1 in reachtype.idx
-      localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
-      shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
-      
-      groupno <- which(groups == group)
-      xloc <- 145 + (groupno*8)
-      CI <- t.interval(shift)
-      #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color_solid[groupno]), lty=styles$linestyle[groupno])
-      lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
-      lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
-      lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
-      #lines(c(xloc-1.5, xloc+1.5), c(CI[2], CI[2]), col=col)
-      points(xloc, mean(shift), col=col, pch=19)
-    }
+    # for (group in groups){
+    #   
+    #   col <- colourscheme[[group]][['S']]
+    #   
+    #   #add average dots and CIs
+    #   localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+    #   localization <- localization[which(localization$passive_b == (reachtype.idx)),] #removed -1 in reachtype.idx
+    #   localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+    #   shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+    #   
+    #   groupno <- which(groups == group)
+    #   xloc <- 145 + (groupno*8)
+    #   CI <- t.interval(shift)
+    #   #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color_solid[groupno]), lty=styles$linestyle[groupno])
+    #   lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
+    #   lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
+    #   lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
+    #   #lines(c(xloc-1.5, xloc+1.5), c(CI[2], CI[2]), col=col)
+    #   points(xloc, mean(shift), col=col, pch=19)
+    # }
   }
   
   
@@ -416,13 +419,14 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  plot(NA, NA, xlim = c(30,180), ylim = c(2,-17), 
+  ylims=c(-.35*-15,-15+(.35*-15)) #as -.1 and .2 before; -15 is the constant here
+  plot(NA, NA, xlim = c(40,140), ylim = ylims, 
        xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
-       main = 'Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1.35, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+       main = 'Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   #mtext("(Prediction)", cex=1)
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
-  axis(1, at=c(50, 90, 130)) #tick marks for x axis
-  axis(2, at = c(0, -5, -10, -15)) #tick marks for y axis
+  axis(1, at=c(50, 90, 130), cex.axis=0.85) #tick marks for x axis
+  axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
   
   for (group in groups) {
     #read in files created by getGroupConfidenceInterval in filehandling.R
@@ -452,10 +456,330 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
 
-  for (group in groups) {
+  # for (group in groups) {
+  #   
+  #   shifts <- list()
+  #   col <-colourscheme[[group]][['S']]
+  #   
+  #   for (reachtype.idx in c(0,1)) {
+  #     localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+  #     localization <- localization[which(localization$passive_b == (reachtype.idx)),]
+  #     localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+  #     shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+  #     shifts[[reachtype.idx+1]] <- shift
+  #   }
+  #   
+  #   shift <- shifts[[1]] - shifts[[2]] #Active minus Passive
+  #   
+  #   groupno <- which(groups == group)
+  #   xloc <- 145 + (groupno*8)
+  #   CI <- t.interval(shift)
+  #   #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color[groupno]), lty=styles$linestyle[groupno])
+  #   lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
+  #   lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
+  #   lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
+  #   points(xloc, mean(shift), col=col, pch=19)
+  #   
+  # }
+  legend(40,-17,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
+         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
+         lty=1,bty='n', cex=0.85)
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+plotLocalizations <- function(target='inline'){
+  
+  styles <- getStyle()
+  
+  if (target == 'svg') {
+    svglite(file='doc/fig/Fig4A_localization.svg', width=12, height=10, pointsize=14, system_fonts=list(sans='Arial'))
+  }
+  
+  #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
+  par(mar=c(4,4,4,0.1))
+  
+  
+  
+  layout(matrix(c(1,2,3,4,5,6), nrow=2, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
+  
+  
+  # # # # # # # # # #
+  # panel A: Active, Passive, PredCons for all groups
+  for (reachtype.idx in c(0,1)){
+    reachtype <- c('Active','Passive')[reachtype.idx+1]
+    
+    meanlocalizationshifts <- list() #empty list so that it plots the means last
+    
+    #NA to create empty plot
+    # could maybe use plot.new() ?
+    #removed ylab for now to make space in poster (SCAPPS 2018)
+    ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
+    if (reachtype.idx == 0){
+      plot(NA, NA, xlim = c(40,140), ylim = ylims, 
+           xlab = "", ylab="Localization Shift (°)", frame.plot = FALSE, #frame.plot takes away borders
+           main = sprintf('%s Localization \n \n \n (Proprioception + Prediction)', reachtype),cex.main = 1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+      #mtext("(Proprioception + Prediction)", cex = 1)
+      abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+      axis(1, at=c(50, 90, 130),cex.axis=0.85) #tick marks for x axis
+      axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
+      #mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
+    } else if (reachtype.idx == 1){
+      plot(NA, NA, xlim = c(40,140), ylim = ylims, 
+           xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
+           main = sprintf('%s Localization \n \n \n (Proprioception)', reachtype),cex.main=1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+      #mtext("(Proprioception)", cex = 1)
+      abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+      axis(1, at=c(50, 90, 130), cex.axis=0.85) #tick marks for x axis
+      axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
+    }
+    #Active and Passive
+    #for (group in groups) {
+    for (groupno in c(1:length(styles$group))){
+      group <- styles$group[groupno]
+      #read in files created by getGroupConfidenceInterval in filehandling.R
+      groupconfidence <- read.csv(file=sprintf('data/%s_localization_tCI.csv',group))
+      colourscheme <- getColourScheme()
+      #take only exclusive first, last and middle columns of file
+      if (reachtype.idx == 0){
+        lower <- groupconfidence$act_p2.5
+        upper <- groupconfidence$act_p97.5
+        mid <- groupconfidence$act_p50
+        
+      } else if (reachtype.idx == 1){
+        lower <- groupconfidence$pas_p2.5
+        upper <- groupconfidence$pas_p97.5
+        mid <- groupconfidence$pas_p50
+      }
+      
+      col <- colourscheme[[group]][['T']] #use colour scheme according to group
+      #upper and lower bounds create a polygon
+      #polygon creates it from low left to low right, then up right to up left -> use rev
+      #x is just trial nnumber, y depends on values of bounds
+      
+      polygon(x = c(c(50,90,130), rev(c(50,90,130))), y = c(lower, rev(upper)), border=NA, col=col)
+      
+      meanlocalizationshifts[[group]] <- mid #use mean to fill in empty list for each group
+    }
+    
+    for (groupno in c(1:length(styles$group))){
+      group <- styles$group[groupno]
+      # plot mean reaches for each group
+      col <- colourscheme[[group]][['S']]
+      stuff<-(meanlocalizationshifts[[group]])
+      lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
+    }
+
+  }
+  
+  
+  #Predicted Sensory Consequences
+  meanlocalizationshifts <- list() #empty list so that it plots the means last
+  
+  #NA to create empty plot
+  # could maybe use plot.new() ?
+  ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
+  plot(NA, NA, xlim = c(40,140), ylim = ylims, 
+       xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
+       main = 'Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+  #mtext("(Prediction)", cex=1)
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+  axis(1, at=c(50, 90, 130), cex.axis=0.85) #tick marks for x axis
+  axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
+  
+  for (groupno in c(1:length(styles$group))){
+    group <- styles$group[groupno]
+    #read in files created by getGroupConfidenceInterval in filehandling.R
+    groupconfidence <- read.csv(file=sprintf('data/%s_localization_tCI.csv',group))
+    #take only exclusive first, last and middle columns of file
+    lower <- groupconfidence$PredCons_p2.5
+    upper <- groupconfidence$PredCons_p97.5
+    mid <- groupconfidence$PredCons_p50
+    #lower <- groupconfidence[,8]
+    #upper <- groupconfidence[,10]
+    #mid <- groupconfidence[,9]
+    
+    col <- colourscheme[[group]][['T']] #use colour scheme according to group
+    #upper and lower bounds create a polygon
+    #polygon creates it from low left to low right, then up right to up left -> use rev
+    #x is just trial nnumber, y depends on values of bounds
+    
+    polygon(x = c(c(50,90,130), rev(c(50,90,130))), y = c(lower, rev(upper)), border=NA, col=col)
+    
+    meanlocalizationshifts[[group]] <- mid #use mean to fill in empty list for each group
+  }
+  
+  for (groupno in c(1:length(styles$group))){
+    group <- styles$group[groupno]
+    # plot mean reaches for each group
+    col <- colourscheme[[group]][['S']]
+    stuff<-(meanlocalizationshifts[[group]])
+    lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
+  }
+  
+  legend(40,-17,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
+         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
+         lty=1,lwd=5,bty='n', cex=0.85)
+  
+  # # # # # # # # # #
+  # panel B: individual participants in the Active Localization
+  # bootstrap method for better visualization, but is close enough to the t-distribution
+  # essentially, we want to show that we are confident that the mean for each group lies here
+  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Active Localization',ylab='Localization Shift (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  
+  #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    # get the confidence intervals for each trial of each group
+    
+    #shift <- list()
+    reachtype.idx <- 0
+    
+    
+    localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+    localization <- localization[which(localization$passive_b == (reachtype.idx)),]
+    localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+    shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+    
+    
+    
+    
+    # data <- loadRAE(group = group, baselinecorrect = TRUE)
+    # datat<- t(data)
+    # newdata<- datat[-c(1),]
+    # newdata <- as.numeric(newdata[1,])
+    
+    X <- rep((groupno-(1/3)),length(shift))
+    Y <- c(shift)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
+    # if (group == '30implicit'){
+    #   abline(h = c(0,mean(c(newdata))), col = col, lty = 2)
+    # }
+    
+    meandist <- getConfidenceInterval(data=c(shift), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
+    
+    #grab the density distribution from list
+    #X will be vertical, Y will be the distribution
+    DX <- meandist$density$x
+    #then we just scale the plot
+    DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    
+    #mostly for the polygon
+    #without these, there will be a space between the solid line and point
+    #With these, the space is also shaded now
+    DX <- c(DX[1], DX, DX[length(DX)])
+    DY <- c(0,     DY, 0)
+    
+    #include shaded distribution?
+    #polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    
+    col <- colourscheme[[group]][['S']]
+    lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
+    #print(meandist$CI95)
+    points(x=groupno,y=mean(c(shift)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
+  }
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
+  axis(side=2, at=c(0,-5,-10,-15),labels=c('0','-5','-10','-15'))#,cex.axis=0.85)
+  
+  
+  # # # # # # # # # #
+  # panel C: individual participants in Passive Localization
+  # bootstrap method for better visualization, but is close enough to the t-distribution
+  # essentially, we want to show that we are confident that the mean for each group lies here
+  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Passive Localization',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  
+  #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    # get the confidence intervals for each trial of each group
+    
+    #shift <- list()
+    reachtype.idx <- 1
+    
+    
+    localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+    localization <- localization[which(localization$passive_b == (reachtype.idx)),]
+    localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+    shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+    
+    
+    
+    
+    # data <- loadRAE(group = group, baselinecorrect = TRUE)
+    # datat<- t(data)
+    # newdata<- datat[-c(1),]
+    # newdata <- as.numeric(newdata[1,])
+    
+    X <- rep((groupno-(1/3)),length(shift))
+    Y <- c(shift)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
+    # if (group == '30implicit'){
+    #   abline(h = c(0,mean(c(newdata))), col = col, lty = 2)
+    # }
+    
+    meandist <- getConfidenceInterval(data=c(shift), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
+    
+    #grab the density distribution from list
+    #X will be vertical, Y will be the distribution
+    DX <- meandist$density$x
+    #then we just scale the plot
+    DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    
+    #mostly for the polygon
+    #without these, there will be a space between the solid line and point
+    #With these, the space is also shaded now
+    DX <- c(DX[1], DX, DX[length(DX)])
+    DY <- c(0,     DY, 0)
+    
+    #include shaded distribution?
+    #polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    
+    col <- colourscheme[[group]][['S']]
+    lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
+    #print(meandist$CI95)
+    points(x=groupno,y=mean(c(shift)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
+  }
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
+  axis(side=2, at=c(0,-5,-10,-15),labels=c('0','-5','-10','-15'))#,cex.axis=0.85)
+  
+  # # # # # # # # # #
+  # panel D: individual participants in Predicted Sensory Consequences
+  # bootstrap method for better visualization, but is close enough to the t-distribution
+  # essentially, we want to show that we are confident that the mean for each group lies here
+  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Predicted Sensory Consequences',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  
+  
+  #mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    # get the confidence intervals for each trial of each group
+    
     
     shifts <- list()
-    col <-colourscheme[[group]][['S']]
     
     for (reachtype.idx in c(0,1)) {
       localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
@@ -465,27 +789,50 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
       shifts[[reachtype.idx+1]] <- shift
     }
     
-    shift <- shifts[[1]] - shifts[[2]]
+    shift <- shifts[[1]] - shifts[[2]] #Active minus Passive
     
-    groupno <- which(groups == group)
-    xloc <- 145 + (groupno*8)
-    CI <- t.interval(shift)
-    #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color[groupno]), lty=styles$linestyle[groupno])
-    lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
-    lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
-    lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
-    points(xloc, mean(shift), col=col, pch=19)
     
+    X <- rep((groupno-(1/3)),length(shift))
+    Y <- c(shift)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
+    # if (group == '30implicit'){
+    #   abline(h = c(0,mean(c(newdata))), col = col, lty = 2)
+    # }
+    
+    meandist <- getConfidenceInterval(data=c(shift), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
+    
+    #grab the density distribution from list
+    #X will be vertical, Y will be the distribution
+    DX <- meandist$density$x
+    #then we just scale the plot
+    DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    
+    #mostly for the polygon
+    #without these, there will be a space between the solid line and point
+    #With these, the space is also shaded now
+    DX <- c(DX[1], DX, DX[length(DX)])
+    DY <- c(0,     DY, 0)
+    
+    #include shaded distribution?
+    #polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    
+    col <- colourscheme[[group]][['S']]
+    lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
+    #print(meandist$CI95)
+    points(x=groupno,y=mean(c(shift)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
   }
-  legend(30,-15,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
-         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
-         lty=1,bty='n')
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
+  axis(side=2, at=c(0,-5,-10,-15),labels=c('0','-5','-10','-15'))#,cex.axis=0.85)
   
-  #close everything if you saved plot as svg
-  if (target=='svg') {
+  if (target == 'svg') {
     dev.off()
   }
+  
 }
+
+
 
 # Statistics-----
 
@@ -805,7 +1152,8 @@ pasLocTtests <- function() {
   print(cohensD(subdf$prop_recal, mu=0))
 }
 
-#Correlation Section -----
+#Grouped Correlation Section -----
+#Proprioceptive Recalibration
 getPropExcData <- function(styles){
   
   #get data for prop-recal and get mean across target angles for each pp
@@ -827,7 +1175,7 @@ plotGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5_correlation.svg', width=5, height=5, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig5_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -842,14 +1190,14 @@ plotGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Relationship between RAEs and Shifts in Passive Localization", xlab = 'Hand Deviation During Reaches with No Cursor - Without Strategy (°)', ylab = 'Shifts in Passive Localization (°)',
-       bty='n', xlim= c(-10,25), ylim= c(-30,10), xaxt='n', yaxt='n')
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Passive Localization (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
   #add dashed lines at 0
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
   abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=1, at=c(-10,0,10,20))
-  axis(side=2, at=c(-30,-20,-10,0,10))
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
   
   
   #library(car)
@@ -867,7 +1215,7 @@ plotGroupCorrelations <- function(target='inline'){
   
   polyX <- c(x,rev(x))
   polyY <- c(pred1[,2], rev(pred1[,3]))
-  polygon(polyX, polyY, col='#a6a6a6', border=NA)
+  polygon(polyX, polyY, col='#dadada', border=NA)
   
   #add in data points of all pp's
   points(data$reachdeviation, data$prop_recal, pch=16, cex=1.5,
@@ -888,7 +1236,7 @@ plotGroupCorrelations <- function(target='inline'){
 
   legend(15,-25,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='o',cex=0.50)
+         pch=16,bty='o',cex=.25)
   
   print(summary(mod1))
   
@@ -904,4 +1252,943 @@ getRAEPropCorrelation <- function(){
   #plot(dat$reachdeviation, dat$prop_recal)
   print(cor.test(dat$reachdeviation, dat$prop_recal))
   
+}
+
+#Predicted Sensory Consequences
+getPredExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  
+  newdf <- merge(df, df2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+plotPredGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getPredExcData(styles)
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  reachdev <- data$reachdeviation
+  mod1 <- lm(pred_update ~ reachdev)
+  
+  
+  x <- seq(-5,19,.1)
+  
+  pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$pred_update, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getPredExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+#Per Group Correlation section----
+getHVPredExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == 'handview'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == 'handview'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getHVRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getHVPredExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+plotHVPredGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getHVPredExcData(styles)
+  colourscheme <- getColourScheme()
+  #expcol <- colourscheme[['30explicit']][['S']]
+  #impcol <- colourscheme[['30implicit']][['S']]
+  #cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  reachdev <- data$reachdeviation
+  mod1 <- lm(pred_update ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$pred_update, pch=16, cex=1.5,
+         col= alpha(hancol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.00001"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Hand View',
+         col=hancol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getCJPredExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == 'cursorjump'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == 'cursorjump'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getCJRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getCJPredExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+plotCJPredGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getCJPredExcData(styles)
+  colourscheme <- getColourScheme()
+  #expcol <- colourscheme[['30explicit']][['S']]
+  #impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  reachdev <- data$reachdeviation
+  mod1 <- lm(pred_update ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$pred_update, pch=16, cex=1.5,
+         col= alpha(cujcol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.00007"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Cursor Jump',
+         col=cujcol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getNIPredExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == '30implicit'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == '30implicit'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getNIRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getNIPredExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+plotNIPredGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getNIPredExcData(styles)
+  colourscheme <- getColourScheme()
+  #expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  #cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  reachdev <- data$reachdeviation
+  mod1 <- lm(pred_update ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$pred_update, pch=16, cex=1.5,
+         col= alpha(impcol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Non-Instructed',
+         col=impcol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getIPredExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == '30explicit'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == '30explicit'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getIRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getIPredExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+plotIPredGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getIPredExcData(styles)
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  #impcol <- colourscheme[['30implicit']][['S']]
+  #cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  reachdev <- data$reachdeviation
+  mod1 <- lm(pred_update ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$pred_update, pch=16, cex=1.5,
+         col= alpha(expcol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Instructed',
+         col=expcol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+plotPGPredCorr <- function(){
+  par(mfrow = c(2,2))
+  
+  plotHVPredGroupCorrelations()
+  plotCJPredGroupCorrelations()
+  plotNIPredGroupCorrelations()
+  plotIPredGroupCorrelations()
+}
+
+#improve code, to have one function do this all for each group, all plots in one
+#do the same for proprioception
+
+getHVPropExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == 'handview'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == 'handview'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getHVRAEPropCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getHVPropExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  
+}
+
+plotHVPropGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getHVPropExcData(styles)
+  colourscheme <- getColourScheme()
+  #expcol <- colourscheme[['30explicit']][['S']]
+  #impcol <- colourscheme[['30implicit']][['S']]
+  #cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Proprioception (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$prop_recal
+  reachdev <- data$reachdeviation
+  mod1 <- lm(prop_recal ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$prop_recal, pch=16, cex=1.5,
+         col= alpha(hancol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.2481"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Hand View',
+         col=hancol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getCJPropExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == 'cursorjump'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == 'cursorjump'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getCJRAEPropCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getCJPropExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  
+}
+
+plotCJPropGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getCJPropExcData(styles)
+  colourscheme <- getColourScheme()
+  #expcol <- colourscheme[['30explicit']][['S']]
+  #impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Proprioception (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$prop_recal
+  reachdev <- data$reachdeviation
+  mod1 <- lm(prop_recal ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$prop_recal, pch=16, cex=1.5,
+         col= alpha(cujcol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.1167"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Cursor Jump',
+         col=cujcol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getNIPropExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == '30implicit'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == '30implicit'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getNIRAEPropCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getNIPropExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  
+}
+
+plotNIPropGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getNIPropExcData(styles)
+  colourscheme <- getColourScheme()
+  #expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  #cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Proprioception (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$prop_recal
+  reachdev <- data$reachdeviation
+  mod1 <- lm(prop_recal ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$prop_recal, pch=16, cex=1.5,
+         col= alpha(impcol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.0294"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Non-Instructed',
+         col=impcol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getIPropExcData <- function(styles){
+  
+  #get data for prop-recal and get mean across target angles for each pp
+  df <- getPasLocShifts(styles)
+  df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
+  subdf <- df[(df$group == '30explicit'),]
+  
+  #then we want to add exclusive angular deviations to the df above
+  df2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  df2 <- df2[which(df2$strategy == 'exclusive'),]
+  subdf2 <- df2[(df2$diffgroup == '30explicit'),]
+  
+  newdf <- merge(subdf, subdf2, by='participant') #merge two df's together, according to participant
+  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  
+  return(newdf)
+}
+
+getIRAEPropCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getIPropExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  
+}
+
+plotIPropGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getIPropExcData(styles)
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  #impcol <- colourscheme[['30implicit']][['S']]
+  #cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  #cols <- hancol[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Proprioception (°)',
+       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$prop_recal
+  reachdev <- data$reachdeviation
+  mod1 <- lm(prop_recal ~ reachdev)
+  
+  
+  # x <- seq(-5,19,.1)
+  # 
+  # pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$prop_recal, pch=16, cex=1.5,
+         col= alpha(expcol, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.083"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-25,legend='Instructed',
+         col=expcol,
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+plotPGPropCorr <- function(){
+  par(mfrow = c(2,2))
+  
+  plotHVPropGroupCorrelations()
+  plotCJPropGroupCorrelations()
+  plotNIPropGroupCorrelations()
+  plotIPropGroupCorrelations()
 }

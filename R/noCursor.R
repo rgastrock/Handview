@@ -84,9 +84,12 @@ getEIGroupConfidenceInterval <- function(groups = c('30explicit', '30implicit', 
 #plot containing reach aftereffects for all groups
 #inline means it will plot here in R Studio
 plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'handview'), target='inline') {
+  
+  styles <- getStyle()
+  
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig3_reachaftereffects.svg', width=4, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig3_reachaftereffects.svg', width=8, height=6, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -94,12 +97,14 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  plot(NA, NA, xlim = c(-0.1,1), ylim = c(-5,35), 
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4) #was -.1 and .2 before
+  plot(NA, NA, xlim = c(0,2.6), ylim = ylims, #c(-5,35),
        xlab = "Strategy Use", ylab = "Angular Deviation of Hand (°)", frame.plot = FALSE, #frame.plot takes away borders
-       main='Reach Aftereffects and Strategy Use',xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
-  abline(h = 30, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
-  axis(1, at=c(0, 1), labels=c('Without Strategy', 'With Strategy')) #tick marks for x axis
-  axis(2, at = c(0, 10, 20, 30)) #tick marks for y axis
+       xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+  abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
+  abline(h = c(0,0), col = rgb(0.5,0.5,0.5), lty = 2) 
+  axis(1, at=c(0.75, 1.75), labels=c('Without Strategy', 'With Strategy'), cex.axis=0.85) #tick marks for x axis
+  axis(2, at = c(0, 10, 20, 30), cex.axis=0.85) #tick marks for y axis
   
   
   for (group in groups) {
@@ -116,7 +121,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
     #polygon creates it from low left to low right, then up right to up left -> use rev
     #x is just trial nnumber, y depends on values of bounds
     
-    polygon(x = c(c(0:1), rev(c(0:1))), y = c(lower, rev(upper)), border=NA, col=col)
+    polygon(x = c(c(0.75:1.75), rev(c(0.75:1.75))), y = c(lower, rev(upper)), border=NA, col=col)
     
     meanGroupAftereffects[[group]] <- mid #use mean to fill in empty list for each group
   }
@@ -125,19 +130,210 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
     # plot mean reaches for each group
     col <- colourscheme[[group]][['S']]
     stuff<-(meanGroupAftereffects[[group]])
-    lines(x=c(0,1), y = c(stuff[1], stuff[2]), col=col, lty=1)
+    lines(x=c(0.75,1.75), y = c(stuff[1], stuff[2]), col=col, lty=1)
   }
   
+  
+  #add individual data points?
+  
+  #styles <- getStyle()
+  Xrep <- 0.10
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    
+    data <- loadRAE(group = group, baselinecorrect = TRUE)
+    datat<- t(data)
+    newdata<- datat[-c(1),]
+    newdata <- as.numeric(newdata[1,])
+    
+    X <- rep((Xrep),length(newdata))
+    Y <- c(newdata)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)
+    
+    Xrep <- Xrep + 0.15
+  }
+ 
+  Xrep <- 1.95
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    
+    data <- loadRAE(group = group, baselinecorrect = TRUE)
+    datat<- t(data)
+    newdata<- datat[-c(1),]
+    newdata <- as.numeric(newdata[2,])
+    
+    X <- rep((Xrep),length(newdata))
+    Y <- c(newdata)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)
+    
+    Xrep <- Xrep + 0.15
+    
+  } 
+
   #add legend
-  #legend(0.12,8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
-  #       col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
-  #       lty=1,bty='n',cex=0.85)
+  legend(0.10,44.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
+         lty=1,lwd=5,bty='n',cex=0.85)
   
   #close everything if you saved plot as svg
   if (target=='svg') {
     dev.off()
   }
 }
+
+plotReachAfterEffects <- function(target='inline'){
+  
+  styles <- getStyle()
+  
+  if (target == 'svg') {
+    svglite(file='doc/fig/Fig3A_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'))
+  }
+  
+  #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
+  par(mar=c(4,4,2,0.1))
+  
+  
+  
+  layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
+  
+  
+  # # # # # # # # # #
+  # panel A: RAEs for all groups, Without and With Strategy
+  plotGroupReachAfterEffects()
+  #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  
+  # # # # # # # # # #
+  # panel B: individual participants in the Without Strategy Trials
+  # bootstrap method for better visualization, but is close enough to the t-distribution
+  # essentially, we want to show that we are confident that the mean for each group lies here
+  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #as -.1 and .2 before
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Without Strategy',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  
+  #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
+  
+  blockdefs <- list(c(1,3))
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    # get the confidence intervals for each trial of each group
+    #data <- df
+    #data <- getGroupReachAftereffects(group = group)
+    data <- loadRAE(group = group, baselinecorrect = TRUE)
+    datat<- t(data)
+    newdata<- datat[-c(1),]
+    newdata <- as.numeric(newdata[1,])
+    
+    X <- rep((groupno-(1/3)),length(newdata))
+    Y <- c(newdata)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
+    if (group == '30implicit'){
+      abline(h = c(0,mean(c(newdata))), col = col, lty = 2)
+    }
+    
+    meandist <- getConfidenceInterval(data=c(newdata), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
+    
+    #grab the density distribution from list
+    #X will be vertical, Y will be the distribution
+    DX <- meandist$density$x
+    #then we just scale the plot
+    DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    
+    #mostly for the polygon
+    #without these, there will be a space between the solid line and point
+    #With these, the space is also shaded now
+    DX <- c(DX[1], DX, DX[length(DX)])
+    DY <- c(0,     DY, 0)
+    
+    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    
+    col <- colourscheme[[group]][['S']]
+    lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
+    #print(meandist$CI95)
+    points(x=groupno,y=mean(c(newdata)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
+  }
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
+  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=0.85)
+  
+  
+  # # # # # # # # # #
+  # panel C: individual participants in the With Strategy Trials
+  # bootstrap method for better visualization, but is close enough to the t-distribution
+  # essentially, we want to show that we are confident that the mean for each group lies here
+  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='With Strategy',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  
+  #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
+  
+  blockdefs <- list(c(1,3))
+  
+  for (groupno in c(1:length(styles$group))) {
+    
+    group <- styles$group[groupno]
+    # get the confidence intervals for each trial of each group
+    #data <- df
+    #data <- getGroupReachAftereffects(group = group)
+    data <- loadRAE(group = group, baselinecorrect = TRUE)
+    datat<- t(data)
+    newdata<- datat[-c(1),]
+    newdata <- as.numeric(newdata[2,])
+    
+    X <- rep((groupno-(1/3)),length(newdata))
+    Y <- c(newdata)
+    colourscheme <- getColourScheme(group=group)
+    col <- colourscheme[[group]][['T']]
+    points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
+    if (group == '30implicit'){
+      abline(h = c(0,mean(c(newdata))), col = col, lty = 2)
+    }
+    
+    meandist <- getConfidenceInterval(data=c(newdata), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
+    
+    #grab the density distribution from list
+    #X will be vertical, Y will be the distribution
+    DX <- meandist$density$x
+    #then we just scale the plot
+    DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    
+    #mostly for the polygon
+    #without these, there will be a space between the solid line and point
+    #With these, the space is also shaded now
+    DX <- c(DX[1], DX, DX[length(DX)])
+    DY <- c(0,     DY, 0)
+    
+    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    
+    col <- colourscheme[[group]][['S']]
+    lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
+    #print(meandist$CI95)
+    points(x=groupno,y=mean(c(newdata)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
+  }
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
+  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=0.85)
+  
+  if (target == 'svg') {
+    dev.off()
+  }
+  
+}
+
 
 # Statistics-----
 
