@@ -8,6 +8,7 @@ library('scales')
 library('lsr')
 library('tools')
 library('SMCL')
+library('usdm')
 
 # Generic Functions -----
 getStyle <- function() {

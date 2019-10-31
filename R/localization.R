@@ -977,7 +977,7 @@ getPredictedSensoryConsequences <- function(styles) {
   }
   
   alldf <- data.frame(group, participant, handangle, pred_update)
-  alldf$group  <- as.factor(alldf$group)
+  alldf$group  <- factor(alldf$group, levels = c('30implicit', '30explicit', 'cursorjump', 'handview'))
   alldf$handangle   <- as.factor(alldf$handangle)
   alldf$participant <- as.character(alldf$participant) 
   
@@ -1101,7 +1101,7 @@ getPasLocShifts <- function(styles){
   }
   
   alldf <- data.frame(group, participant, handangle, prop_recal)
-  alldf$group  <- as.factor(alldf$group)
+  alldf$group  <- factor(alldf$group, levels = c('30implicit', '30explicit', 'cursorjump', 'handview'))
   alldf$handangle   <- as.factor(alldf$handangle)
   alldf$participant <- as.character(alldf$participant) 
   
@@ -1165,17 +1165,20 @@ getPropExcData <- function(styles){
   #we want only exclusive data
   df2 <- df2[which(df2$strategy == 'exclusive'),]
   
-  newdf <- merge(df, df2, by='participant') #merge two df's together, according to participant
-  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  #newdf <- merge(df, df2, by='participant') #merge two df's together, according to participant
+  #newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  newdf <- cbind(df, df2$reachdeviation)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation')
+  
   
   return(newdf)
 }
 
-plotGroupCorrelations <- function(target='inline'){
+plotPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig5A_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -1190,14 +1193,14 @@ plotGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Passive Localization (°)',
-       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Passive Localization (°)',
+       bty='n', xlim= c(-30,15), ylim= c(-15,25), xaxt='n', yaxt='n')
   #add dashed lines at 0
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
   abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
-  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-30,-20,-10,0,10))#, cex=0.85)
   
   
   #library(car)
@@ -1206,23 +1209,23 @@ plotGroupCorrelations <- function(target='inline'){
   #CIs
   prop_recal <- data$prop_recal
   reachdev <- data$reachdeviation
-  mod1 <- lm(prop_recal ~ reachdev)
+  mod1 <- lm(reachdev ~ prop_recal)
   
   
-  x <- seq(-5,19,.1)
+  x <- seq(-28,7,.1) #min and max of pror_recal
   
-  pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  pred1 <- predict(mod1, newdata=data.frame(prop_recal=x), interval='confidence')
   
   polyX <- c(x,rev(x))
   polyY <- c(pred1[,2], rev(pred1[,3]))
   polygon(polyX, polyY, col='#dadada', border=NA)
   
   #add in data points of all pp's
-  points(data$reachdeviation, data$prop_recal, pch=16, cex=1.5,
+  points(data$prop_recal, data$reachdeviation, pch=16, cex=1.5,
        col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
   
   #Reg line
-  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  reglinex <- seq(range(prop_recal)[1],range(prop_recal)[2],.1)
   abX <- range(reglinex)
   abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
   lines(abX, abY, col='#343434')
@@ -1232,9 +1235,9 @@ plotGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=1)
+  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=1)
 
-  legend(15,-25,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.25)
   
@@ -1266,17 +1269,22 @@ getPredExcData <- function(styles){
   #we want only exclusive data
   df2 <- df2[which(df2$strategy == 'exclusive'),]
   
-  newdf <- merge(df, df2, by='participant') #merge two df's together, according to participant
-  newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  #newdf <- merge(df, df2, by='participant') #merge two df's together, according to participant
+  #newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
+  newdf <- cbind(df, df2$reachdeviation)
+  colnames(newdf) <- c('participant', 'group', 'pred_update', 'reachdeviation')
   
   return(newdf)
+  
+  #mymod <- glm(reachdeviation ~ factor(group) + pred_update, data=newdf)
+  #summary(mymod)
 }
 
 plotPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig5B_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -1291,14 +1299,14 @@ plotPredGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", xlab = 'No Cursor Reaches - Without Strategy (°)', ylab = 'Shifts in Predictions (°)',
-       bty='n', xlim= c(-10,25), ylim= c(-30,15), xaxt='n', yaxt='n')
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-15,25), ylim= c(-15,25), xaxt='n', yaxt='n')
   #add dashed lines at 0
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
   abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
-  axis(side=2, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-10,0,10, 20))#, cex=0.85)
   
   
   #library(car)
@@ -1307,23 +1315,25 @@ plotPredGroupCorrelations <- function(target='inline'){
   #CIs
   pred_update <- data$pred_update
   reachdev <- data$reachdeviation
-  mod1 <- lm(pred_update ~ reachdev)
+  mod1 <- lm(reachdev ~ pred_update)
   
   
-  x <- seq(-5,19,.1)
+  #x <- seq(-5,19,.1) #min and max of reachdev
+  x <- seq(-9,12,.1) #min and max of pred_update
   
-  pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  #pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  pred1 <- predict(mod1, newdata=data.frame(pred_update=x), interval='confidence')
   
   polyX <- c(x,rev(x))
   polyY <- c(pred1[,2], rev(pred1[,3]))
   polygon(polyX, polyY, col='#dadada', border=NA)
   
   #add in data points of all pp's
-  points(data$reachdeviation, data$pred_update, pch=16, cex=1.5,
+  points(data$pred_update, data$reachdeviation, pch=16, cex=1.5,
          col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
   
   #Reg line
-  reglinex <- seq(range(reachdev)[1],range(reachdev)[2],.1)
+  reglinex <- seq(range(pred_update)[1],range(pred_update)[2],.1)
   abX <- range(reglinex)
   abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
   lines(abX, abY, col='#343434')
@@ -1333,9 +1343,9 @@ plotPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, 0, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(15,-25,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(15,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.25)
   
@@ -1352,6 +1362,159 @@ getRAEPredCorrelation <- function(){
   dat <- getPredExcData(styles)
   #plot(dat$reachdeviation, dat$prop_recal)
   print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+#GLM predicting RAE from both Prop_Recal and Pred_Update
+getPropPredGLM <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  
+  mod1 <- glm(RAE ~ pred_update + prop_recal)
+  print(summary(mod1))
+  
+  #test for collinearity
+
+  
+  #vif(c(as.integer(pred_update), as.integer(prop_recal)))
+  print(vif(newdf[c(3,5)]))
+  #these are exactly the same from each other, given two predictors, but they are low
+  #so there is no collinearity
+  #hence we say that prop and pred are both contributing to RAE, but independently
+  
+
+}
+
+#take this model and show predicted RAE and actual RAE
+#if the model predicts the actual RAE well, then we know that predictions from the model are valid
+#make a plot for predicted RAE and actual RAE
+getPredActRAE <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  
+  mod1 <- glm(RAE ~ pred_update + prop_recal)
+  
+  # A + Bx + Cy = predicted RAE + error term
+  #x is pred_update, y is prop_recal
+  # A, B, C come from mod1
+  A <- as.numeric(mod1[[1]][1])
+  B <- as.numeric(mod1[[1]][2]) #B is pred_update coefficient
+  C <- as.numeric(mod1[[1]][3]) #C is prop_recal coefficient
+  
+  for(participant in 1:length(newdf$participant)){
+    pred <- newdf[participant,]$pred_update
+    prop <- newdf[participant,]$prop_recal
+    
+    RAEpred <- A + (B*pred) + (C*prop)
+    
+    newdf$RAE_pred[participant] <- RAEpred
+  }
+  return(newdf)
+}
+
+plotPredActRAE <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5C_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  data <- getPredActRAE()
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Actual and Predicted Reach Aftereffects", ylab = 'Actual No Cursor Reaches - Without Strategy (°)', xlab = 'Predicted No Cursor Reaches - Without Strategy (°)',
+       bty='n', xlim= c(-1,17), ylim= c(-6,20), xaxt='n', yaxt='n')
+  #add line, need intercept and slope
+  #create glm based on predicted RAE and Actual RAE
+  mod <- glm(data$reachdeviation ~ data$RAE_pred)
+  INT <- as.numeric(mymod[[1]][1])
+  SLOPE <- as.numeric(mymod[[1]][2])
+  abline(a=INT,b=SLOPE,col="#343434")
+
+  # this puts tick marks exactly where we want them:
+  axis(side=1, at=c(0,5,10,15))#, cex=0.85)
+  axis(side=2, at=c(-5,0,5,10,15,20))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  # #CIs
+  # pred_update <- data$pred_update
+  # reachdev <- data$reachdeviation
+  # mod1 <- lm(reachdev ~ pred_update)
+  # 
+  # 
+  # #x <- seq(-5,19,.1) #min and max of reachdev
+  # x <- seq(-8,11,.1) #min and max of pred_update
+  # 
+  # #pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  # pred1 <- predict(mod1, newdata=data.frame(pred_update=x), interval='confidence')
+  # 
+  # polyX <- c(x,rev(x))
+  # polyY <- c(pred1[,2], rev(pred1[,3]))
+  # polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$RAE_pred, data$reachdeviation, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  # #Reg line
+  # reglinex <- seq(range(pred_update)[1],range(pred_update)[2],.1)
+  # abX <- range(reglinex)
+  # abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  # lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  #legend(12, 0, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(12,-3,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.25)
+  
+  #print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+  
+}
+
+getPredActRAECorrelation <- function(){
+  
+  dat <- getPredActRAE()
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$RAE_pred, dat$reachdeviation))
   
 }
 
