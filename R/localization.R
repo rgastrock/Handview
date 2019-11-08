@@ -1432,6 +1432,12 @@ getPredActRAE <- function(){
   return(newdf)
 }
 
+#this plot below is essentially, the check for our model. We see that it undershoots data on the lower end, and overshoots those in the higher end.
+#We can show this by running:
+# data <- getPredActRAE()
+# qqplot(data$RAE_pred, data$reachdeviation)
+# segments(0, 0, 15.6, 15.6, col='#343434')
+
 plotPredActRAE <- function(target='inline'){
   
   #but we can save plot as svg file
@@ -1449,12 +1455,6 @@ plotPredActRAE <- function(target='inline'){
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Actual and Predicted Reach Aftereffects", ylab = 'Actual No Cursor Reaches - Without Strategy (°)', xlab = 'Predicted No Cursor Reaches - Without Strategy (°)',
        bty='n', xlim= c(-1,17), ylim= c(-6,20), xaxt='n', yaxt='n')
-  #add line, need intercept and slope
-  #create glm based on predicted RAE and Actual RAE
-  mod <- glm(data$reachdeviation ~ data$RAE_pred)
-  INT <- as.numeric(mymod[[1]][1])
-  SLOPE <- as.numeric(mymod[[1]][2])
-  abline(a=INT,b=SLOPE,col="#343434")
 
   # this puts tick marks exactly where we want them:
   axis(side=1, at=c(0,5,10,15))#, cex=0.85)
@@ -1464,17 +1464,19 @@ plotPredActRAE <- function(target='inline'){
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
   
-  # #CIs
+  #CIs
   # pred_update <- data$pred_update
   # reachdev <- data$reachdeviation
-  # mod1 <- lm(reachdev ~ pred_update)
+  # pred <- data$RAE_pred
+  # act <- data$reachdeviation
+  # mod1 <- lm(act ~ pred)
   # 
   # 
   # #x <- seq(-5,19,.1) #min and max of reachdev
-  # x <- seq(-8,11,.1) #min and max of pred_update
+  # x <- seq(0.2,15.6,.1) #min and max of RAE_pred
   # 
   # #pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
-  # pred1 <- predict(mod1, newdata=data.frame(pred_update=x), interval='confidence')
+  # pred1 <- predict(mod1, newdata=data.frame(pred=x), interval='confidence')
   # 
   # polyX <- c(x,rev(x))
   # polyY <- c(pred1[,2], rev(pred1[,3]))
@@ -1484,11 +1486,21 @@ plotPredActRAE <- function(target='inline'){
   points(data$RAE_pred, data$reachdeviation, pch=16, cex=1.5,
          col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
   
+  #add line, need intercept and slope
+  #create glm based on predicted RAE and Actual RAE
+  # mod <- glm(data$reachdeviation ~ data$RAE_pred)
+  # INT <- as.numeric(mod[[1]][1])
+  # SLOPE <- as.numeric(mod[[1]][2])
+  #abline(a=INT,b=SLOPE,col="#343434")
+  
   # #Reg line
-  # reglinex <- seq(range(pred_update)[1],range(pred_update)[2],.1)
+  # reglinex <- seq(range(pred)[1],range(pred)[2],.1)
   # abX <- range(reglinex)
   # abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
   # lines(abX, abY, col='#343434')
+  
+  # # We can just plot the diagonal
+  segments(0, 0, 15.6, 15.6, col='#343434')
   
   #add in r-squared value to plot
   #this is just the value from mod1 under multiple R squared
@@ -1510,13 +1522,370 @@ plotPredActRAE <- function(target='inline'){
   
 }
 
-getPredActRAECorrelation <- function(){
+# Additional checks (Not included in Manuscript)----
+
+# Given that both predictions and proprioception predict RAE independently,
+# RAE ~ PSC: the residuals here should be predicted by Prop_Recal, and vice versa
+# We then compare these with the original plots of the relationship between RAE ~ Prop and RAE ~ Pred
+
+testPredResByProp <- function(){
   
-  dat <- getPredActRAE()
+  data <- getPredActRAE()
+  
+  RAE <- data$reachdeviation
+  pred <- data$pred_update
+  prop <- data$prop_recal
+  
+  mod1 <- glm(RAE ~ pred)
+  mod1_Res <- resid(mod1)
+  
+  mod2 <- glm(mod1_Res ~ prop)
+  print(summary(mod2))
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  
+  plot(NA,NA, 
+       xlim = c(-30,15), ylim = c(-15, 25),
+       ylab = 'Residuals of RAE ~ PSC', xlab = 'Proprioception', main = 'Prediction Residuals and Proprioceptive Recalibration',
+       bty='n', xaxt='n', yaxt='n')
+  
+  #CIs
+  mod2A <- lm(mod1_Res ~ prop) #need lm function for it to work
+  
+  
+  #x <- seq(-5,19,.1) #min and max of reachdev
+  x <- seq(-28,7,.1) #min and max of prop
+  
+  #pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  pred1 <- predict(mod2A, newdata=data.frame(prop=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(prop, mod1_Res, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  #Reg line
+  reglinex <- seq(range(prop)[1],range(prop)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod2$coefficients[2] + mod2$coefficients[1]
+  lines(abX, abY, col='#343434')
+}
+
+testPropResByPred <- function(){
+  
+  data <- getPredActRAE()
+  
+  RAE <- data$reachdeviation
+  pred <- data$pred_update
+  prop <- data$prop_recal
+  
+  mod1 <- glm(RAE ~ prop)
+  mod1_Res <- resid(mod1)
+  
+  mod2 <- glm(mod1_Res ~ pred)
+  print(summary(mod2))
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  
+  plot(NA,NA, 
+       xlim = c(-15,25), ylim = c(-15, 25),
+       ylab = 'Residuals of RAE ~ Prop', xlab = "Predictions",  main = 'Proprioception Residuals and Predicted Sensory Consequences',
+       bty='n', xaxt='n', yaxt='n')
+  
+  
+  #CIs
+  mod2A <- lm(mod1_Res ~ pred) #need lm function for it to work
+  
+  
+  #x <- seq(-5,19,.1) #min and max of reachdev
+  x <- seq(-9,12,.1) #min and max of prop
+  
+  #pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  pred1 <- predict(mod2A, newdata=data.frame(pred=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(pred, mod1_Res, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-10,0,10, 20))#, cex=0.85)
+  
+  #Reg line
+  reglinex <- seq(range(pred)[1],range(pred)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod2$coefficients[2] + mod2$coefficients[1]
+  lines(abX, abY, col='#343434')
+}
+
+#We can also get the correlation of the residual plots
+#Both are significant
+getPropResidByPredCorrelation <- function(){
+  data <- getPredActRAE()
+  
+  RAE <- data$reachdeviation
+  pred <- data$pred_update
+  prop <- data$prop_recal
+  
+  mod1 <- glm(RAE ~ prop)
+  mod1_Res <- resid(mod1)
   #plot(dat$reachdeviation, dat$prop_recal)
-  print(cor.test(dat$RAE_pred, dat$reachdeviation))
+  print(cor.test(mod1_Res, pred))
   
 }
+
+getPredResidByPropCorrelation <- function(){
+  data <- getPredActRAE()
+  
+  RAE <- data$reachdeviation
+  pred <- data$pred_update
+  prop <- data$prop_recal
+  
+  mod1 <- glm(RAE ~ pred)
+  mod1_Res <- resid(mod1)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(mod1_Res, prop))
+  
+}
+
+plotRelationships <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5D_correlationwres.svg', width=12, height=10, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  par(mfrow = c(2,2))
+  
+  
+  plotPropGroupCorrelations()
+  testPropResByPred()
+  plotPredGroupCorrelations()
+  testPredResByProp()
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+#The idea is that If we take the residuals of Prop and RAE and predict them from Pred,
+#The existence of a relationship here will show that the two are independent (This is already shown from Multiple regression and VIF analysis)
+#This is because we take away one component, and still see a relationship, so that means that they were independent.
+
+#Some other additional checks:
+#show that some other variables with similar stats as Pas don't predict anything: 
+#take the PSQ, shuffle them and subtract from Act, to get fake Pas scores. 
+#These fake Pas scores should not correlate with residuals after predicting RAE with the real Act scores. 
+
+testGetPSC <- function(styles) {
+  
+  #first, combine all data from all groups
+  alldf <- NA
+  
+  for (groupno in c(1:length(styles$group))){
+    group <- styles$group[groupno]
+    df <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group),stringsAsFactors=F)
+    
+    if (is.data.frame(alldf)) {
+      alldf <- rbind(alldf, df)
+    } else {
+      alldf <- df
+    }
+  }
+  
+  #then get the updates in predicted sensory consequences
+  group       <- c()
+  participant <- c()
+  handangle   <- c()
+  act_loc     <- c()
+  pas_loc     <- c()
+  pred_update <- c()
+  
+  handangles <- unique(alldf$handangle_deg)
+  groups <- unique(alldf$group)
+  
+  for (grp in groups) {
+    
+    participants <- unique(alldf$participant[which(alldf$group == grp)])
+    
+    for (pp in participants) {
+      
+      for (angle in handangles) {
+        #get data needed
+        subdf <- alldf[which(alldf$group == grp & alldf$participant == pp & alldf$handangle_deg == angle),]
+        
+        # get all the localization responses for this participant at this angle:
+        AlAct <- subdf$bias_deg[which(subdf$rotated_b == 0 & subdf$passive_b == 0)]
+        AlPas <- subdf$bias_deg[which(subdf$rotated_b == 0 & subdf$passive_b == 1)]
+        RotAct <- subdf$bias_deg[which(subdf$rotated_b == 1 & subdf$passive_b == 0)]
+        RotPas <- subdf$bias_deg[which(subdf$rotated_b == 1 & subdf$passive_b == 1)]
+        
+        # get the update in predicted sensory consequences:
+        #first the difference of rotated and aligned in both active and passive
+        #then the difference between active and passive to get UPSC
+        UPSC <- (RotAct - AlAct) - (RotPas - AlPas)
+        ACT <- RotAct - AlAct
+        PAS <- RotPas - AlPas
+        
+        # store in new vectors:
+        group <- c(group, grp)
+        participant <- c(participant, pp)
+        handangle <- c(handangle, angle)
+        act_loc <- c(act_loc, ACT)
+        pas_loc <- c(pas_loc, PAS)
+        pred_update <- c(pred_update, UPSC)
+      }
+    }
+  }
+  
+  alldf <- data.frame(group, participant, handangle, act_loc, pas_loc, pred_update)
+  alldf$group  <- factor(alldf$group, levels = c('30implicit', '30explicit', 'cursorjump', 'handview'))
+  alldf$handangle   <- as.factor(alldf$handangle)
+  alldf$participant <- as.character(alldf$participant) 
+  
+  return(alldf)
+  
+}
+
+getFakePas <- function(){
+  
+  styles <- getStyle()
+  data <- testGetPSC(styles)
+  
+  data$pred_update <- sample(data$pred_update, replace = FALSE)
+  data$fake_pas <- data$act_loc - data$pred_update
+  
+  subdata1 <- aggregate(fake_pas ~ participant*group, data=data, FUN=mean)
+  subdata2 <- aggregate(act_loc ~ participant*group, data=data, FUN=mean)
+  
+  dat <- cbind(subdata2, subdata1$fake_pas)
+  colnames(dat) <- c('participant', 'group', 'act_loc', 'fake_pas')
+  
+  #then we want to add exclusive angular deviations to the df above
+  data2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  data2 <- data2[which(data2$strategy == 'exclusive'),]
+  newdf <- cbind(dat, data2$reachdeviation)
+  colnames(newdf) <- c('participant', 'group', 'act_loc', 'fake_pas', 'RAE')
+  
+  return(newdf)
+}
+
+getACTResidByFakePASCorrelation <- function(){
+  data <- getFakePas()
+  
+  RAE <- data$RAE
+  ACT <- data$act_loc
+  PAS <- data$fake_pas
+  
+  mod1 <- glm(RAE ~ ACT)
+  mod1_Res <- resid(mod1)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(summary(mod1))
+  print(cor.test(mod1_Res, PAS))
+  
+  #VIF of ACT and fake PAS?
+  #print(vif(data[c(3,4)]))
+  
+  #or VIF of fake PAS and shuffled or fake PSQ
+  #data$fPSQ <- ACT - PAS
+  #print(vif(data[c(4,6)]))
+  
+  #or VIF of fake PAS and original PSQ
+  dat2 <- testGetPSC(styles)
+  dat2 <- aggregate(pred_update ~ participant*group, data=dat2, FUN=mean)
+  data$PSQ <- dat2$pred_update
+  print(vif(data[c(4,6)]))
+}
+
+#Can also check it from the other way around
+
+
+getFakeAct <- function(){
+  
+  styles <- getStyle()
+  data <- testGetPSC(styles)
+  
+  data$pred_update <- sample(data$pred_update, replace = FALSE)
+  data$fake_act <- data$pas_loc + data$pred_update
+  
+  subdata1 <- aggregate(fake_act ~ participant*group, data=data, FUN=mean)
+  subdata2 <- aggregate(pas_loc ~ participant*group, data=data, FUN=mean)
+  
+  dat <- cbind(subdata2, subdata1$fake_act)
+  colnames(dat) <- c('participant', 'group', 'pas_loc', 'fake_act')
+  
+  #then we want to add exclusive angular deviations to the df above
+  data2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  data2 <- data2[which(data2$strategy == 'exclusive'),]
+  newdf <- cbind(dat, data2$reachdeviation)
+  colnames(newdf) <- c('participant', 'group', 'pas_loc', 'fake_act', 'RAE')
+  
+  return(newdf)
+}
+
+getPASResidByFakeACTCorrelation <- function(){
+  data <- getFakeAct()
+  
+  RAE <- data$RAE
+  ACT <- data$fake_act
+  PAS <- data$pas_loc
+  
+  mod1 <- glm(RAE ~ PAS)
+  mod1_Res <- resid(mod1)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(summary(mod1))
+  print(cor.test(mod1_Res, ACT))
+  
+  #vif of ACT and PAS?
+  #print(vif(data[c(3,4)]))
+  
+  #or VIF of fake ACT and shuffled or fake PSQ
+  #data$fPSQ <- ACT - PAS
+  #print(vif(data[c(4,6)]))
+  
+  #or VIF of fake ACT and original PSQ
+  dat2 <- testGetPSC(styles)
+  dat2 <- aggregate(pred_update ~ participant*group, data=dat2, FUN=mean)
+  data$PSQ <- dat2$pred_update
+  print(vif(data[c(4,6)]))
+  
+}
+
+#We see that fake PAS scores do not correlate with the residuals of RAE ~ ACT,
+# even if ACT is a significant predictor of RAE
+#Same is true for the other way, fake ACT scores do not correlate with residuals of RAE ~ PAS,
+# even if PAS is a significant predictor of RAE
 
 #Per Group Correlation section----
 getHVPredExcData <- function(styles){
