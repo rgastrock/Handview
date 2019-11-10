@@ -1887,6 +1887,429 @@ getPASResidByFakeACTCorrelation <- function(){
 #Same is true for the other way, fake ACT scores do not correlate with residuals of RAE ~ PAS,
 # even if PAS is a significant predictor of RAE
 
+#We can also look into the VIF of Active and Passive (ACT and PAS original scores)
+
+getActPasCollinearity <- function(){
+  
+  styles <- getStyle()
+  data <- testGetPSC(styles)
+  
+  #get active and passive scores
+  subdata1 <- aggregate(act_loc ~ participant*group, data=data, FUN=mean)
+  subdata2 <- aggregate(pas_loc ~ participant*group, data=data, FUN=mean)
+  
+  newdf <- cbind(subdata1, subdata2$pas_loc)
+  colnames(newdf) <- c('participant', 'group', 'act_loc', 'pas_loc')
+  
+  print(vif(newdf[c(3,4)]))
+  
+}
+
+# We see that VIF for ACT and PAS is high (vif = 3.37)
+
+#But it is important to look into group/ manipulation effect.
+#We can take the average PSQ and PAS, then subtract these from each individual PSQ or PAS score in each group
+#Then we replot it and re-run the regression/correlation test
+# If we see no effect by doing such a thing, then whatever we saw before could mostly be explained by group differences
+# or the manipulation. This means that we are not only seeing the effects due to a higher sample size
+
+testGroupEffect <- function(){
+  
+  styles <- getStyle()
+  data <- testGetPSC(styles)
+  
+  #get active and passive scores
+  subdata1 <- aggregate(act_loc ~ participant*group, data=data, FUN=mean)
+  subdata2 <- aggregate(pas_loc ~ participant*group, data=data, FUN=mean)
+  subdata3 <- aggregate(pred_update ~ participant*group, data=data, FUN=mean)
+  
+  dat <- cbind(subdata1, subdata2$pas_loc, subdata3$pred_update)
+  
+  
+  #then we want to add exclusive angular deviations to the df above
+  subdata2 <- getRAE4ANOVA(styles)
+  #we want only exclusive data
+  subdata2 <- subdata2[which(subdata2$strategy == 'exclusive'),]
+  newdf <- cbind(dat, subdata2$reachdeviation)
+  colnames(newdf) <- c('participant', 'group', 'act_loc', 'pas_loc', 'pred_update', 'RAE')
+  
+  groups <- unique(newdf$group)
+  alldat <- data.frame()
+  
+  for (group in groups){
+    subnewdf <- newdf[which(newdf$group == group),]
+    
+    meanACT <- mean(subnewdf$act_loc)
+    meanPAS <- mean(subnewdf$pas_loc)
+    meanPRED <- mean(subnewdf$pred_update)
+    
+    subnewdf$act_loc <- subnewdf$act_loc - meanACT
+    subnewdf$pas_loc <- subnewdf$pas_loc - meanPAS
+    subnewdf$pred_update <- subnewdf$pred_update - meanPRED
+    
+    if (prod(dim(alldat)) == 0){
+      alldat <- subnewdf
+    } else {
+      alldat <- rbind(alldat, subnewdf)
+    }
+  }
+  
+  return(alldat)
+}
+
+#we replot and test for PAS
+plotMeanCorrectedPropCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5E_PropMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- testGroupEffect()
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Corrected Passive Localization (°)',
+       bty='n', xlim= c(-30,15), ylim= c(-15,25), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$pas_loc
+  reachdev <- data$RAE
+  mod1 <- lm(reachdev ~ prop_recal)
+  
+  
+  x <- seq(-21.54,11.58,.1) #min and max of pror_recal
+  
+  pred1 <- predict(mod1, newdata=data.frame(prop_recal=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$pas_loc, data$RAE, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(prop_recal)[1],range(prop_recal)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.056"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getMeanCorrectedRAEPropCorrelation <- function(){
+  styles <- getStyle()
+  dat <- testGroupEffect()
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$RAE, dat$pas_loc))
+  
+}
+# So it's still sigificant (p=0.02, r = -0.24), but this is less so than original data (r^2 went from .12 to .06).
+# Now, we do the same for PSQ
+
+plotMeanCorrectedPredCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5F_PredMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- testGroupEffect()
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Corrected Predictions (°)',
+       bty='n', xlim= c(-15,25), ylim= c(-15,25), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-10,0,10,20))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred <- data$pred_update
+  reachdev <- data$RAE
+  mod1 <- lm(reachdev ~ pred)
+  
+  
+  x <- seq(-6.59,14.33,.1) #min and max of pred
+  
+  pred1 <- predict(mod1, newdata=data.frame(pred=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$pred_update, data$RAE, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(pred)[1],range(pred)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.018"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getMeanCorrectedRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- testGroupEffect()
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$RAE, dat$pred_update))
+  
+}
+# So it's NOT sigificant (p=0.21, r = -0.13), and r^2 went from .089 to .018.
+# Non-significance means that any effect we've previously seen in the regression was due to the group manipulation.
+# That is, at least one group could be the cause that a relationship was seen. See Pre Group Correlation Section
+
+#What if we leave out the Hand View group, do we still see such a relationship for both Prop and Pred?
+plotNoHVPropGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5G_NoHVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getPropExcData(styles)
+  data <- data[-which(data$group == 'handview'),]
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Passive Localization (°)',
+       bty='n', xlim= c(-30,15), ylim= c(-15,25), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$prop_recal
+  reachdev <- data$reachdeviation
+  mod1 <- lm(reachdev ~ prop_recal)
+  
+  
+  x <- seq(-28.17,4.95,.1) #min and max of pror_recal
+  
+  pred1 <- predict(mod1, newdata=data.frame(prop_recal=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$prop_recal, data$reachdeviation, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(prop_recal)[1],range(prop_recal)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.081"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump'),
+         col=c(impcol,expcol,cujcol),
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getNoHVRAEPropCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getPropExcData(styles)
+  dat <- dat[-which(dat$group == 'handview'),]
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  
+}
+# So for Prop without HV, correlation is still significant (p = 0.03, r = -0.28, r^2 = 0.08).
+
+plotNoHVPredGroupCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5H_NoHVPredcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getPredExcData(styles)
+  data <- data[-which(data$group == 'handview'),]
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  #hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-15,25), ylim= c(-15,25), xaxt='n', yaxt='n')
+  #add dashed lines at 0
+  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
+  axis(side=1, at=c(-10,0,10, 20))#, cex=0.85)
+  
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  reachdev <- data$reachdeviation
+  mod1 <- lm(reachdev ~ pred_update)
+  
+  
+  #x <- seq(-5,19,.1) #min and max of reachdev
+  x <- seq(-8.97,11.95,.1) #min and max of pred_update
+  
+  #pred1 <- predict(mod1, newdata=data.frame(reachdev=x), interval='confidence')
+  pred1 <- predict(mod1, newdata=data.frame(pred_update=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#dadada', border=NA)
+  
+  #add in data points of all pp's
+  points(data$pred_update, data$reachdeviation, pch=16, cex=1.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(pred_update)[1],range(pred_update)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(12, 0, c(as.expression(bquote(""~ r^2 ~ "= 0.043"))), col='#a6a6a6', bty='n', cex=1)
+  
+  legend(15,-5,legend=c('Non-instructed','Instructed','Cursor Jump'),
+         col=c(impcol,expcol,cujcol),
+         pch=16,bty='o',cex=.25)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getNoHVRAEPredCorrelation <- function(){
+  styles <- getStyle()
+  dat <- getPredExcData(styles)
+  dat <- dat[-which(dat$group == 'handview'),]
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(cor.test(dat$reachdeviation, dat$pred_update))
+  
+}
+
+# So for Pred without HV, correlation is NOT significant (p = 0.11, r = -0.21, r^2 = 0.04). This may suggest that HV
+# was leading to the significance in relationship. BUT running Correlation for just HV shows that:
+# HV Pred and RAE relationship is non-existent (p = 0.99, r = -0.003, r^2 = 0.00001)
+# Thus I think that whatever significant relationship seen in Pred and RAE was just due to increasing sample size.
+
 #Per Group Correlation section----
 getHVPredExcData <- function(styles){
   
