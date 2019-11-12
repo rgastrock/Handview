@@ -1193,14 +1193,14 @@ plotPropGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Passive Localization (°)',
-       bty='n', xlim= c(-30,15), ylim= c(-15,25), xaxt='n', yaxt='n')
+  plot(NA, NA, main="Reach Aftereffects and Proprioceptive Recalibration", ylab = 'No Cursor Reaches \n Without Strategy (°)', xlab = 'Shifts in Passive Localization (°)',
+       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', asp=1, cex=.85)
   #add dashed lines at 0
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
   abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
-  axis(side=1, at=c(-30,-20,-10,0,10))#, cex=0.85)
+  axis(side=2, at=c(-10,0,10,20), cex=0.85)
+  axis(side=1, at=c(-30,-20,-10,0,10,20), cex=0.85)
   
   
   #library(car)
@@ -1235,11 +1235,11 @@ plotPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=1)
+  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.85)
 
-  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
-         col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='o',cex=.25)
+  # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  #        col=c(impcol,expcol,cujcol,hancol),
+  #        pch=16,bty='o',cex=.25)
   
   print(summary(mod1))
   
@@ -1299,14 +1299,14 @@ plotPredGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", ylab = 'No Cursor Reaches - Without Strategy (°)', xlab = 'Shifts in Predictions (°)',
-       bty='n', xlim= c(-15,25), ylim= c(-15,25), xaxt='n', yaxt='n')
+  plot(NA, NA, main="Reach Aftereffects and Predicted Sensory Consequences", ylab = 'No Cursor Reaches \n Without Strategy (°)', xlab = 'Shifts in Predictions (°)',
+       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', asp=1, cex=.85)
   #add dashed lines at 0
   abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
   abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-10,0,10,20))#, cex=0.85)
-  axis(side=1, at=c(-10,0,10, 20))#, cex=0.85)
+  axis(side=2, at=c(-10,0,10,20), cex=0.85)
+  axis(side=1, at=c(-30,-20,-10,0,10,20), cex=0.85)
   
   
   #library(car)
@@ -1343,11 +1343,12 @@ plotPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, 0, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=1)
+  legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=.85)
+
   
-  legend(15,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
-         col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='o',cex=.25)
+  # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  #        col=c(impcol,expcol,cujcol,hancol),
+  #        pch=16,bty='o',cex=.25)
   
   print(summary(mod1))
   
@@ -1438,6 +1439,68 @@ getPredActRAE <- function(){
 # qqplot(data$RAE_pred, data$reachdeviation)
 # segments(0, 0, 15.6, 15.6, col='#343434')
 
+plotLinesPredActRAE <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig5C_line_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  data <- getPredActRAE()
+  mod1 <- lm(data$RAE_pred ~ data$reachdeviation)
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Actual and Predicted Reach Aftereffects", xlab = 'Actual No Cursor Reaches \n Without Strategy (°)', ylab = 'Predicted No Cursor Reaches \n Without Strategy (°)',
+       bty='n', ylim= c(-5,25), xlim= c(-5,25), xaxt='n', yaxt='n', asp=1, cex=.85)
+
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-5,0,5,10,15,20), cex=0.85)
+  axis(side=1, at=c(-5,0,5,10,15,20), cex=0.85)
+  
+  #add in data points of all pp's
+  points(data$reachdeviation, data$RAE_pred, pch=16, cex=.5,
+         col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
+  
+  #add line, need intercept and slope
+  #create glm based on predicted RAE and Actual RAE
+  # mod <- glm(data$RAE_pred ~ data$reachdeviation)
+  # INT <- as.numeric(mod[[1]][1])
+  # SLOPE <- as.numeric(mod[[1]][2])
+  # abline(a=INT,b=SLOPE,col="#343434")
+  
+  # #Reg line
+  # reglinex <- seq(range(pred)[1],range(pred)[2],.1)
+  # abX <- range(reglinex)
+  # abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  # lines(abX, abY, col='#343434')
+  
+  # # We can just plot the diagonal
+  # diagonal is intercept at 0 and slope of 1
+  segments(-5.3, -5.3, 20, 20, col='#343434', lwd=2)
+  
+  #we can plot distances from point to diagonal by specifying (x,y) for from and to
+  segments(data$reachdeviation, data$RAE_pred, data$reachdeviation, data$reachdeviation, col= alpha(cols, .3))
+  
+  
+  legend(13,-1,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.6)
+  
+  
+  #print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+  
+}
+
 plotPredActRAE <- function(target='inline'){
   
   #but we can save plot as svg file
@@ -1453,12 +1516,12 @@ plotPredActRAE <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Actual and Predicted Reach Aftereffects", ylab = 'Actual No Cursor Reaches - Without Strategy (°)', xlab = 'Predicted No Cursor Reaches - Without Strategy (°)',
-       bty='n', xlim= c(-1,17), ylim= c(-6,20), xaxt='n', yaxt='n')
-
+  plot(NA, NA, main="Actual and Predicted Reach Aftereffects", xlab = 'Actual No Cursor Reaches - Without Strategy (°)', ylab = 'Predicted No Cursor Reaches - Without Strategy (°)',
+       bty='n', ylim= c(-5,20), xlim= c(-5,20), xaxt='n', yaxt='n', asp=1)
+  
   # this puts tick marks exactly where we want them:
-  axis(side=1, at=c(0,5,10,15))#, cex=0.85)
   axis(side=2, at=c(-5,0,5,10,15,20))#, cex=0.85)
+  axis(side=1, at=c(-5,0,5,10,15,20))#, cex=0.85)
   
   
   #library(car)
@@ -1483,15 +1546,15 @@ plotPredActRAE <- function(target='inline'){
   # polygon(polyX, polyY, col='#dadada', border=NA)
   
   #add in data points of all pp's
-  points(data$RAE_pred, data$reachdeviation, pch=16, cex=1.5,
+  points(data$reachdeviation, data$RAE_pred, pch=16, cex=1.5,
          col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
   
   #add line, need intercept and slope
   #create glm based on predicted RAE and Actual RAE
-  # mod <- glm(data$reachdeviation ~ data$RAE_pred)
+  # mod <- glm(data$RAE_pred ~ data$reachdeviation)
   # INT <- as.numeric(mod[[1]][1])
   # SLOPE <- as.numeric(mod[[1]][2])
-  #abline(a=INT,b=SLOPE,col="#343434")
+  # abline(a=INT,b=SLOPE,col="#343434")
   
   # #Reg line
   # reglinex <- seq(range(pred)[1],range(pred)[2],.1)
@@ -1500,8 +1563,8 @@ plotPredActRAE <- function(target='inline'){
   # lines(abX, abY, col='#343434')
   
   # # We can just plot the diagonal
-  segments(0, 0, 15.6, 15.6, col='#343434')
-  
+  # diagonal is intercept at (0,0) and slope of 1
+  segments(-5, -5, 20, 20, col='#343434')
   #add in r-squared value to plot
   #this is just the value from mod1 under multiple R squared
   #as of now, I add this value in manually below
@@ -1521,6 +1584,46 @@ plotPredActRAE <- function(target='inline'){
   }
   
 }
+
+plotPropPredRelationships <- function(target='inline') {
+  
+  styles <- getStyle()
+  
+  if (target == 'svg') {
+    svglite(file='doc/fig/Fig5_correlation.svg', width=14, height=4, pointsize=14, system_fonts=list(sans='Arial'))
+  }
+  
+  par(mfrow=c(1,3), mar=c(4,6,2,4))
+  
+  
+  
+  #layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
+  
+  
+  # # # # # # # # # #
+  # panel A: Prop Recal and RAE
+  plotPropGroupCorrelations()
+  #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  
+  # # # # # # # # # #
+  # panel B: PSC and RAE
+  plotPredGroupCorrelations()
+  #mtext('B', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  
+  # # # # # # # # # #
+  # panel C: Predicted and Actual RAE
+  plotLinesPredActRAE()
+  #mtext('C', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
+  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  
+  if (target == 'svg') {
+    dev.off()
+  }
+  
+}
+
 
 # Additional checks (Not included in Manuscript)----
 
