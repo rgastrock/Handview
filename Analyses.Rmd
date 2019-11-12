@@ -211,23 +211,36 @@ predConsTtests()
 
 From the tests, we see that only the Hand View group did not significantly differ from 0, suggesting that the Hand View group did not show any updates in predicted sensory consequences. Note that effect sizes are provided with Cohen's d, which is in standard deviation units. Thus, it indicates how many standard deviations the mean shift for a group is different from zero. Here, only the Hand View group has a very small effect size.
 
-# Pearson correlation between implicit reach aftereffects and passive localization
+# Contributions of Proprioception and Predicted Sensory Consequences on Reach Aftereffects
 
-Here, we tested whether the shifts in passive localization are correlated with the angular reach deviations of the hand in *No Cursor - Without Strategy* trials. Below is a plot showing the relationship between these two variables. The plot includes individual data points from all participants, colour-coded according to their respective groups, and a regression line with 95% confidence intervals. We then performed a Pearson correlation test, which included all particiants regardless of group.
+According to Modchalingam et al. (2019), afferent and efferent-based changes in hand localization are independent processes, and they suggested that afferent-based changes (proprioceptive recalibration) partly predicts implicit motor changes (reach aftereffects). Here, we test whether both afferent and efferent-based changes predict/contribute to implicit motor changes. 
 
+To visualize the data, we plot the relationship of proprioception and aftereffects, as well as predictions and aftereffects, individually. Note that we did perform a Pearson product moment correlation test for these two and found a significant relationship for both, but we only include it as analyses extra to the manuscript (i.e., the main test is the multiple regression below).
 ```{r}
-plotGroupCorrelations()
+plotPropPredRelationships()
 ```
 
+From the left and centre panel of the plot, we see that there seems to be a relationship between predictions and aftereffects, as well as proprioception and aftereffects. For these plots, we pooled data from all groups together. One criticism could be that we are observing a spurious correlation due to all groups being included. However, as we are investigating adaptation and its underlying processes, we would want to see any differences in groups with regards to how they are learning. Therefore, we pooled the data across all groups to get a sense of whether there is a continuum between groups that show these differences in learning. If we considered the groups individually, the range of adaptation would be narrow because they are doing the same tasks, and any potential effects seen here would mostly be due to noise. we note that there are no prior differences between groups, as participants were randomly sampled and all did the same task and experienced a similar perturbation magnitude. Therefore, any differences in groups here are due to the manipulation in the experiment. (See extra analyses below).
+
+We then performed a multiple regression, where measures of aftereffects was the dependent variable, and both proprioceptive recalibration and predicted sensory consequences were the predictors.
+
 ```{r}
-getRAEPropCorrelation()
+getPropPredGLM()
 ```
 
-We found a negative relationship (r = -0.35) between afferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.001, r-squared = 0.12). This relationship suggests that proprioceptive recalibration could be contributing to the reach aftereffects we have observed.
+We found that both changes in proprioception (p < .05) and predictions (p < .05) were significant predictors of reach aftereffects. Importantly, we note that changes in proprioception are independent from predicted sensory consequences due to how we have measured them. Recall that proprioceptive recalibration was measured from Passive localization, while predictions were calculated as a difference of Active and Passive Localization. This process ensures predictions do not have any shared variance with proprioceptive recalibration. Furthermore, predictions and proprioceptive changes are not collinear with each other (vif = 1.09 is considered low; see extra analyses below). 
 
-# Awareness Scores
+Next, we calculated the predicted reach aftereffects from our model and compared these with the actual/observed reach aftereffects from our experiment (right panel in the plot above).To calculate the predicted reach aftereffects, we refer to values from our model. The equation is:
 
-## Show scores for all groups
+predicted RAE = Intercept + Prediction_Coeff(actual_prediction) + Proprioception_Coeff(actual_proprioception)
+
+If the model predicted reach aftereffects perfectly, then points would fall along the diagonal of the plot. We see that the predictions overshoot the data on the lower end, but undershoot the data on the higher end. These could possibly be due to noise, or it could mean that the model is incomplete. It is very likely that another predictor needs to be included in the model, but the current study did not look further into this.
+
+# Analyses extra to those included in the Manuscript
+
+## Awareness Scores
+
+### Show scores for all groups
 
 Below are two plots showing the data on awareness scores by group. The barplot shows the number of participants that scored either 0, 1, 2, or 3 on the Awareness Questionnaire, for each of the four groups. The dot plot generated beside it, gives a visual of the number of participants scoring either high or low on the questionnaire, separated according to group.
 
@@ -236,4 +249,27 @@ plotAwareness()
 ```
 
 The plots confirm our findings with the PDP-type analysis discussed above. The Non-Instructed group scored lower on the questionnaire compared to the other groups, suggesting unawareness of the nature of the perturbation.
+
+## Pearson correlation test between implicit reach aftereffects and passive localization
+
+Here, we tested whether the shifts in passive localization are correlated with the angular reach deviations of the hand in *No Cursor - Without Strategy* trials. We performed a Pearson product-moment correlation test, which included all particiants regardless of group.
+
+```{r}
+getRAEPropCorrelation()
+```
+
+We found a negative relationship (r = -0.35) between afferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.001, r-squared = 0.12). This relationship suggests that proprioceptive recalibration could be contributing to the reach aftereffects we have observed.
+
+We performed the same test for updates in predicted sensory consequences and reach aftereffects. 
+
+```{r}
+getRAEPredCorrelation()
+```
+
+We found a negative realtionship (r = -0.30) between efferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.01, r-squared = 0.09). This relationship suggests that updates in predictions are also contributing to reach aftereffects. We suggest that the contribution of predictions are independent from the contributions of proprioceptive recalibration.
+
+## Additional analysis for correlations/regression
+# Given that both predictions and proprioception predict RAE independently,
+# RAE ~ PSC: the residuals here should be predicted by Prop_Recal, and vice versa
+# We then compare these with the original plots of the relationship between RAE ~ Prop and RAE ~ Pred
 

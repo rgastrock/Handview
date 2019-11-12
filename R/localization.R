@@ -1481,7 +1481,7 @@ plotLinesPredActRAE <- function(target='inline'){
   
   # # We can just plot the diagonal
   # diagonal is intercept at 0 and slope of 1
-  segments(-5.3, -5.3, 20, 20, col='#343434', lwd=2)
+  segments(-5.3, -5.3, 20, 20, col=8)
   
   #we can plot distances from point to diagonal by specifying (x,y) for from and to
   segments(data$reachdeviation, data$RAE_pred, data$reachdeviation, data$reachdeviation, col= alpha(cols, .3))
