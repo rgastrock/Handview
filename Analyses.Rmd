@@ -19,7 +19,7 @@ source('R/awareness.R')
 
 # Overview
 
-This document discusses figures and statistics for the Hand View project. The five main sections include data and analyses with regards to Learning Curves, Reach Aftereffects, Localization, Correlations, and Awareness Scores. 
+This document discusses figures and statistics for the Hand View project. The five main sections include data and analyses with regards to Learning Curves, Reach Aftereffects, Localization, Contributions of proprioception and predictions to reach aftereffects, and Extra analyses conducted. 
 
 # Learning Curves
 
@@ -33,7 +33,7 @@ Training reaches in *Cursor Trials* for both aligned and rotated sessions were m
 Below is a plot of the angular deviation of the hand across the first 90 trials of the rotated session. Lines represent the mean angular deviation of each group in every trial, and corresponding shaded regions represent 95% Confidence Intervals. For a closer look, we also show the same data, but only for the first 15 and last 15 trials.
 
 ```{r plot_learningCurves}
-plotLearningCurves(target='inline')
+plotLearningCurvesOLD(target='inline')
 plotBlockedLearningCurves(target='inline')
 ```
 
@@ -41,10 +41,10 @@ We see that, during training, the Instructed Group countered the rotation immedi
 
 ## ANOVAs
 
-To analyze the effects of our manipulation on external source attribution, we blocked the rotated training data into three blocks of trial sets. The first block consisted of the first set of three trials, the second consisted of the next three trials, and the third consisted of the last 15 trials of rotated training. Below is a plot showing individual participant data for each group across these three blocks.
+To analyze the effects of our manipulation on rates of learning, we blocked the rotated training data into three blocks of trial sets. The first block consisted of the first set of three trials, the second consisted of the next three trials, and the third consisted of the last 15 trials of rotated training. Below is a plot showing individual participant data for each group across these three blocks.
 
 ```{r}
-plotRateDist()
+plotLearningCurves()
 ```
 
 From the plot, we see that the distribution of the angular hand deviation across all participants are relatively normal and unimodal for all groups and blocks. Therefore, we proceeded to investigate how the four groups and their performance during adaptation training, compared with each other, for each of these three blocks. We performed a 3X4 mixed design ANOVA with block as a within-subject factor (blocks 1, 2, and 3) and group as a between-subject factor (Non-instructed, Instructed, Cursor Jump, Hand View). For this and the following tests, the alpha level was set to 0.05 and, when necessary, Greenhouse Geisser corrections were applied.
@@ -56,7 +56,7 @@ We see that the main effects of group and block, and their interaction, were sta
 
 ## Planned follow-up tests
 
-We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Non-instructed group as a reference (since it is the control group) and compare all the other groups to it. We then compare all groups to the non-instructed group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using the Sidak method. Note that the Sidak method is the default used in R when an alternative test, such as Tukey, is inappropriate for a given dataset. The Tukey method would be appropriate if we were comparing each mean with every other mean, but comparing only a selection of means would require the Bonferroni or Sidak. The Sidak method offers the slight advantage of being a less conservative method than the Bonferroni. Alternatively, the Dunnett method is used when comparing a group with a control group. Nevertheless, all of these are just for adjusting p values. Our results do not change, however, regardless of the method used in terms of which comparisons reached significance. Hence, we chose to stick with the default Sidak method.
+We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Non-instructed group as a reference (since it is the control group) and compare all the other groups to it. We then compare all groups to the non-instructed group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using the Sidak method. Note that the Sidak method is the default used in R when an alternative test, such as Tukey, is inappropriate for a given dataset. The Tukey method would be appropriate if we were comparing each mean with every other mean, but comparing only a selection of means would require the Bonferroni or Sidak. The Sidak method offers the slight advantage of being a less conservative method than the Bonferroni. Another option would be to use the Dunnett method when comparing a group with a control group. Nevertheless, all of these are just for adjusting p values. Our results do not change, however, regardless of the method used in terms of which comparisons reached significance. Hence, we chose to stick with the default Sidak method.
 
 ```{r}
 learningcurveComparisonMeans()
@@ -68,7 +68,7 @@ getComparisonEffSize(method='sidak')
 
 In block one, when each group was compared to the Non-instructed group, only the Instructed group differed significantly. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor. In block two, however, only the cursor jump group significantly differed from the non-instructed group, suggesting that the cursor jump group learned to counter for the rotation of the cursor at a faster rate than the non-instructed group. The hand view group, however, did not differ significantly from the non-instructed group. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular deviation of the hand, accounted for by the difference between the given group and the control, Non-Instructed group.
 
-To summarize, instruction on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, more explicit forms of knowledge, and therefore more external error attribution, from experiencing different stimuli that show the mismatch between actual hand position and the cursor, do not produce a similar initial advantage.
+To summarize, instruction on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, our other manipulations, despite the error being more clearly external in nature, do not produce a similar initial advantage.
 
 
 # Reach aftereffects
@@ -90,7 +90,7 @@ We see from the figure that when including or excluding the strategy learned to 
 Below is a plot showing individual data points for reach aftereffects and strategy use across all groups.
 
 ```{r}
-plotGroupDistribution()
+plotReachAfterEffects()
 ```
 
 We see that distributions for all groups are normal and unimodal. Thus, we proceeded with the statistical tests performed below.
@@ -131,7 +131,7 @@ The tests confirmed our conclusions from the figure. All groups, except the non-
 
 # Localization
 
-We also investigated how manipulating external error attribution affected participants' hand position estimates for both before and after adaptation training.
+We also investigated how manipulating the extent of external error attribution affected participants' hand position estimates for both before and after adaptation training.
 
 we analyzed estimates of hand position in *Active Localization* and *Passive Localization* trials, before and after rotation training. In obtaining hand position estimates, we calculated the angular difference between the point where the participant’s unseen right hand movement ended and their perceived hand position, i.e. their touchscreen response using the left hand. For us to be able to calculate these angular difference measures appropriately, the touchscreen and monitor position must be coordinated. However, during our analyses of the data, we encountered inconsistencies with the location of the touchscreen responses relative to the arc location. This is because the touchscreen position is fixed, but the monitor can be moved to different positions. Thus, these inconsistencies showed that some of the responses were not centred on where the arc stimuli were expected to be displayed (12 cm from home position). Despite this, responses still fell within the shape of an arc, which allowed us to fix for this problem by implementing a circle fitting procedure that finds a circle of best fit for the responses. Moreover, this procedure also allowed us to account for any participant response biases. The procedure used a fitting algorithm that minimized mean squared errors (MSE), where errors were defined as the difference between the touchscreen response locations and the expected arc stimulus location. The MSE measures were then passed on to an optimizing function (optim in R), which minimized the error to return a best fitting home position, such that the responses were shifted to where we expected it to be (i.e. 12 cm from home position). In short, the circle fitting procedure ensured that any localization shifts we detected in our analyses were not due to technical issues or response biases. Furthermore, we conducted an outlier removal procedure for this fitted data, such that touchscreen responses beyond ±20° from the arc centre and angular errors beyond ±3 standard deviations from the mean angular error were removed. Lastly, as participants chose the points on the arc that they moved towards, their movements did not end on all possible points on the arc. To account for this, we used a kernel smoothing method (width = 15°) to interpolate changes in hand localization at specific interpoints (50°, 90°, and 130°). Note that these interpoints are the same points where the arc stimuli are centred on in polar coordinates. We then calculated for the mean of these interpolated values, at every interpoint, to estimate shifts in hand localization.
 
@@ -144,10 +144,10 @@ Below is a plot of the mean angular shift in hand localization for each group as
 plotLocalizationShift(target='inline')
 ```
 
-We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information were available to the participants (i.e., *Active Localization*). In comparing Panels 2 and 3, we see that majority of the shifts in active localization was accounted for by proprioceptive information, as the shifts in predicted sensory consequences were near 0. However, the lack of differences across groups seems to suggest that our manipulation of external error attribution did not affect both proprioceptive recalibration and updating of predicted sensory consequences. Before any statistical tests, however, we first checked for the shape of distributions of individual data points across groups. Below is a plot showing individual data points for shifts in localization according to group and movement type (active or passive).
+We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information were available to the participants (i.e., *Active Localization*). In comparing Panels 2 and 3, we see that majority of the shifts in active localization was accounted for by proprioceptive information, as the shifts in predicted sensory consequences were near 0. However, the lack of differences across groups seems to suggest that our manipulation of external error attribution did not affect both proprioceptive recalibration and updating of predicted sensory consequences. Before any statistical tests, however, we first checked for the shape of distributions of individual data points across groups. Below is a plot showing individual data points for shifts in localization according to groups and movement type.
 
 ```{r}
-plotLocGroupDistribution()
+plotLocalizations()
 ```
 
 We see that distributions for all groups are normal and unimodal. Thus, we proceeded with the statistical tests performed below.
@@ -170,11 +170,11 @@ Since localization estimates shifted after rotated training, we tested whether t
 localizationANOVA(test = 'shifts')
 ```
 
-We see that there is a main effect of group and movement type, but no significant interaction. This suggests that movement type differentially affected the levels of group. However, our main research question aimed to see changes in estimates of hand location due to proprioceptive recalibration and updating of predicted sensory consequences, which we investigated next.
+We see that there is a main effect of group and movement type, but no significant interaction. This suggests that the effects of movement type on shifts in hand position estimates were not modulated by group, and vice-versa. Our main research question aimed to see changes in estimates of hand location due to proprioceptive recalibration and updating of predicted sensory consequences, which we investigated next.
 
 ## Proprioceptive Recalibration
 
-As previously stated, during active localization, participants have access to both information on proprioception and predicted sensory consequences. On the other hand, during passive localization, participants only have access to proprioceptive information. We are interested in testing the effect of the extent of external error attribution (group) on both proprioceptive recalibration and updates in predicted sensory  consequences.
+As previously stated, during active localization, participants have access to both information on proprioception and predicted sensory consequences. On the other hand, during passive localization, participants only have access to proprioceptive information. We are interested in testing the effect of manipulating the extent of external error attribution (group) on both proprioceptive recalibration and updates in predicted sensory  consequences.
 
 First, we run a one way ANOVA to test for the effect of group on passive localization changes (proprioceptive recalibration).
 
@@ -190,7 +190,7 @@ Next, we wanted to test whether each group showed any recalibration in proprioce
 pasLocTtests()
 ```
 
-From the tests, we see that all groups differed significantly from 0, suggesting that all groups showed changes in proprioceptive estimates. Note that effect sizes are provided with Cohen's d, which is in standard deviation units. Thus, it indicates how many standard deviations the mean shift for a group is different from zero. Here, all Cohen's d values are relatively similar.
+From the tests, we see that all groups differed significantly from 0, suggesting that all groups showed changes in proprioceptive estimates. Note that effect sizes are provided with Cohen's d, which is in standard deviation units. Thus, it indicates how many standard deviations the mean shift for a group is different from zero. Here, all Cohen's d values are relatively similar, except for the Hand View group.
 
 
 ## Predicted Sensory Consequences
@@ -220,7 +220,7 @@ To visualize the data, we plot the relationship of proprioception and aftereffec
 plotPropPredRelationships()
 ```
 
-From the left and centre panel of the plot, we see that there seems to be a relationship between predictions and aftereffects, as well as proprioception and aftereffects. For these plots, we pooled data from all groups together. One criticism could be that we are observing a spurious correlation due to all groups being included. However, as we are investigating adaptation and its underlying processes, we would want to see any differences in groups with regards to how they are learning. Therefore, we pooled the data across all groups to get a sense of whether there is a continuum between groups that show these differences in learning. If we considered the groups individually, the range of adaptation would be narrow because they are doing the same tasks, and any potential effects seen here would mostly be due to noise. we note that there are no prior differences between groups, as participants were randomly sampled and all did the same task and experienced a similar perturbation magnitude. Therefore, any differences in groups here are due to the manipulation in the experiment. (See extra analyses below).
+From the left and centre panel of the plot, we see that there seems to be a relationship between predictions and aftereffects, as well as proprioception and aftereffects. For these plots, we pooled data from all groups together. One criticism could be that we are observing a spurious correlation due to all groups being included. However, as we are investigating adaptation and its underlying processes, we would want to see any differences in groups with regards to how they are learning. Therefore, we pooled the data across all groups to get a sense of whether there is a continuum between groups that show these differences in learning. If we considered the groups individually, the range of adaptation would be narrow because they are doing the same tasks, and any potential effects seen here would mostly be due to noise. we note that there are no prior differences between groups, as participants were randomly sampled, all did the same task, and experienced a similar perturbation magnitude. Therefore, any differences in groups here are due to the manipulation in the experiment. (See extra analyses below).
 
 We then performed a multiple regression, where measures of aftereffects was the dependent variable, and both proprioceptive recalibration and predicted sensory consequences were the predictors.
 
@@ -269,7 +269,118 @@ getRAEPredCorrelation()
 We found a negative realtionship (r = -0.30) between efferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.01, r-squared = 0.09). This relationship suggests that updates in predictions are also contributing to reach aftereffects. We suggest that the contribution of predictions are independent from the contributions of proprioceptive recalibration.
 
 ## Additional analysis for correlations/regression
-# Given that both predictions and proprioception predict RAE independently,
-# RAE ~ PSC: the residuals here should be predicted by Prop_Recal, and vice versa
-# We then compare these with the original plots of the relationship between RAE ~ Prop and RAE ~ Pred
 
+To show that changes in predictions and proprioception are independent predictors/contributors to reach aftereffects, proprioception should be able to predict the residuals of regressing aftereffects on predictions.
+
+```{r}
+getPredResidByPropCorrelation()
+```
+
+We find a significant relationship between proprioception and residuals of regressing aftereffects on predictions (p < 0.001, r = -0.45). We can also see if the same is true for predictions and residuals of regressing aftereffects on proprioception. 
+
+```{r}
+getPropResidByPredCorrelation()
+```
+
+We find a significant relationship as well (p < 0.001, r = -0.42). Lastly, we can compare these two relationships with our original correlational plots.
+
+```{r}
+plotRelationships()
+```
+
+By considering the residuals, we are essentially controlling for one predictor. However, the existence of a significant relationship, between one predictor and the residuals of aftereffects with the other predictor, suggests that the two predictors are independent from each other.
+
+## Further analysis on the low VIF scores from Multiple Regression
+
+The low VIF score from predictions and proprioceptive changes could be trivial, given that predicted sensory consequences are measured by subtracting Passive Localization scores from Active Localization (PSC = ACT - PAS). To investigate this further, we could simulate either ACT or PAS scores that will also have a low VIF score with the other variable, but will not correlate with the residuals of regressing aftereffects on the other variable.
+
+First, we generated simulated PAS scores. To do this, we shuffled the PSC scores then subtracted them from ACT scores. Then we tested whether these simulated PAS scores will correlate with the residuals of regressing reach aftereffects with ACT scores.
+
+```{r}
+getACTResidByFakePASCorrelation()
+```
+
+We found that the simulated PAS scores do not significantly correlate (p = 0.81, r = -0.03) with the residuals of regressing aftereffects on ACT, even if ACT was a significant predictor of aftereffects (p < 0.001). The VIF score between the simulated PAS scores and PSC was still low (vif = 1.11). We also repeated this analysis the other way around and generated simulated ACT scores instead. 
+
+```{r}
+getPASResidByFakeACTCorrelation()
+```
+
+
+We found that the simulated ACT scores do not significantly correlate (p = 0.92, r = 0.01) with the residuals of regressing aftereffects on PAS, even if PAS was a significant predictor of aftereffects (p < 0.001). The VIF score between the simulated ACT scores and PSC was still low (vif = 1.08). 
+
+Another simple check is to show that ACT and PAS VIF scores are high, as these are considered to be collinear. This is exactly what we found (vif = 3.37), as shown below.
+
+```{r}
+getActPasCollinearity()
+```
+
+Given the low VIF score we found for predictions and proprioception, but high VIF score for ACT and PAS, we are certain that the VIF score informs uf about the collinearity of these variable. However, it is trivial in its ability to show the independence of predictions from proprioception. Thus, the residual analyses on the previous section above is more informative in showing that these two predictors are independently contributing to reach aftereffects. 
+
+## Analyzing potential group effects
+
+We also wanted to ensure that whatever effects we found from the multiple regression would be explained by group differences. Here, I display three potential ways of looking into these. 
+
+### 1)
+One way of doing this was to calculate for the mean PSC and PAS scores, then subtract these from each individual PSC and PAS score within each group. Afterwards, we can replot the data and test for the existence of a relationship between PSC and PAS with aftereffects. The absence of an effect after doing such a correction will indicate that any effects observed from the original multiple regression is explained by group differences (or the experimental manipulation).
+
+```{r}
+getMeanCorrectedGLM()
+```
+
+However, we found that both predictors (predictions: p < 0.05; proprioception: p < 0.01) were still significant after doing such a correction. We can also consider proprioception and predictions separately. First, we replot the relationship of proprioceptive recalibration with aftereffects after the correction, then test for a correlation.
+
+```{r}
+plotMeanCorrectedPropCorrelations()
+getMeanCorrectedRAEPropCorrelation()
+```
+
+We found that proprioception has a significant relationship with aftereffects (p=0.03, r = -0.24), but this is less in magnitude compared to the original data (r-squared went from 0.12 to 0.06). We repeated the same analyses for predictions.
+
+```{r}
+plotMeanCorrectedPredCorrelations()
+getMeanCorrectedRAEPredCorrelation()
+```
+
+We found the predictions did not have a significant relationship with aftereffects (p=0.21, r = -0.13), and r-squared values were reduced from 0.09 to 0.02.
+
+### 2)
+Another way of looking into group effects is to see how the relationships of predictions and proprioception with aftereffects change with the removal of the Hand View group (Note that we only remove the Hand View group because it was the group observed to be different from the others in measures of aftereffects and predicted sensory consequences). First, we investigate the relationship of predictions and aftereffects, without the Hand View group.
+
+```{r}
+plotNoHVPredGroupCorrelations()
+getNoHVRAEPredCorrelation()
+```
+
+We found that the correlation between predictions and aftereffects, after removing the Hand View group, was not significant (p > 0.10, r = -0.21, r-squared = 0.04). This suggests that the observed effect from previous analyses could be mainly driven by the Hand View group. (Refer back to section on *Contributions of Proprioception and Predicted Sensory Consequences on Reach Aftereffects*).
+
+Next, we repeat the analyses for proprioceptive recalibration and aftereffects.
+
+```{r}
+plotNoHVPropGroupCorrelations()
+getNoHVRAEPropCorrelation()
+```
+
+We found that the correlation between proprioceptive changes and aftereffects, after removing the Hand View group, was significant (p < 0.05, r = -0.28, r-squared = 0.08).
+
+### 3)
+We also looked into the relationship of predictions and proprioception on reach aftereffects, for each individual group. First, I show results for correlation tests between proprioception and aftereffects for each group. I also pot these relationships to visualize the data better.
+
+```{r}
+getPGPropCorr()
+plotPGPropCorr()
+```
+
+
+We see that only the Hand View group exhibits a significant relationship between proprioception and aftereffects (p < 0.01, r = -0.50), while other groups did not exhibit such a relationship (Cursor Jump: p > 0.10, r = -0.34; Instructed: p > 0.10, r = -0.29; Non-Instructed: p > 0.10, r = -0.17). 
+
+We then repeat the same analyses for predictions and aftereffects.
+
+```{r}
+getPGPredCorr()
+plotPGPredCorr()
+```
+
+We see that none of the groups exhibited a significant relationship between predictions and aftereffects (Hand View: p > 0.10, r = -0.003; Cursor Jump: p > 0.10, r = -0.009; Instructed: p > 0.10, r = -0.30; Non-Instructed: p > 0.10, r = -0.30).
+
+Taken together, all of these analyses show that there are group differences due to the experimental manipulation, when looking into relationships between predictions and aftereffects, as well as proprioception and aftereffects. However, pooling the data together is justified due to our interest in showing what seems to be a continuum of how the groups differ in learning.

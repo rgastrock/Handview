@@ -340,16 +340,16 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     #removed ylab for now to make space in poster (SCAPPS 2018)
     ylims=c(-.35*-15,-15+(.35*-15)) #as -.1 and .2 before; -15 is the constant here
     if (reachtype.idx == 0){
-      plot(NA, NA, xlim = c(40,140), ylim = ylims, 
+      plot(NA, NA, xlim = c(40,190), ylim = ylims, 
            xlab = "", ylab="Localization Shift (°)", frame.plot = FALSE, #frame.plot takes away borders
            main = sprintf('%s Localization \n \n \n (Proprioception + Prediction)', reachtype),cex.main = 1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception + Prediction)", cex = 1)
       abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130),cex.axis=0.85) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
-      mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
+      #mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
     } else if (reachtype.idx == 1){
-      plot(NA, NA, xlim = c(40,140), ylim = ylims, 
+      plot(NA, NA, xlim = c(40,190), ylim = ylims, 
            xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
            main = sprintf('%s Localization \n \n \n (Proprioception)', reachtype),cex.main=1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
@@ -391,26 +391,26 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
       lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
     }
     
-    # for (group in groups){
-    #   
-    #   col <- colourscheme[[group]][['S']]
-    #   
-    #   #add average dots and CIs
-    #   localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
-    #   localization <- localization[which(localization$passive_b == (reachtype.idx)),] #removed -1 in reachtype.idx
-    #   localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
-    #   shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
-    #   
-    #   groupno <- which(groups == group)
-    #   xloc <- 145 + (groupno*8)
-    #   CI <- t.interval(shift)
-    #   #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color_solid[groupno]), lty=styles$linestyle[groupno])
-    #   lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
-    #   lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
-    #   lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
-    #   #lines(c(xloc-1.5, xloc+1.5), c(CI[2], CI[2]), col=col)
-    #   points(xloc, mean(shift), col=col, pch=19)
-    # }
+    for (group in groups){
+
+      col <- colourscheme[[group]][['S']]
+
+      #add average dots and CIs
+      localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+      localization <- localization[which(localization$passive_b == (reachtype.idx)),] #removed -1 in reachtype.idx
+      localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+      shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+
+      groupno <- which(groups == group)
+      xloc <- 145 + (groupno*8)
+      CI <- t.interval(shift)
+      #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color_solid[groupno]), lty=styles$linestyle[groupno])
+      lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
+      lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
+      lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
+      #lines(c(xloc-1.5, xloc+1.5), c(CI[2], CI[2]), col=col)
+      points(xloc, mean(shift), col=col, pch=19)
+    }
   }
   
   
@@ -420,7 +420,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
   #NA to create empty plot
   # could maybe use plot.new() ?
   ylims=c(-.35*-15,-15+(.35*-15)) #as -.1 and .2 before; -15 is the constant here
-  plot(NA, NA, xlim = c(40,140), ylim = ylims, 
+  plot(NA, NA, xlim = c(40,190), ylim = ylims, 
        xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
        main = 'Predicted \n Sensory Consequences \n \n (Prediction)',cex.main=1, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   #mtext("(Prediction)", cex=1)
@@ -456,31 +456,31 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
 
-  # for (group in groups) {
-  #   
-  #   shifts <- list()
-  #   col <-colourscheme[[group]][['S']]
-  #   
-  #   for (reachtype.idx in c(0,1)) {
-  #     localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
-  #     localization <- localization[which(localization$passive_b == (reachtype.idx)),]
-  #     localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
-  #     shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
-  #     shifts[[reachtype.idx+1]] <- shift
-  #   }
-  #   
-  #   shift <- shifts[[1]] - shifts[[2]] #Active minus Passive
-  #   
-  #   groupno <- which(groups == group)
-  #   xloc <- 145 + (groupno*8)
-  #   CI <- t.interval(shift)
-  #   #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color[groupno]), lty=styles$linestyle[groupno])
-  #   lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
-  #   lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
-  #   lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
-  #   points(xloc, mean(shift), col=col, pch=19)
-  #   
-  # }
+  for (group in groups) {
+
+    shifts <- list()
+    col <-colourscheme[[group]][['S']]
+
+    for (reachtype.idx in c(0,1)) {
+      localization <- read.csv(sprintf('data/%s_loc_p3_AOV.csv',group))
+      localization <- localization[which(localization$passive_b == (reachtype.idx)),]
+      localization <- aggregate(bias_deg ~ participant*rotated_b, data=localization, FUN=mean)
+      shift <- localization$bias_deg[which(localization$rotated_b == 1)] - localization$bias_deg[which(localization$rotated_b == 0)]
+      shifts[[reachtype.idx+1]] <- shift
+    }
+
+    shift <- shifts[[1]] - shifts[[2]] #Active minus Passive
+
+    groupno <- which(groups == group)
+    xloc <- 145 + (groupno*8)
+    CI <- t.interval(shift)
+    #arrows(xloc, CI[2], xloc, CI[1], length=0.05, angle=90, code=3, col=as.character(styles$color[groupno]), lty=styles$linestyle[groupno])
+    lines(c(xloc, xloc), c(CI[3], CI[1]), col=col)
+    lines(c(xloc-1.5, xloc+1.5), c(CI[1], CI[1]), col=col)
+    lines(c(xloc-1.5, xloc+1.5), c(CI[3], CI[3]), col=col)
+    points(xloc, mean(shift), col=col, pch=19)
+
+  }
   legend(40,-17,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,bty='n', cex=0.85)
@@ -682,7 +682,7 @@ plotLocalizations <- function(target='inline'){
     DY <- c(0,     DY, 0)
     
     #include shaded distribution?
-    #polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -751,7 +751,7 @@ plotLocalizations <- function(target='inline'){
     DY <- c(0,     DY, 0)
     
     #include shaded distribution?
-    #polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -816,7 +816,7 @@ plotLocalizations <- function(target='inline'){
     DY <- c(0,     DY, 0)
     
     #include shaded distribution?
-    #polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -1904,6 +1904,7 @@ getFakePas <- function(){
 }
 
 getACTResidByFakePASCorrelation <- function(){
+  styles <- getStyle()
   data <- getFakePas()
   
   RAE <- data$RAE
@@ -1958,6 +1959,7 @@ getFakeAct <- function(){
 }
 
 getPASResidByFakeACTCorrelation <- function(){
+  styles <- getStyle()
   data <- getFakeAct()
   
   RAE <- data$RAE
@@ -2058,6 +2060,15 @@ testGroupEffect <- function(){
   }
   
   return(alldat)
+}
+
+#rerun the multiple regression
+getMeanCorrectedGLM <- function(){
+  
+  data <- testGroupEffect()
+  mod1 <- glm(RAE ~ pas_loc + pred_update, data = data)
+  print(summary(mod1))
+  
 }
 
 #we replot and test for PAS
@@ -2411,7 +2422,7 @@ getNoHVRAEPredCorrelation <- function(){
 # So for Pred without HV, correlation is NOT significant (p = 0.11, r = -0.21, r^2 = 0.04). This may suggest that HV
 # was leading to the significance in relationship. BUT running Correlation for just HV shows that:
 # HV Pred and RAE relationship is non-existent (p = 0.99, r = -0.003, r^2 = 0.00001)
-# Thus I think that whatever significant relationship seen in Pred and RAE was just due to increasing sample size.
+
 
 #Per Group Correlation section----
 getHVPredExcData <- function(styles){
@@ -2831,7 +2842,22 @@ plotPGPredCorr <- function(){
   plotIPredGroupCorrelations()
 }
 
-#improve code, to have one function do this all for each group, all plots in one
+getPGPredCorr <- function(){
+  
+  cat('Hand View group - Predictions and Reach Aftereffects:\n')
+  getHVRAEPredCorrelation()
+  
+  cat('Cursor Jump group - Predictions and Reach Aftereffects:\n')
+  getCJRAEPredCorrelation()
+  
+  cat('Instructed group - Predictions and Reach Aftereffects:\n')
+  getIRAEPredCorrelation()
+  
+  cat('Non Instructed group - Predictions and Reach Aftereffects:\n')
+  getNIRAEPredCorrelation()
+  
+}
+
 #do the same for proprioception
 
 getHVPropExcData <- function(styles){
@@ -3249,4 +3275,20 @@ plotPGPropCorr <- function(){
   plotCJPropGroupCorrelations()
   plotNIPropGroupCorrelations()
   plotIPropGroupCorrelations()
+}
+
+getPGPropCorr <- function(){
+  
+  cat('Hand View group - Propriocetive Recalibration and Reach Aftereffects:\n')
+  getHVRAEPropCorrelation()
+  
+  cat('Cursor Jump group - Propriocetive Recalibration and Reach Aftereffects:\n')
+  getCJRAEPropCorrelation()
+  
+  cat('Instructed group - Propriocetive Recalibration and Reach Aftereffects:\n')
+  getIRAEPropCorrelation()
+  
+  cat('Non Instructed group - Propriocetive Recalibration and Reach Aftereffects:\n')
+  getNIRAEPropCorrelation()
+  
 }
