@@ -1396,6 +1396,7 @@ getPropPredGLM <- function(){
 
 }
 
+
 #take this model and show predicted RAE and actual RAE
 #if the model predicts the actual RAE well, then we know that predictions from the model are valid
 #make a plot for predicted RAE and actual RAE
@@ -2070,6 +2071,48 @@ getMeanCorrectedGLM <- function(){
   print(summary(mod1))
   
 }
+
+#lower AIC with original regression, so it is explaining data better (which makes sense because group effect is in this model)
+#but is there a way to quantify this?
+
+#compare original regression to this mean corrected regression
+#if significant, this means that PAS and PSC contributing to RAE still holds,
+#but group effects are explaining part of the data (i.e. there is a group effect)
+#two models are non-nested, so we can use a coxtest (see help file for test)
+
+#library(lmtest)
+getOrigCorrRegANOVA <- function(){
+  
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  
+  lm1 <- glm(RAE ~ pred_update + prop_recal)
+  
+  
+  data <- testGroupEffect()
+  lm2 <- glm(RAE ~ pas_loc + pred_update, data = data)
+  
+  coxtest(lm1, lm2)
+}
+
+#The idea of the Cox test is the following: if the first model contains the correct set of regressors, 
+#then a fit of the regressors from the second model to the fitted values from first model should have no further explanatory value. 
+#But if it has, it can be concluded that model 1 does not contain the correct set of regressors.
+
+#Hence, to compare both models the fitted values of model 1 are regressed on model 2 and vice versa. 
+#A Cox test statistic is computed for each auxiliary model which is asymptotically standard normally distributed.
+
+#Since values are significant, then model 1 has some additional explanatory value on model 2: see second result below
 
 #we replot and test for PAS
 plotMeanCorrectedPropCorrelations <- function(target='inline'){
@@ -3291,4 +3334,75 @@ getPGPropCorr <- function(){
   cat('Non Instructed group - Propriocetive Recalibration and Reach Aftereffects:\n')
   getNIRAEPropCorrelation()
   
+}
+
+# Winsorized correlation and incorporating Group to model ----
+#If a spurious correlation exists, one solution would be to run a robust correlation test
+#Winsorized correlation sets the values at the tails to a certain percentile value (20% is the default)
+#This way, extreme values do not affect the data
+#requires package:
+
+library(WRS2)
+
+getRAEPropWinCorr<- function(){
+  styles <- getStyle()
+  dat <- getPropExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(wincor(dat$reachdeviation, dat$prop_recal))
+  
+}
+
+#Correlation becomes r = -0.53, p = 0!
+
+getRAEPredWinCorr <- function(){
+  styles <- getStyle()
+  dat <- getPredExcData(styles)
+  #plot(dat$reachdeviation, dat$prop_recal)
+  print(wincor(dat$reachdeviation, dat$pred_update))
+  
+}
+
+#Correlation becomes r = -0.36, p = 0.0007!
+
+
+
+#Code below is unnecessary, but tries to incorporate group into model (unsure if it is correct)
+#car package is required here
+library(car)
+
+getPropPredGroupGLM <- function(){
+
+  #read in data
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+
+  #set variables for easier referencing
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  group <- newdf$group
+
+
+  #dummy coding is automatically done in R (can use model.matrix to show this)
+  #res <- model.matrix(~group, data = newdf)
+
+  #ANOVA is a special case of regression, where all predictors are categorical, so we can use the same thing here
+  #can pull out the Anova table, Anova from car takes care of unbalanced designs automatically (anova from base does not)
+
+  #which mod to use?
+  mod1<-lm(RAE ~ prop_recal + pred_update + group,data=newdf)
+  #mod1<-lm(RAE ~ prop_recal + pred_update + group + prop_recal*pred_update*group,data=newdf)
+  print(Anova(mod1))
+
+  #to interpret contrasts of categorical variable run line below:
+  summary(mod1)
+
+  #Prop, Pred, Group are all significant (Running the longer model will give all interactions, and these are not significant)
+  #So there is a group effect.
+  #Looking into contrasts, we see that both handview and cursor jump are significant at alpha=.05
+
 }
