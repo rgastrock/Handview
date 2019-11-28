@@ -9,6 +9,9 @@ library('lsr')
 library('tools')
 library('SMCL')
 library('usdm')
+library('lmtest')
+library('car')
+library('WRS2')
 
 # Generic Functions -----
 getStyle <- function() {

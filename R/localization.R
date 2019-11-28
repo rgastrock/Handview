@@ -620,7 +620,7 @@ plotLocalizations <- function(target='inline'){
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
   
-  legend(40,-17,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
+  legend(40,-25,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n', cex=0.85)
   
@@ -1597,7 +1597,6 @@ plotPropPredRelationships <- function(target='inline') {
   par(mfrow=c(1,3), mar=c(4,6,2,4))
   
   
-  
   #layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
   
   
@@ -1689,6 +1688,9 @@ testPredResByProp <- function(){
   abX <- range(reglinex)
   abY <- abX * mod2$coefficients[2] + mod2$coefficients[1]
   lines(abX, abY, col='#343434')
+  
+  #add legend and r-squared
+  legend(2, -8, c(as.expression(bquote(""~ r^2 ~ "= 0.2056"))), col='#a6a6a6', bty='n', cex=.85)
 }
 
 testPropResByPred <- function(){
@@ -1748,6 +1750,9 @@ testPropResByPred <- function(){
   abX <- range(reglinex)
   abY <- abX * mod2$coefficients[2] + mod2$coefficients[1]
   lines(abX, abY, col='#343434')
+  
+  #add legend and r-squared
+  legend(12, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.1794"))), col='#a6a6a6', bty='n', cex=.85)
 }
 
 #We can also get the correlation of the residual plots
@@ -2081,7 +2086,7 @@ getMeanCorrectedGLM <- function(){
 #two models are non-nested, so we can use a coxtest (see help file for test)
 
 #library(lmtest)
-getOrigCorrRegANOVA <- function(){
+getOrigCorrRegComp <- function(){
   
   
   styles <- getStyle()
@@ -2178,7 +2183,7 @@ plotMeanCorrectedPropCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.056"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(5,-7,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.25)
   
@@ -2263,7 +2268,7 @@ plotMeanCorrectedPredCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.018"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(5,-7,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.25)
   
@@ -2556,7 +2561,7 @@ plotHVPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.00001"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.00001"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Hand View',
          col=hancol,
@@ -2658,7 +2663,7 @@ plotCJPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.00007"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.00007"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Cursor Jump',
          col=cujcol,
@@ -2760,7 +2765,7 @@ plotNIPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Non-Instructed',
          col=impcol,
@@ -2862,7 +2867,7 @@ plotIPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Instructed',
          col=expcol,
@@ -2991,7 +2996,7 @@ plotHVPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.2481"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.2481"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Hand View',
          col=hancol,
@@ -3093,7 +3098,7 @@ plotCJPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.1167"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.1167"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Cursor Jump',
          col=cujcol,
@@ -3195,7 +3200,7 @@ plotNIPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.0294"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.0294"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Non-Instructed',
          col=impcol,
@@ -3297,7 +3302,7 @@ plotIPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(12, -20, c(as.expression(bquote(""~ r^2 ~ "= 0.083"))), col='#a6a6a6', bty='n', cex=1)
+  legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.083"))), col='#a6a6a6', bty='n', cex=1)
   
   legend(15,-25,legend='Instructed',
          col=expcol,
@@ -3342,7 +3347,7 @@ getPGPropCorr <- function(){
 #This way, extreme values do not affect the data
 #requires package:
 
-library(WRS2)
+#library(WRS2)
 
 getRAEPropWinCorr<- function(){
   styles <- getStyle()
@@ -3368,7 +3373,7 @@ getRAEPredWinCorr <- function(){
 
 #Code below is unnecessary, but tries to incorporate group into model (unsure if it is correct)
 #car package is required here
-library(car)
+#library(car)
 
 getPropPredGroupGLM <- function(){
 

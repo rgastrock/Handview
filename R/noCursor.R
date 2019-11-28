@@ -97,7 +97,8 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   
   #NA to create empty plot
   # could maybe use plot.new() ?
-  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4) #was -.1 and .2 before
+  #ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #as -.1 and .2 before
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4) #+4 added here to fit in individual points
   plot(NA, NA, xlim = c(0,2.6), ylim = ylims, #c(-5,35),
        xlab = "Strategy Use", ylab = "Angular Deviation of Hand (°)", frame.plot = FALSE, #frame.plot takes away borders
        xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
@@ -179,7 +180,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   } 
 
   #add legend
-  legend(0.10,44.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(0.10,42.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n',cex=0.85)
   
@@ -202,7 +203,8 @@ plotReachAfterEffects <- function(target='inline'){
   
   
   
-  layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
+  layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1,1))
+  #layout(matrix(c(1,2), nrow=1, ncol=2, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
   
   
   # # # # # # # # # #
@@ -216,7 +218,7 @@ plotReachAfterEffects <- function(target='inline'){
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
-  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #as -.1 and .2 before
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4) #as -.1 and .2 before
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Without Strategy',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
@@ -275,7 +277,7 @@ plotReachAfterEffects <- function(target='inline'){
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
-  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
+  ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4)
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='With Strategy',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)

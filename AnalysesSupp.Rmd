@@ -1,0 +1,183 @@
+---
+title: "Supplementary Analyses: External Source Attribution and Adaptation while Viewing the Hand "
+author: "Raphael Gastrock"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r load_code, include=FALSE}
+source('R/shared.R')
+source('R/learningCurves.R')
+source('R/noCursor.R')
+source('R/localization.R')
+source('R/distributionplots.R')
+source('R/awareness.R')
+```
+
+# Overview
+
+This document discusses analyses conducted to support and justify the main tests conducted for the study. These tests are not included in the Results and Discussion sections of the manuscript.
+
+## Awareness Scores
+
+### Show scores for all groups
+
+At the end of the experiment, participants had to answer a series of questions to assess their awareness of the perturbation they experienced (adapted from Benson et al., 2011; Modchalingam et al., 2019). Each response was given a score and follow-up questions were dependent on the participant's responses to the previous question. Scores were added at the end to come up with an Awareness Score for the participant (where, 0 means low awareness and 3 means high awareness). Below are two plots showing the data on awareness scores by group. The barplot shows the number of participants that scored either 0, 1, 2, or 3 on the Awareness Questionnaire, for each of the four groups. The dot plot generated beside it, gives a visual of the number of participants scoring either high or low on the questionnaire, separated according to group.
+
+```{r}
+plotAwareness()
+```
+
+The plots confirm our findings with the PDP-type analysis. The Non-Instructed group scored lower on the questionnaire compared to the other groups, suggesting unawareness of the nature of the perturbation.
+
+## Pearson correlation test between implicit reach aftereffects and passive localization
+
+Here, we tested whether the shifts in passive localization are correlated with the angular reach deviations of the hand in *No Cursor - Without Strategy* trials. We performed a Pearson product-moment correlation test, which included all participants regardless of group.
+
+```{r}
+getRAEPropCorrelation()
+```
+
+We found a negative relationship (r = -0.35) between afferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.001, r-squared = 0.12). This relationship suggests that proprioceptive recalibration could be contributing to the reach aftereffects we have observed.
+
+We performed the same test for updates in predicted sensory consequences and reach aftereffects. 
+
+```{r}
+getRAEPredCorrelation()
+```
+
+We found a negative realtionship (r = -0.30) between efferent-based changes in localization and reach aftereffects when excluding a strategy (p < 0.01, r-squared = 0.09). This relationship suggests that updates in predictions are also contributing to reach aftereffects.
+
+Performing these two correlations bring about two possible criticisms:
+1) Significant relationships found from both correlation tests could be spurious, since data from all individuals across all groups were pooled together.
+2) The multiple regression done in the main text will be valid if changes in proprioception are independent from updates in predictions.
+
+## Justification for pooling data across participants from all groups
+
+### 1)
+First, we looked into the possibility of a spurious correlation existing within our dataset. Essentially, we are looking for the existence of a group effect. One way of looking into group effects is to see how the relationships of predictions and proprioception with aftereffects change with the removal of the Hand View group (Note that we only remove the Hand View group because it was the group observed to be different from the others in measures of aftereffects and predicted sensory consequences). First, we investigate the relationship of predictions and aftereffects, without the Hand View group.
+
+```{r}
+plotNoHVPredGroupCorrelations()
+getNoHVRAEPredCorrelation()
+```
+
+We found that the correlation between predictions and aftereffects, after removing the Hand View group, was not significant (p > 0.10, r = -0.21, r-squared = 0.04). This suggests that the observed effect from previous analyses could be mainly driven by the Hand View group.
+
+Next, we repeat the analyses for proprioceptive recalibration and aftereffects.
+
+```{r}
+plotNoHVPropGroupCorrelations()
+getNoHVRAEPropCorrelation()
+```
+
+We found that the correlation between proprioceptive changes and aftereffects, after removing the Hand View group, was significant (p < 0.05, r = -0.28, r-squared = 0.08).
+
+### 2)
+We also looked into the relationships of both predictions and proprioception with reach aftereffects, for each individual group. First, I show results for correlation tests between proprioception and aftereffects for each group. I also plot these relationships to visualize the data better.
+
+```{r}
+getPGPropCorr()
+plotPGPropCorr()
+```
+
+
+We see that only the Hand View group exhibits a significant relationship between proprioception and aftereffects (p < 0.01, r = -0.50, r-squared = 0.25), while other groups did not exhibit such a relationship (Cursor Jump: p > 0.10, r = -0.34, r-squared = 0.12; Instructed: p > 0.10, r = -0.29, r-squared = 0.03; Non-Instructed: p > 0.10, r = -0.17, r-squared = 0.08). 
+
+We then repeat the same analyses for predictions and aftereffects.
+
+```{r}
+getPGPredCorr()
+plotPGPredCorr()
+```
+
+We see that none of the groups exhibited a significant relationship between predictions and aftereffects (Hand View: p > 0.10, r = -0.003, r-squared = 0.00001; Cursor Jump: p > 0.10, r = -0.009, r-squared = 0.00007; Instructed: p > 0.10, r = -0.30, r-squared = 0.09; Non-Instructed: p > 0.10, r = -0.30, r-squared = 0.09).
+
+Taken together, these results show that the significant relationship we found, specifically for updates in predictions seem to be spurious. That is, there seems to be a group effect. According to Makin & Orban de Xivry (2019), if a relationship is spurious, then one would need to take into account group differences when pooling data across participants together. 
+
+### 3)
+To account for group differences, we conducted a mean correction procedure. We took the mean prediction and proprioception values for each group, then subtracted the mean from each individual score within that group. Afterwards, we conducted the multiple regression again on this mean corrected dataset.
+
+```{r}
+getMeanCorrectedGLM()
+```
+
+However, we found that both predictors (predictions: p < 0.05; proprioception: p < 0.01) were still significant after doing such a correction. 
+
+As a side note, we can also consider proprioception and predictions separately. First, we replot the relationship of proprioceptive recalibration with aftereffects after the correction, then test for a correlation.
+
+```{r}
+plotMeanCorrectedPropCorrelations()
+getMeanCorrectedRAEPropCorrelation()
+```
+
+We found that proprioception has a significant relationship with aftereffects (p=0.03, r = -0.24), but this is less in magnitude compared to the original data (r-squared went from 0.12 to 0.06). We repeated the same analyses for predictions.
+
+```{r}
+plotMeanCorrectedPredCorrelations()
+getMeanCorrectedRAEPredCorrelation()
+```
+
+We found the predictions did not have a significant relationship with aftereffects (p=0.21, r = -0.13), and r-squared values were reduced from 0.09 to 0.02.
+
+Next, we quantified the difference between this mean corrected model (mod2) from the original model (mod1). From the AIC values, we found that mod1 (AIC = 535.74) seems to be a better model than mod 2 (AIC = 556.36). To test this more formally, we conducted a Cox test. Note that an ANOVA would be inappropriate as these two models are non-nested. A Cox test would investigate whether the second model would add any explanatory value to the first model. Below is the definition from the R help file:
+
+"If the first model contains the correct set of regressors, then a fit of the regressors from the second model to the fitted values from first model should have no further explanatory value. But if it has, it can be concluded that model 1 does not contain the correct set of regressors."
+
+```{r}
+getOrigCorrRegComp()
+```
+
+Given that mod1 should contain the group effects, we consider the second result (fitted(M2) ~ M1; p < .001), suggesting that mod 1 does add explanatory value to mod2. Note that the Cox test also does the comparison the other way. Nevertheless, these results show that there is indeed a group effect present (which was expected given the design of the experiment), and this is partially explaining the variance in the data. Despite accounting for groups, we found that both predictors were still significant when we conducted the multiple regression. This suggests that, although a group effect does exist, our conclusion that changes in proprioception and predictions could be contributing to reach aftereffects are justified.
+
+
+## Independence of changes in proprioception from prediction
+Aside from how proprioceptive changes and updates in predictions are calculated. Here, we conduct formal tests to show the independence of the two.
+
+To show that changes in predictions and proprioception are independent predictors/contributors to reach aftereffects, proprioception should be able to predict the residuals of regressing aftereffects on predictions.
+
+```{r}
+getPredResidByPropCorrelation()
+```
+
+We find a significant relationship between proprioception and residuals of regressing aftereffects on predictions (p < 0.001, r = -0.45). We can also see if the same is true for predictions and residuals of regressing aftereffects on proprioception. 
+
+```{r}
+getPropResidByPredCorrelation()
+```
+
+We find a significant relationship as well (p < 0.001, r = -0.42). Lastly, we can compare these two relationships with our original correlational plots.
+
+```{r}
+plotRelationships()
+```
+
+By considering the residuals, we are essentially controlling for one predictor. However, the existence of a significant relationship, between one predictor and the residuals of aftereffects with the other predictor, suggests that the two predictors are independent from each other.
+
+Next, recall how the VIF score between proprioception and prediction was low. However, the low VIF score from predictions and proprioceptive changes could be trivial, given that predicted sensory consequences are measured by subtracting Passive Localization scores from Active Localization (PSC = ACT - PAS). To investigate this further, we could simulate either ACT or PAS scores that will also have a low VIF score with the other variable, but will not correlate with the residuals of regressing aftereffects on the other variable.
+
+First, we generated simulated PAS scores. To do this, we shuffled the PSC scores then subtracted them from ACT scores. Then we tested whether these simulated PAS scores will correlate with the residuals of regressing reach aftereffects with ACT scores.
+
+```{r}
+getACTResidByFakePASCorrelation()
+```
+
+We found that the simulated PAS scores do not significantly correlate (p = 0.81, r = -0.03) with the residuals of regressing aftereffects on ACT, even if ACT was a significant predictor of aftereffects (p < 0.001). The VIF score between the simulated PAS scores and PSC was still low (vif = 1.11). We also repeated this analysis the other way around and generated simulated ACT scores instead. 
+
+```{r}
+getPASResidByFakeACTCorrelation()
+```
+
+
+We found that the simulated ACT scores do not significantly correlate (p = 0.92, r = 0.01) with the residuals of regressing aftereffects on PAS, even if PAS was a significant predictor of aftereffects (p < 0.001). The VIF score between the simulated ACT scores and PSC was still low (vif = 1.08). 
+
+Another simple check is to show that ACT and PAS VIF scores are high, as these are considered to be collinear. This is exactly what we found (vif = 3.37), as shown below.
+
+```{r}
+getActPasCollinearity()
+```
+
+Given the low VIF score we found for predictions and proprioception, but high VIF score for ACT and PAS, we are certain that the VIF score informs uf about the collinearity of these variables. However, it is trivial in its ability to show the independence of predictions from proprioception. Thus, the residual analyses on the previous section above is more informative in showing that these two predictors are independently contributing to reach aftereffects. 
