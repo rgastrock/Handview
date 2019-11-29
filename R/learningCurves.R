@@ -182,7 +182,7 @@ plotLearningCurves <- function(target='inline') {
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig2A_learningcurve.svg', width=10, height=7, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig2A_learningcurve.svg', width=6, height=7, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
@@ -198,7 +198,7 @@ plotLearningCurves <- function(target='inline') {
   # panel A: Learning Curves for all groups across 90 trials
   plotBlockedLearningCurves()
   #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   
   # # # # # # # # # #
@@ -210,7 +210,7 @@ plotLearningCurves <- function(target='inline') {
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 1 - 3',ylab='Angular Deviation of Hand (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   blockdefs <- list(c(1,3))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -232,19 +232,20 @@ plotLearningCurves <- function(target='inline') {
     
     meandist <- getConfidenceInterval(data=c(blocked), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #density distribtuion included?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -267,7 +268,7 @@ plotLearningCurves <- function(target='inline') {
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 4 - 6',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('C', side=3, outer=FALSE, at=c(2.5/7,1), line=-1, adj=0, padj=1)
-  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   blockdefs <- list(c(4,3))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -289,19 +290,20 @@ plotLearningCurves <- function(target='inline') {
     
     meandist <- getConfidenceInterval(data=c(blocked), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #density distribution included?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -324,7 +326,7 @@ plotLearningCurves <- function(target='inline') {
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 76 - 90',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('D', side=3, outer=TRUE, at=c(4.7/7,1), line=-1, adj=0, padj=1)
-  #mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   blockdefs <- list(c(76,15))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -345,20 +347,21 @@ plotLearningCurves <- function(target='inline') {
     }
     
     meandist <- getConfidenceInterval(data=c(blocked), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
-    
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+
+    #density distribution included?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))

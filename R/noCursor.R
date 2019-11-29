@@ -103,7 +103,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
        xlab = "Strategy Use", ylab = "Angular Deviation of Hand (°)", frame.plot = FALSE, #frame.plot takes away borders
        xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
-  abline(h = c(0,0), col = rgb(0.5,0.5,0.5), lty = 2) 
+  #abline(h = c(0,0), col = rgb(0.5,0.5,0.5), lty = 2) 
   axis(1, at=c(0.75, 1.75), labels=c('Without Strategy', 'With Strategy'), cex.axis=0.85) #tick marks for x axis
   axis(2, at = c(0, 10, 20, 30), cex.axis=0.85) #tick marks for y axis
   
@@ -180,7 +180,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   } 
 
   #add legend
-  legend(0.10,42.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(0.10,44.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n',cex=0.85)
   
@@ -195,7 +195,7 @@ plotReachAfterEffects <- function(target='inline'){
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig3A_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig3A_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'), pointsize=14)
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
@@ -211,7 +211,7 @@ plotReachAfterEffects <- function(target='inline'){
   # panel A: RAEs for all groups, Without and With Strategy
   plotGroupReachAfterEffects()
   #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   # # # # # # # # # #
   # panel B: individual participants in the Without Strategy Trials
@@ -222,7 +222,7 @@ plotReachAfterEffects <- function(target='inline'){
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Without Strategy',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   blockdefs <- list(c(1,3))
@@ -249,19 +249,20 @@ plotReachAfterEffects <- function(target='inline'){
     
     meandist <- getConfidenceInterval(data=c(newdata), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #include density dist?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -281,7 +282,7 @@ plotReachAfterEffects <- function(target='inline'){
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='With Strategy',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   blockdefs <- list(c(1,3))
@@ -308,19 +309,20 @@ plotReachAfterEffects <- function(target='inline'){
     
     meandist <- getConfidenceInterval(data=c(newdata), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #include density dist?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))

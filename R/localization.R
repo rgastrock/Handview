@@ -496,7 +496,7 @@ plotLocalizations <- function(target='inline'){
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig4A_localization.svg', width=12, height=10, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig4A_localization.svg', width=9, height=9, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
@@ -526,7 +526,7 @@ plotLocalizations <- function(target='inline'){
       abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130),cex.axis=0.85) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15), cex.axis=0.85) #tick marks for y axis
-      #mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
+      mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
     } else if (reachtype.idx == 1){
       plot(NA, NA, xlim = c(40,140), ylim = ylims, 
            xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
@@ -633,7 +633,7 @@ plotLocalizations <- function(target='inline'){
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Active Localization',ylab='Localization Shift (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -669,20 +669,21 @@ plotLocalizations <- function(target='inline'){
     
     meandist <- getConfidenceInterval(data=c(shift), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    #include shaded distribution?
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #include density dist?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # #include shaded distribution?
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -702,7 +703,7 @@ plotLocalizations <- function(target='inline'){
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Passive Localization',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -738,20 +739,21 @@ plotLocalizations <- function(target='inline'){
     
     meandist <- getConfidenceInterval(data=c(shift), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    #include shaded distribution?
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #include density dist?
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # #include shaded distribution?
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -770,7 +772,7 @@ plotLocalizations <- function(target='inline'){
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Predicted Sensory Consequences',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
   
   
-  #mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -803,20 +805,21 @@ plotLocalizations <- function(target='inline'){
     
     meandist <- getConfidenceInterval(data=c(shift), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
     
-    #grab the density distribution from list
-    #X will be vertical, Y will be the distribution
-    DX <- meandist$density$x
-    #then we just scale the plot
-    DY <- meandist$density$y / max(meandist$density$y) / 2.5
-    
-    #mostly for the polygon
-    #without these, there will be a space between the solid line and point
-    #With these, the space is also shaded now
-    DX <- c(DX[1], DX, DX[length(DX)])
-    DY <- c(0,     DY, 0)
-    
-    #include shaded distribution?
-    polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
+    #include density dist
+    # #grab the density distribution from list
+    # #X will be vertical, Y will be the distribution
+    # DX <- meandist$density$x
+    # #then we just scale the plot
+    # DY <- meandist$density$y / max(meandist$density$y) / 2.5
+    # 
+    # #mostly for the polygon
+    # #without these, there will be a space between the solid line and point
+    # #With these, the space is also shaded now
+    # DX <- c(DX[1], DX, DX[length(DX)])
+    # DY <- c(0,     DY, 0)
+    # 
+    # #include shaded distribution?
+    # polygon(x=DY+groupno, y=DX, border=FALSE, col=col) #as.character(styles$color_trans[groupno]))
     
     col <- colourscheme[[group]][['S']]
     lines(x=rep(groupno,2),y=meandist$CI95,col=col) #as.character(styles$color_solid[groupno]))
@@ -1384,6 +1387,12 @@ getPropPredGLM <- function(){
   mod1 <- glm(RAE ~ pred_update + prop_recal)
   print(summary(mod1))
   
+  #effect size
+  #we can also get squared semi-partial correlations as a measure of effect size
+  # This is the contribution of one predictor to the DV, after controlling for the other predictor.
+  mod1 <- lm(RAE ~ pred_update + prop_recal)
+  getDeltaRsquare(mod1)
+  
   #test for collinearity
 
   
@@ -1395,7 +1404,6 @@ getPropPredGLM <- function(){
   
 
 }
-
 
 #take this model and show predicted RAE and actual RAE
 #if the model predicts the actual RAE well, then we know that predictions from the model are valid
@@ -1594,7 +1602,7 @@ plotPropPredRelationships <- function(target='inline') {
     svglite(file='doc/fig/Fig5_correlation.svg', width=14, height=4, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
-  par(mfrow=c(1,3), mar=c(4,6,2,4))
+  par(mfrow=c(1,3), mar=c(4,5,2,5))
   
   
   #layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
@@ -1604,19 +1612,19 @@ plotPropPredRelationships <- function(target='inline') {
   # panel A: Prop Recal and RAE
   plotPropGroupCorrelations()
   #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   # # # # # # # # # #
   # panel B: PSC and RAE
   plotPredGroupCorrelations()
   #mtext('B', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   # # # # # # # # # #
   # panel C: Predicted and Actual RAE
   plotLinesPredActRAE()
   #mtext('C', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  #mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
   
   if (target == 'svg') {
     dev.off()

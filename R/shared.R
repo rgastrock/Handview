@@ -12,6 +12,7 @@ library('usdm')
 library('lmtest')
 library('car')
 library('WRS2')
+library('rockchalk')
 
 # Generic Functions -----
 getStyle <- function() {
