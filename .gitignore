@@ -26,7 +26,8 @@ vignettes/*.pdf
 rsconnect/
 .Rproj.user
 # skip these files:
-*.html
+*.pdf
+*.nb.html
 *.dropbox
 desktop.ini
 LICENSE
