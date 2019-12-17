@@ -30,7 +30,6 @@ rsconnect/
 *.nb.html
 *.dropbox
 desktop.ini
-LICENSE
 Analyses.out
 AnalysesBank.html
 AnalysesBank.Rmd
