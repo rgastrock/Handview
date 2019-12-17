@@ -1,5 +1,0 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
-!Fig7_expsched.svg
