@@ -27,5 +27,7 @@ rsconnect/
 .Rproj.user
 # skip these files:
 *.html
-*.pdf
+*.dropbox
+desktop.ini
+LICENSE
 Analyses.out
