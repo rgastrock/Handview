@@ -8,18 +8,35 @@ output:
   pdf_document: default
 ---
 
-```{r load_code, include=FALSE}
+# Overview
+
+This document discusses analyses conducted to support and justify the main tests conducted for the study. These tests are not included in the Results and Discussion sections of the manuscript, but are provided as supplementary material.
+
+# Setting up the R environment
+
+Our scripts require the use of certain packages. If some packages are not available in your own system, run the command:
+
+> install.packages(c('ez', 'svglite', 'phia', 'afex', 'lsmeans', 'scales', 'lsr', 'tools', 'SMCL', 'usdm', 'lmtest', 'car', 'rockchalk'))
+
+
+We have written code that pre-processes the data, plot figures, and run statistical tests. Import the sources below:
+
+```{r message=FALSE, warning=FALSE}
 source('R/shared.R')
 source('R/learningCurves.R')
 source('R/noCursor.R')
 source('R/localization.R')
-source('R/distributionplots.R')
 source('R/awareness.R')
+source('R/data.R')
 ```
 
-# Overview
+Then we need to ensure that the data is available locally. We download the pre-processed data available from OSF. If the files already exist, the output will indicate this.
 
-This document discusses analyses conducted to support and justify the main tests conducted for the study. These tests are not included in the Results and Discussion sections of the manuscript.
+```{r}
+getPreprocessedData()
+```
+
+Once the data and code are available, we can proceed to the next sections.
 
 ## Awareness Scores
 
@@ -27,7 +44,7 @@ This document discusses analyses conducted to support and justify the main tests
 
 At the end of the experiment, participants had to answer a series of questions to assess their awareness of the perturbation they experienced (adapted from Benson et al., 2011; Modchalingam et al., 2019). Each response was given a score and follow-up questions were dependent on the participant's responses to the previous question. Scores were added at the end to come up with an Awareness Score for the participant (where, 0 means low awareness and 3 means high awareness). Below are two plots showing the data on awareness scores by group. The barplot shows the number of participants that scored either 0, 1, 2, or 3 on the Awareness Questionnaire, for each of the four groups. The dot plot generated beside it, gives a visual of the number of participants scoring either high or low on the questionnaire, separated according to group.
 
-```{r}
+```{r fig.width=7, fig.height=5}
 plotAwareness()
 ```
 
@@ -60,7 +77,7 @@ Performing these two correlations bring about two possible criticisms:
 ### 1)
 First, we looked into the possibility of a spurious correlation existing within our dataset. Essentially, we are looking for the existence of a group effect. One way of looking into group effects is to see how the relationships of predictions and proprioception with aftereffects change with the removal of the Hand View group (Note that we only remove the Hand View group because it was the group observed to be different from the others in measures of aftereffects and predicted sensory consequences). First, we investigate the relationship of predictions and aftereffects, without the Hand View group.
 
-```{r}
+```{r fig.width=7, fig.height=5}
 plotNoHVPredGroupCorrelations()
 getNoHVRAEPredCorrelation()
 ```
@@ -69,7 +86,7 @@ We found that the correlation between predictions and aftereffects, after removi
 
 Next, we repeat the analyses for proprioceptive recalibration and aftereffects.
 
-```{r}
+```{r fig.width=7, fig.height=6}
 plotNoHVPropGroupCorrelations()
 getNoHVRAEPropCorrelation()
 ```
@@ -79,7 +96,7 @@ We found that the correlation between proprioceptive changes and aftereffects, a
 ### 2)
 We also looked into the relationships of both predictions and proprioception with reach aftereffects, for each individual group. First, I show results for correlation tests between proprioception and aftereffects for each group. I also plot these relationships to visualize the data better.
 
-```{r}
+```{r fig.width=10, fig.height=8}
 getPGPropCorr()
 plotPGPropCorr()
 ```
@@ -89,7 +106,7 @@ We see that only the Hand View group exhibits a significant relationship between
 
 We then repeat the same analyses for predictions and aftereffects.
 
-```{r}
+```{r fig.width=10, fig.height=8}
 getPGPredCorr()
 plotPGPredCorr()
 ```
@@ -109,14 +126,14 @@ However, we found that both predictors (predictions: p < 0.05; proprioception: p
 
 As a side note, we can also consider proprioception and predictions separately. First, we replot the relationship of proprioceptive recalibration with aftereffects after the correction, then test for a correlation.
 
-```{r}
+```{r fig.width=7, fig.height=6}
 plotMeanCorrectedPropCorrelations()
 getMeanCorrectedRAEPropCorrelation()
 ```
 
 We found that proprioception has a significant relationship with aftereffects (p=0.03, r = -0.24), but this is less in magnitude compared to the original data (r-squared went from 0.12 to 0.06). We repeated the same analyses for predictions.
 
-```{r}
+```{r fig.width=7, fig.height=6}
 plotMeanCorrectedPredCorrelations()
 getMeanCorrectedRAEPredCorrelation()
 ```
@@ -151,7 +168,7 @@ getPropResidByPredCorrelation()
 
 We find a significant relationship as well (p < 0.001, r = -0.42). Lastly, we can compare these two relationships with our original correlational plots.
 
-```{r}
+```{r fig.width=10.5, fig.height=8}
 plotRelationships()
 ```
 

@@ -8,19 +8,35 @@ output:
   pdf_document: default
 ---
 
-```{r load_code, include=FALSE}
+# Overview
+
+This document discusses figures and statistics for the Hand View project. The four main sections include data and analyses with regards to Learning Curves, Reach Aftereffects, Localization, and Contributions of proprioception and predictions to reach aftereffects.
+
+# Setting up the R environment
+
+Our scripts require the use of certain packages. If some packages are not available in your own system, run the command:
+
+> install.packages(c('ez', 'svglite', 'phia', 'afex', 'lsmeans', 'scales', 'lsr', 'tools', 'SMCL', 'usdm', 'lmtest', 'car', 'rockchalk'))
+
+
+We have written code that pre-processes the data, plot figures, and run statistical tests. Import the sources below:
+
+```{r message=FALSE, warning=FALSE}
 source('R/shared.R')
 source('R/learningCurves.R')
 source('R/noCursor.R')
 source('R/localization.R')
-source('R/distributionplots.R')
 source('R/awareness.R')
+source('R/data.R')
 ```
 
+Then we need to ensure that the data is available locally. We download the pre-processed data available from OSF. If the files already exist, the output will indicate this.
 
-# Overview
+```{r}
+getPreprocessedData()
+```
 
-This document discusses figures and statistics for the Hand View project. The four main sections include data and analyses with regards to Learning Curves, Reach Aftereffects, Localization, and Contributions of proprioception and predictions to reach aftereffects.
+Once the data and code are available, we can proceed to the next sections.
 
 # Learning Curves
 
@@ -44,7 +60,7 @@ We see that, during training, the Instructed Group countered the rotation immedi
 
 To analyze the effects of our manipulation on rates of learning, we blocked the rotated training data into three blocks of trial sets. The first block consisted of the first set of three trials, the second consisted of the next three trials, and the third consisted of the last 15 trials of rotated training. Below is a plot showing individual participant data for each group across these three blocks. Dot and error bars represent the mean and bootstrapped 95% confidence intervals. Shaded regions are density distributions of the bootstrapped means.
 
-```{r}
+```{r fig.width=8, fig.height=8}
 plotLearningCurves()
 ```
 
@@ -141,13 +157,13 @@ we analyzed estimates of hand position in *Active Localization* and *Passive Loc
 
 Below is a plot of the mean angular shift in hand localization for each group as a function of the three interpoints (50°, 90°, and 130°). Panel 1 shows shifts in hand localization when both proprioceptive information and efference-based predictions are available to the participant. Panel 2 shows shifts in hand localization when only proprioceptive information is available. Panel 3 shows shifts in hand localization when efference-based predictions are isolated (i.e., shifts in Active minus shifts in Passive Localization). Lines represent the mean angular shift in localization for each group, and corresponding shaded regions represent 95% Confidence Intervals. The right hand side of each panel shows the mean localization shifts and corresponding 95% Confidence Intervals for each group, regardless of Hand Angle.
 
-```{r plot_localization}
+```{r fig.width=8, fig.height=5}
 plotLocalizationShift(target='inline')
 ```
 
 We see from the figure that all groups showed a shift in hand localization, and that these shifts were larger when both efference-based predicitions and proprioceptive information were available to the participants (i.e., *Active Localization*). In comparing Panels 2 and 3, we see that majority of the shifts in active localization was accounted for by proprioceptive information, as the shifts in predicted sensory consequences were near 0. However, the lack of differences across groups seems to suggest that our manipulation of external error attribution did not affect both proprioceptive recalibration and updating of predicted sensory consequences. Before any statistical tests, however, we first checked for the shape of distributions of individual data points across groups. Below is a plot showing individual data points for shifts in localization according to groups and movement type. For the lower half, dot and error bars represent the mean and bootstrapped 95% confidence intervals. Shaded regions are density distributions of the bootstrapped means.
 
-```{r}
+```{r fig.width=8, fig.height=8}
 plotLocalizations()
 ```
 
@@ -218,7 +234,7 @@ According to Modchalingam et al. (2019), afferent and efferent-based changes in 
 
 To visualize the data, we plot the relationship of proprioception and aftereffects, as well as predictions and aftereffects, individually. Note that we did perform a Pearson product moment correlation test for these two and found a significant relationship for both, but we only include it as analyses extra to the manuscript (i.e., the main test is the multiple regression below). For the extra analyses, refer to the other R Markdown document, AnalysesSupp.
 
-```{r}
+```{r fig.width=12, fig.height=4.5}
 plotPropPredRelationships()
 ```
 

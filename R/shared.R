@@ -3,7 +3,6 @@ library('svglite')
 library('phia')
 library('afex')
 library('lsmeans')
-library('vioplot')
 library('scales')
 library('lsr')
 library('tools')
@@ -11,8 +10,10 @@ library('SMCL')
 library('usdm')
 library('lmtest')
 library('car')
-library('WRS2')
 library('rockchalk')
+
+# library('WRS2')
+# library('vioplot')
 
 # Generic Functions -----
 getStyle <- function() {
