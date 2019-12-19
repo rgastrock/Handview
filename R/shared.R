@@ -252,3 +252,92 @@ getConfidenceInterval <- function(data, variance = var(data), conf.level = 0.95,
   }
   
 }
+
+rotateCoordinates <- function(df,angle,origin=c(0,0)) {
+  
+  df.names <- names(df)
+  
+  # create rotation matrix to rotate the X,Y coordinates
+  th <- (angle/180) * pi
+  R <- t(matrix(data=c(cos(th),sin(th),-sin(th),cos(th)),nrow=2,ncol=2))
+  
+  # put coordinates in a matrix, and subtract origin
+  coordinates <- sweep(as.matrix(df), 2, origin)
+  
+  # rotate the coordinates, add the origin back in
+  df <- as.data.frame(sweep(coordinates %*% R, 2, origin*-1))
+  
+  # restore column names
+  names(df) <- df.names
+  
+  # return the rotated coordinates
+  return(df)
+  
+}
+
+confidenceEllipse <- function(x, y=NA, interval=.95, vectors=100) {
+  
+  # get the square root of the chi-squared value for the specified confidence interval:
+  chisq.val <- sqrt(qchisq(p=interval, df=2))
+  
+  # get the covariance matrix of the data:
+  if (is.matrix(x)) {
+    covmat <- cov( x )
+  } else {
+    x <- matrix(c(x,y), ncol = 2, byrow = FALSE)
+    covmat <- cov( x )
+  }
+  
+  # get the centre of the ellipse:
+  centre <- colMeans(x)
+  
+  # get the eigen decomposition of the covariance matrix
+  ev <- eigen(covmat)
+  
+  # get eigenvalues and -vectors separately:
+  eigenvalues <- ev$values
+  eigenvectors <- ev$vectors
+  
+  # determine which is the maximum eigenvalue and -vector:
+  max.EigVal.ind <- which.max(eigenvalues)
+  
+  max.EigVal <- eigenvalues[max.EigVal.ind]
+  max.EigVec <- eigenvectors[,max.EigVal.ind]
+  
+  # and which are the minimum eigenvalue and -vector:
+  min.EigVal.ind <- which.min(eigenvalues)
+  min.EigVal <- eigenvalues[min.EigVal.ind]
+  min.EigVec <- eigenvectors[,min.EigVal.ind]
+  
+  # calculate the angle of the largest eigen vector:
+  phi = ( ( atan2(max.EigVec[2], max.EigVec[1]) %% (2*pi) ) / pi ) * 180;
+  
+  # ellipse angles:
+  thetas <- seq(0,2*pi,length.out=vectors)
+  
+  # the semi-major and -minor axes:
+  a <- chisq.val*sqrt(max.EigVal);
+  b <- chisq.val*sqrt(min.EigVal);
+  
+  # get X and Y coordinates for the flat ellipse:
+  X <- a*cos( thetas );
+  Y <- b*sin( thetas );
+  
+  # rotate the ellipse:
+  ellipse <- SMCL::rotateCoordinates(df=data.frame(x=X, y=Y),angle=phi,origin=c(0,0))
+  
+  # re-centre:
+  circumferencex <- ellipse$x + centre[1]
+  circumferencey <- ellipse$y + centre[2]
+  circumference <- cbind(circumferencex, circumferencey)
+  
+  ellipse <- list()
+  ellipse[['poly']] <- circumference
+  ellipse[['major']] <- a
+  ellipse[['minor']] <- b
+  ellipse[['angle']] <- phi
+  ellipse[['centre']] <- centre
+  
+  return(ellipse)
+  
+}

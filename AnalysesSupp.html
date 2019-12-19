@@ -1647,7 +1647,7 @@ summary {
 <h1>Setting up the R environment</h1>
 <p>Our scripts require the use of certain packages. If some packages are not available in your own system, run the command:</p>
 <blockquote>
-<p>install.packages(c(‘ez’, ‘svglite’, ‘phia’, ‘afex’, ‘lsmeans’, ‘scales’, ‘lsr’, ‘tools’, ‘SMCL’, ‘usdm’, ‘lmtest’, ‘car’, ‘rockchalk’))</p>
+<p>install.packages(c(‘ez’, ‘svglite’, ‘phia’, ‘afex’, ‘lsmeans’, ‘scales’, ‘lsr’, ‘tools’, ‘usdm’, ‘lmtest’, ‘car’, ‘rockchalk’))</p>
 </blockquote>
 <p>We have written code that pre-processes the data, plot figures, and run statistical tests. Import the sources below:</p>
 <pre class="r"><code>source(&#39;R/shared.R&#39;)
@@ -2309,17 +2309,17 @@ source(&#39;R/data.R&#39;)</code></pre>
 ##  Pearson&#39;s product-moment correlation
 ## 
 ## data:  mod1_Res and PAS
-## t = 0.10059, df = 88, p-value = 0.9201
+## t = -0.35935, df = 88, p-value = 0.7202
 ## alternative hypothesis: true correlation is not equal to 0
 ## 95 percent confidence interval:
-##  -0.1968060  0.2173306
+##  -0.2434405  0.1701609
 ## sample estimates:
-##        cor 
-## 0.01072208 
+##         cor 
+## -0.03827917 
 ## 
 ##   Variables      VIF
-## 1  fake_pas 1.080014
-## 2       PSQ 1.080014</code></pre>
+## 1  fake_pas 1.088568
+## 2       PSQ 1.088568</code></pre>
 <p>We found that the simulated PAS scores do not significantly correlate (p = 0.81, r = -0.03) with the residuals of regressing aftereffects on ACT, even if ACT was a significant predictor of aftereffects (p &lt; 0.001). The VIF score between the simulated PAS scores and PSC was still low (vif = 1.11). We also repeated this analysis the other way around and generated simulated ACT scores instead.</p>
 <pre class="r"><code>getPASResidByFakeACTCorrelation()</code></pre>
 <pre><code>## 
@@ -2349,17 +2349,17 @@ source(&#39;R/data.R&#39;)</code></pre>
 ##  Pearson&#39;s product-moment correlation
 ## 
 ## data:  mod1_Res and ACT
-## t = -0.49043, df = 88, p-value = 0.625
+## t = -0.075587, df = 88, p-value = 0.9399
 ## alternative hypothesis: true correlation is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2565267  0.1565748
+##  -0.2147901  0.1993664
 ## sample estimates:
 ##         cor 
-## -0.05220922 
+## -0.00805735 
 ## 
 ##   Variables      VIF
-## 1  fake_act 1.061073
-## 2       PSQ 1.061073</code></pre>
+## 1  fake_act 1.083031
+## 2       PSQ 1.083031</code></pre>
 <p>We found that the simulated ACT scores do not significantly correlate (p = 0.92, r = 0.01) with the residuals of regressing aftereffects on PAS, even if PAS was a significant predictor of aftereffects (p &lt; 0.001). The VIF score between the simulated ACT scores and PSC was still low (vif = 1.08).</p>
 <p>Another simple check is to show that ACT and PAS VIF scores are high, as these are considered to be collinear. This is exactly what we found (vif = 3.37), as shown below.</p>
 <pre class="r"><code>getActPasCollinearity()</code></pre>
