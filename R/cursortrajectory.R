@@ -264,6 +264,7 @@ plotAllTrajectories <- function(target='inline') {
   par(mfrow=c(1,1))
   
   groups <- c('30implicit', '30explicit', 'cursorjump','handview')
+  #groups <- c('handview')
   conditions <- c()
   
   #colors <- c(rgb(.7,.7,.7),rgb(0,0,0),rgb(1,0,0),rgb(.7,.7,.7),rgb(0,0,0))
@@ -445,4 +446,125 @@ plotAllTrajectories <- function(target='inline') {
     dev.off()
   }
   
+}
+
+#function below checks each individual trajectory plotted for a specified group
+#check for handview since it seems like certain people there are deviating by 60 degrees, to know what is going on:
+plotINDTrajectories <- function(target='inline') {
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig14_AllTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+  }
+  
+  par(mfrow=c(1,1))
+  
+  #groups <- c('30implicit', '30explicit', 'cursorjump','handview')
+  groups <- c('handview')
+  conditions <- c()
+  
+  #colors <- c(rgb(.7,.7,.7),rgb(0,0,0),rgb(1,0,0),rgb(.7,.7,.7),rgb(0,0,0))
+  colors <- getColourScheme(groups)
+  
+  trialRanges <- read.csv('data/trialRanges.csv')
+  
+  npoints <- 50
+  nconditions <- nrow(trialRanges)
+  # how do we know npoints? for now this is, unfortunately, a magic number...
+  averageGroupTrajectories <- array(data=NA, dim=c(length(groups),nconditions,npoints,2))
+  
+  
+  
+  for (group.id in 1:length(groups)) {
+    
+    group <- groups[group.id]
+    ngroup <- length(getGroupParticipants(group=group))
+    color <- colors[[4]][['S']]
+    
+    load(sprintf('data/%s_trajectories.dat',group))
+    
+    # loads: groupaveragetrajectories
+    
+    #meantrajectory <- apply(groupaveragetrajectories, c(2,3,4), median, na.rm=TRUE)
+    for (ppno in 1:ngroup){
+      plot(c(-100,-100),c(-100,-100),type='n',asp=1,col=rgb(0,0,0,0),main="Individual and Average Trajectories", xlab="Group", ylab="Cursor Training",xlim=c(0, 16*length(groups)), ylim=c(0, 16*nconditions), yaxt='n', xaxt='n',axes=F)
+      
+      for (condition.id in 1:nconditions) {
+        
+        condition <- as.character(trialRanges[condition.id,'condition'])
+        if (group.id == 1) {
+          conditions <- c(conditions, condition)
+        }
+        
+        
+        #print(condition)
+        X <- groupaveragetrajectories[ppno,condition.id,,1]
+        Y <- groupaveragetrajectories[ppno,condition.id,,2]
+        
+        
+        # first rotated to desired orientation:
+        hand <- rotateTrajectory(X,Y,90)
+        X <- hand[,1]
+        Y <- hand[,2]
+        
+        # then translate to fit on the plot nicely
+        Xmod <- ((group.id-1) * 16) + 8
+        if (condition.id == 1){
+          Ymod <- (((condition.id-1) * 16) + 4) + 32
+        } else if (condition.id == 3){
+          Ymod <- (((condition.id-1) * 16) + 4) - 32
+        } else {
+          Ymod <- ((condition.id-1) * 16) + 4
+        }
+        
+        X <- X + Xmod
+        Y <- Y + Ymod
+        
+        lines(X,Y,type='l',col= alpha(color, 0.9), lty=1, lw=2)
+        
+        if (condition == 'rotated') {
+          
+          unrotate <- -30
+          
+          cursor <- rotateTrajectory(hand[,1],hand[,2],unrotate)
+          X <- cursor[,1] #+ Xmod; scaling factors removed, used later on
+          Y <- cursor[,2] #+ Ymod
+          # we only show the part where cursor has jumped (1/3 of distance from home to target, but dependent on participant movement)
+          if (group == 'cursorjump') {
+            
+            dist <- sqrt(X^2 + Y^2)
+            idx <- which(dist > 4)
+            
+            newX <- X[idx] + Xmod
+            newY <- Y[idx] + Ymod
+            
+            lines(newX,newY,type='l',col=alpha(color, 0.9), lty=2, lw=2)
+            
+          } else {
+            newX <- X + Xmod
+            newY <- Y + Ymod
+            
+            lines(newX,newY,type='l',col=alpha(color, 0.9), lty=2, lw=2)
+            
+          }
+        }
+        
+        # draw in home and target position
+        points(c(0,0)+Xmod,c(0,12)+Ymod,col=rgb(0,0,0),bg=rgb(1,1,1,0),cex=2)
+        #axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','CursorJump', 'HandView'))
+        axis(2, at=(c(1:nconditions)*16) - 8, labels=c('Late Adaptation','Early Adaptation','Aligned'))
+      }
+    }
+    
+    
+  }
+  
+  
+  
+  
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
 }
