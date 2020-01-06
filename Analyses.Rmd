@@ -50,7 +50,7 @@ Training reaches in *Cursor Trials* for both aligned and rotated sessions were m
 Below is a plot of the angular deviation of the hand across the first 90 trials of the rotated session. Lines represent the mean angular deviation of each group in every trial, and corresponding shaded regions represent 95% Confidence Intervals. For a closer look, we also show the same data, but only for the first 15 and last 15 trials.
 
 ```{r plot_learningCurves}
-plotLearningCurvesOLD(target='inline')
+plotFullLearningCurves(target='inline')
 plotBlockedLearningCurves(target='inline')
 ```
 

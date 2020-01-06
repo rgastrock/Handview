@@ -23,7 +23,7 @@ getAverageTrajectories <- function(groups=c('30implicit', '30explicit', 'cursorj
   write.csv(trialRanges, file='data/trialRanges.csv',quote=FALSE,row.names=FALSE)
   
   # return findings
-  return(TRUE)
+  #return(TRUE)
   
 }
 
@@ -81,7 +81,9 @@ getParticipantReachTrajectories <- function(participant,trialRanges,npoints) {
     
     start <- as.numeric(levels(trialRanges$start))[trialRanges$start]
     number <- as.numeric(levels(trialRanges$number))[trialRanges$number]
-    trials <- c(start[row.id]:start[row.id]+number[row.id]-1)
+    # print(start[row.id])
+    # print(number[row.id])
+    trials <- c(start[row.id]:(start[row.id]+number[row.id]-1))
     
     rowParticipantReachTrajectories <- array(data=NA, dim=c(max(as.numeric(levels(trialRanges$number))[trialRanges$number]),npoints,2))
     
@@ -95,10 +97,16 @@ getParticipantReachTrajectories <- function(participant,trialRanges,npoints) {
         
         trialdf <- reachdf[reachdf$trial == trialno,]
         
-        if (trialdf$trialselected[1] == 1) {
+        if (any(trialdf$trialselected == 1)) {
           
           # if the trial seems OK, get an interpolated version, and store in the array:
-          rowParticipantReachTrajectories[trial.id, 1:npoints, 1:2] <- getSplineTrajectory(trialdf,npoints=npoints)
+          SpTr <- getSplineTrajectory(trialdf,npoints=npoints)
+          rowParticipantReachTrajectories[trial.id, 1:npoints, 1:2] <- SpTr
+          
+          # this never happens, which means that the spline is not even done for many participants
+          if (any(is.nan(SpTr))) {
+            cat(sprintf('NANs for participant: %s in trial %d\n', participant, trialno))
+          }
           
         }
         
@@ -132,6 +140,10 @@ getSplineTrajectory <- function(trialdf,npoints=npoints) {
   newX <- spline(TT, XX, n=npoints)$y
   newY <- spline(TT, YY, n=npoints)$y
   
+  if (any(!is.finite(c(newX,newY)))) {
+    cat('beware the NaNs!\n')
+  }
+  
   # combine into an array:
   coordinates <- array(data=NA, dim=c(npoints,2))
   coordinates[,1] <- newX
@@ -145,7 +157,7 @@ plotAverageTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_AverageTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig4A_AverageTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
@@ -258,7 +270,7 @@ plotAllTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig14_AllTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_AllTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
@@ -454,7 +466,7 @@ plotINDTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig14_AllTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig4B_INDTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))

@@ -323,7 +323,7 @@ getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit
 plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorjump','handview'), target='inline') {
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig4_localization.svg', width=8, height=3.5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig6_localization.svg', width=8, height=3.5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -496,7 +496,7 @@ plotLocalizations <- function(target='inline'){
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig4A_localization.svg', width=9, height=9, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig6_localization.svg', width=9, height=9, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
@@ -1181,7 +1181,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5A_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7A_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -1287,7 +1287,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5B_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7B_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -1452,7 +1452,7 @@ plotLinesPredActRAE <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5C_line_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7C_line_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   data <- getPredActRAE()
@@ -1514,7 +1514,7 @@ plotPredActRAE <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5C_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7D_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   data <- getPredActRAE()
@@ -1599,7 +1599,7 @@ plotPropPredRelationships <- function(target='inline') {
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig5_correlation.svg', width=14, height=4, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig7_correlation.svg', width=14, height=4, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   par(mfrow=c(1,3), mar=c(4,5,2,5))
@@ -1797,7 +1797,7 @@ plotRelationships <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5D_correlationwres.svg', width=12, height=10, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7E_correlationwres.svg', width=12, height=10, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow = c(2,2))
@@ -2132,7 +2132,7 @@ plotMeanCorrectedPropCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5E_PropMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7F_PropMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2217,7 +2217,7 @@ plotMeanCorrectedPredCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5F_PredMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7G_PredMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2304,7 +2304,7 @@ plotNoHVPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5G_NoHVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7H_NoHVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2391,7 +2391,7 @@ plotNoHVPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5H_NoHVPredcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7I_NoHVPredcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2512,7 +2512,7 @@ plotHVPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_HVcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2614,7 +2614,7 @@ plotCJPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_CJcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2716,7 +2716,7 @@ plotNIPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_NIcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2818,7 +2818,7 @@ plotIPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_Icorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2947,7 +2947,7 @@ plotHVPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_HVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3049,7 +3049,7 @@ plotCJPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_CJPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3151,7 +3151,7 @@ plotNIPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_NIPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3253,7 +3253,7 @@ plotIPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig13_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/SuppFig7J_IPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
