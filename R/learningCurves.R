@@ -466,7 +466,27 @@ learningCurveANOVA <- function() {
 }
 
 
-#use a Tukey HSD (see R Tutorials 6)
+#follow up
+
+#we also run an ANOVA for the last block only, just to confirm that there are no group differences. This is a separate ANOVA,
+#since it answers an independent question, aside from rates of learning
+
+lastblockANOVA <- function() {
+  
+  #styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  LC4aov <- getBlockedLearningCurvesAOV(blockdefs=blockdefs)
+  #we take only the last block to compare the groups
+  LC4aov <- LC4aov[which(LC4aov$block=='last'),]
+  
+  #learning curve ANOVA's
+  # for ez, case ID should be a factor:
+  LC4aov$participant <- as.factor(LC4aov$participant)
+  lba <- ezANOVA(data = LC4aov, wid=participant, dv=reachdev, between=diffgroup, type=3, return_aov=TRUE)
+  print(lba[1:2]) #aov object is printed if up to 3
+
+}
 
 learningcurveComparisonMeans <- function(){
   
@@ -494,12 +514,13 @@ learningcurveComparisonMeans <- function(){
   
   #cellmeans <- emmeans(secondAOV,specs=c('diffgroup','block'))
   cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup','block'))
+  #cellmeans <- lsmeans(secondAOV$aov,specs='diffgroup', by='block')
   print(cellmeans)
 }
 #tukey would be an inappropriate test > will always deafult to sidak
 #so I am choosing to set sidak as default, since it is less conservative than the bonferroni
 #bonferroni and sidak will not change any of the results
-learningcurveComparisons <- function(method='sidak'){
+learningcurveComparisonsAllBlocks <- function(method='sidak'){
   #styles <- getStyle()
   blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
   
@@ -528,10 +549,80 @@ learningcurveComparisons <- function(method='sidak'){
   HVvsIM_b2 <- c(0,0,0,0,0,-1,0,1,0,0,0,0)
   #only cursor jump differs
   
-  # contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-Instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM,
-  #                      'Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1, 
-  #                      'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
-  contrastList <- list('Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1, 
+  #lastblock
+  EXvsIM_b3 <- c(0,0,0,0,0,0,0,0,1,-1,0,0)
+  CJvsIM_b3 <- c(0,0,0,0,0,0,0,0,0,-1,1,0)
+  HVvsIM_b3 <- c(0,0,0,0,0,0,0,0,0,-1,0,1)
+  
+  #contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-Instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM,
+  #                     'Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1,
+  #                     'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
+
+  contrastList <- list('Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1,
+                        'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2,
+                        'Block3: Instr vs. Non-instr'=EXvsIM_b3, 'Block3: Cursor Jump vs. Non-instr'=CJvsIM_b3, 'Block3: Hand View vs. Non-instr'=HVvsIM_b3)
+  
+  #contrastList <- list('Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1,
+  #                     'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
+
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup','block')), contrastList, adjust=method)
+  
+  print(comparisons)
+}
+
+learningcurveComparisons <- function(method='sidak'){
+  #styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  #LC4aov <- getBlockedLearningCurvesAOV(blockdefs=blockdefs) 
+  #secondAOV <- aov_ez("participant","reachdev",LC4aov,within="block",between="diffgroup")
+  
+  
+  LC4aov <- getBlockedLearningCurvesAOV(blockdefs=blockdefs)
+  #remove last block rows
+  #we do not want contrasts to take into account last block since we're not looking into that here
+  #the full version including last block is given in a function above.
+  LC4aov <- LC4aov[-which(LC4aov$block=='last'),]
+  secondAOV <- aov_ez("participant","reachdev",LC4aov,within="block",between="diffgroup")
+  
+  
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  #disregarding block
+  #EXvsIM <- c(1,-1,0,0,1,-1,0,0,1,-1,0,0)
+  #CJvsIM <- c(0,-1,1,0,0,-1,1,0,0,-1,1,0)
+  #HVvsIM <- c(0,-1,0,1,0,-1,0,1,0,-1,0,1)
+  #CJvsHV <- c(0,0,1,-1,0,0,1,-1,0,0,1,-1) #remember to add this to the list
+  #only explicit is significantly different
+  
+  #again compare all groups to implicit but in block 1 only
+  EXvsIM_b1 <- c(1,-1,0,0,0,0,0,0)
+  CJvsIM_b1 <- c(0,-1,1,0,0,0,0,0)
+  HVvsIM_b1 <- c(0,-1,0,1,0,0,0,0)
+  #only explicit is significantly different
+  
+  #all groups to implicit but in block 2 only
+  EXvsIM_b2 <- c(0,0,0,0,1,-1,0,0)
+  CJvsIM_b2 <- c(0,0,0,0,0,-1,1,0)
+  HVvsIM_b2 <- c(0,0,0,0,0,-1,0,1)
+  #only cursor jump differs
+  
+  #lastblock
+  #EXvsIM_b3 <- c(0,0,0,0,0,0,0,0,1,-1,0,0)
+  #CJvsIM_b3 <- c(0,0,0,0,0,0,0,0,0,-1,1,0)
+  #HVvsIM_b3 <- c(0,0,0,0,0,0,0,0,0,-1,0,1)
+  
+  #contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-Instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM,
+  #                     'Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1,
+  #                     'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
+  
+  #contrastList <- list('Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1,
+  #                     'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2,
+  #                     'Block3: Instr vs. Non-instr'=EXvsIM_b3, 'Block3: Cursor Jump vs. Non-instr'=CJvsIM_b3, 'Block3: Hand View vs. Non-instr'=HVvsIM_b3)
+  
+  contrastList <- list('Block1: Instr vs. Non-instr'=EXvsIM_b1, 'Block1: Cursor Jump vs. Non-instr'=CJvsIM_b1, 'Block1: Hand View vs. Non-Instr'=HVvsIM_b1,
                        'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
   
   comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup','block')), contrastList, adjust=method)
@@ -539,8 +630,14 @@ learningcurveComparisons <- function(method='sidak'){
   print(comparisons)
 }
 
-getComparisonEffSize <- function(method = 'sidak'){
-  comparisons <- learningcurveComparisons(method=method)
+getComparisonEffSize <- function(method = 'sidak', type=c('all','two')){
+  
+  if (type == 'all'){
+    comparisons <- learningcurveComparisonsAllBlocks(method=method)
+  } else if (type == 'two'){
+    comparisons <- learningcurveComparisons(method=method)
+  }
+  
   #we can use eta-squared as effect size
   #% of variance in DV(angular deviation of hand) accounted for 
   #by the difference between group1 and group2

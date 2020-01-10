@@ -911,15 +911,86 @@ localizationANOVA <- function(test = 'omnibus') {
   }
   
   #added below just to see results in active
-  # if (test == 'active') {
-  #   LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
-  #   LOC4aov <- LOC4aov[which(LOC4aov$passive_b == 0),] #get just passive reaches (proprioceptive information only)
-  #   LOC4aov$participant <- as.factor(LOC4aov$participant)
-  #   LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, between=group, type=3, return_aov=TRUE)
-  #   
-  #   print(LocalizationAOV[1:2])
-  #   
-  # }
+  if (test == 'active') {
+    LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+    LOC4aov <- LOC4aov[which(LOC4aov$passive_b == 0),] #get active reaches only
+    LOC4aov$participant <- as.factor(LOC4aov$participant)
+    LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, between=group, type=3, return_aov=TRUE)
+
+    print(LocalizationAOV[1:2])
+
+  }
+}
+
+#follow-up for significant ANOVA in active localization
+activelocComparisonMeans <- function(){
+  
+  #library(emmeans) #changed from lsmeans
+  
+  styles <- getStyle()
+  #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+  LOC4aov <- LOC4aov[which(LOC4aov$passive_b == 0),] #get active reaches only
+  LOC4aov$participant <- as.factor(LOC4aov$participant)
+  secondAOV <- aov_ez("participant","bias_deg",LOC4aov,between="group")
+  
+  #nice(secondAOV, correction = 'none') #correction set to none since first AOV reveals no violation of sphericity
+  #summary(secondAOV) #shows all results
+  #run code above for figuring out df
+  #output is the same
+  #follow-ups using lsmeans
+  
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('group'))
+  print(cellmeans)
+}
+
+activelocComparisons <- function(method='sidak'){
+  styles <- getStyle()
+  
+  
+  LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+  LOC4aov <- LOC4aov[which(LOC4aov$passive_b == 0),] #get active reaches only
+  LOC4aov$participant <- as.factor(LOC4aov$participant)
+  secondAOV <- aov_ez("participant","bias_deg",LOC4aov,between="group")
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  #contrats will compare each group to implicit
+  #add contrast comparing CJ to HV?
+  EXvsIM <- c(1,-1,0,0)
+  CJvsIM <- c(0,-1,1,0)
+  HVvsIM <- c(0,-1,0,1)
+  #CJvsHV <- c(0,0,1,-1) #remember to add this to the list
+
+  
+  
+  contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM)#, 
+                       #'Cursor Jump vs. Hand View'=CJvsHV)
+  
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('group')), contrastList, adjust=method)
+  
+  print(comparisons)
+  
+  #when including CJvsHV, only HVvsIM is significant. That is, CJvsHV is not significant.
+  #not including CJvsHV, only HVvsIM is significant.
+}
+
+#effect size
+getactivelocComparisonEffSize <- function(method = 'sidak'){
+  comparisons <- activelocComparisons(method=method)
+  #we can use eta-squared as effect size
+  #% of variance in DV(active localization shift) accounted for 
+  #by the difference between group1 and group2
+  comparisonsdf <- as.data.frame(comparisons)
+  etasq <- ((comparisonsdf$t.ratio)^2)/(((comparisonsdf$t.ratio)^2)+(comparisonsdf$df))
+  comparisons1 <- cbind(comparisonsdf,etasq)
+  
+  effectsize <- data.frame(comparisons1$contrast, comparisons1$etasq)
+  colnames(effectsize) <- c('contrast', 'etasquared')
+  #print(comparisons)
+  print(effectsize)
 }
 
 #so next we ask whether Predicted Sensory COnsequences are affected by groups(explicit knowledge)?
