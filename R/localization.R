@@ -1706,6 +1706,84 @@ plotPropPredRelationships <- function(target='inline') {
 
 # Additional checks (Not included in Manuscript)----
 
+# We would want to run the multiple regression again, both with only the HandView group and without the Hand View group to see if findings hold
+
+getHVPropPredGLM <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  propdf <- propdf[which(propdf$group == 'handview'),]
+  preddf <- getPredExcData(styles)
+  preddf <- preddf[which(preddf$group == 'handview'),]
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  
+  mod1 <- glm(RAE ~ pred_update + prop_recal)
+  print(summary(mod1))
+  
+  #effect size
+  #we can also get squared semi-partial correlations as a measure of effect size
+  # This is the contribution of one predictor to the DV, after controlling for the other predictor.
+  mod1 <- lm(RAE ~ pred_update + prop_recal)
+  getDeltaRsquare(mod1)
+  
+  #test for collinearity
+  
+  
+  #vif(c(as.integer(pred_update), as.integer(prop_recal)))
+  print(vif(newdf[c(3,5)]))
+  #these are exactly the same from each other, given two predictors, but they are low
+  #so there is no collinearity
+  #hence we say that prop and pred are both contributing to RAE, but independently
+  
+  
+}
+#pred would no longer be significant, but prop still is. this is because pred should be at 0 levels.
+#Now we check what happens if Hand View group is removed
+
+getNoHVPropPredGLM <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  propdf <- propdf[-which(propdf$group == 'handview'),]
+  preddf <- getPredExcData(styles)
+  preddf <- preddf[-which(preddf$group == 'handview'),]
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  
+  mod1 <- glm(RAE ~ pred_update + prop_recal)
+  print(summary(mod1))
+  
+  #effect size
+  #we can also get squared semi-partial correlations as a measure of effect size
+  # This is the contribution of one predictor to the DV, after controlling for the other predictor.
+  mod1 <- lm(RAE ~ pred_update + prop_recal)
+  getDeltaRsquare(mod1)
+  
+  #test for collinearity
+  
+  
+  #vif(c(as.integer(pred_update), as.integer(prop_recal)))
+  print(vif(newdf[c(3,5)]))
+  #these are exactly the same from each other, given two predictors, but they are low
+  #so there is no collinearity
+  #hence we say that prop and pred are both contributing to RAE, but independently
+}
+# both prop and pred are significant, with prop effect size being larger
+
+
 # Given that both predictions and proprioception predict RAE independently,
 # RAE ~ PSC: the residuals here should be predicted by Prop_Recal, and vice versa
 # We then compare these with the original plots of the relationship between RAE ~ Prop and RAE ~ Pred
