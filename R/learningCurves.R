@@ -40,7 +40,7 @@ plotFullLearningCurves <- function(groups=c('30implicit', '30explicit', 'cursorj
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/SuppFig3_learningcurve.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig3_SuppFig1_learningcurve.svg', width=7, height=4, pointsize=10, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -99,7 +99,7 @@ plotBlockedLearningCurves <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/SuppFig3_blockedlearningcurves.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig3_SuppFig2_blockedlearningcurves.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   #styles <- getNCMposterStyle()
   colourscheme <- getColourScheme()

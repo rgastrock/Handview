@@ -195,7 +195,7 @@ plotReachAfterEffects <- function(target='inline'){
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/SuppFig5_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'), pointsize=14)
+    svglite(file='doc/fig/Fig5_SuppFig1_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'), pointsize=14)
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))

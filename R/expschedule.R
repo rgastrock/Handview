@@ -72,7 +72,7 @@ plotExpSched <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_expsched.svg', width=9.5, height=3.5, pointsize=10, system_fonts=list(sans="Arial"))#width is 7, height is 2.25, pointsize is 6
+    svglite(file='doc/fig/Fig2_expsched.svg', width=9.5, height=3.5, pointsize=10, system_fonts=list(sans="Arial"))#width is 7, height is 2.25, pointsize is 6
   }
   #8,5,14
   #9.5, 3.5, 10

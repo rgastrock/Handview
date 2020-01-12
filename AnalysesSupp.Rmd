@@ -27,6 +27,7 @@ source('R/learningCurves.R')
 source('R/noCursor.R')
 source('R/localization.R')
 source('R/awareness.R')
+source('R/ppdemog.R')
 source('R/data.R')
 ```
 
@@ -37,6 +38,45 @@ getPreprocessedData()
 ```
 
 Once the data and code are available, we can proceed to the next sections.
+
+## Trial Deletions and Outlier removal
+
+At every section of the experiment where we investigate particular questions (Lerning Rates, Aftereffects, Localization), we had to implement outlier removal procedures which led to the deletion of some trials unusable for further analysis. Here, we layout the total number of trials deletions (and their corresponding percentages) across groups, according to session and task type.
+
+```{r}
+countAllGroupDeletedTrials(session='aligned',task='train')
+countAllGroupDeletedTrials(session='aligned',task='nocursor')
+countAllGroupDeletedTrials(session='rotated',task='train')
+countAllGroupDeletedTrials(session='rotated',task='nocursor')
+```
+
+For the aligned and rotated cursor and no cursor trials, we see that the percentage of trials deleted are not a cause for concern, but we run a Kruskal-Wallis test to confirm whether group differences exist or not.
+
+```{r}
+getKWTotalDeletions()
+```
+
+For this test, rejecting the null hypothesis would mean that there are group differences in the percentage of deleted trials. We only observe statistical significance for cursor trials in the aligned session. Nevertheless, this should not affect any further analyses we conduct, as these trials serve merely as baseline measures for each group.
+
+Localization trials become more tricky as there are four groups, with 2 sessions (aligned and rotated), where there will be either active or passive movements within each session. Moreover, the outlier removal procedure we implement here is different, such that hand movements with endpoints beyond ±20° from the arc centre and angular errors beyond ±3 standard deviations from the mean angular error were removed. Thus, a total set of trials will first have responses removed based on the 20-degree criteria. The remaining trials will then have trials removed based on the standard deviation criteria. We tabulate the data below, note that these contain grouped data across all participants, task types, and session.
+
+```{r}
+getTotalGroupDeletedLocTrials()
+```
+
+We conduct a Kruskal-Wallis test to confirm whether group differences exist or not.
+
+```{r}
+getKWLocTotalDeletions()
+```
+
+The result of the test reaches statistical significance, although marginally. We then investigate whether this difference arises from differences across groups, or whether this is brought about by a difference in the task types (active and passive - for aligned and rotated sessions).
+
+```{r}
+getKWTaskTotalDeletions()
+```
+
+The lack of statistical significance for this test suggests that differences for the percentage of deleted trials, emanate mostly from differences across groups. However, given that the percentages of deleted trials based on the standard deviation cutoff (as shown above) are not far from each other across groups and are small in magnitude, we are confident that the significance from the initial Kruskal-Wallis test should not affect further analyses we conducted.
 
 ## Awareness Scores
 
@@ -49,6 +89,24 @@ plotAwareness()
 ```
 
 The plots confirm our findings with the PDP-type analysis. The Non-Instructed group scored lower on the questionnaire compared to the other groups, suggesting unawareness of the nature of the perturbation.
+
+## Supplementary multiple regression tests conducted
+
+We would want to run the multiple regression again, both when only the Hand View group is considered and when the Hand View group is excluded, to test whether our findings would still hold true.
+
+```{r}
+getHVPropPredGLM()
+```
+
+When considering only the Hand View group, we find that only changes in proprioceptive estimates are a significant predictor of implicit reach aftereffects. This supports results from our other statistical analyses, as we found that changes in proprioceptive estimates persisted, but efferent-based estimates (updates in predicted sensory consequences) were greatly reduced (not significantly different from zero) for the Hand View group. Effects sizes further show that the percentage of variance in implicit reach aftereffects is attributed more to changes in proprioceptive estimates, rather than updates in prediction.
+
+Next, we conduct the multiple regression without the Hand View group.
+
+```{r}
+getNoHVPropPredGLM()
+```
+
+We find that both changes in proprioceptive estimates and updates in prediction are significant predictors of implicit reach aftereffects. This is expected, as the Instructed, Non-Instructed, and Cursor Jump groups all showed persistent shifts in both proprioception and predictions.
 
 ## Pearson correlation test between implicit reach aftereffects and passive localization
 

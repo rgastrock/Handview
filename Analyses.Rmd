@@ -80,12 +80,26 @@ learningcurveComparisonMeans()
 ```
 
 ```{r}
-getComparisonEffSize(method='sidak')
+getComparisonEffSize(method='sidak', type='two')
 ```
 
-In block one, when each group was compared to the Non-instructed group, only the Instructed group differed significantly. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor. In block two, however, only the cursor jump group significantly differed from the non-instructed group, suggesting that the cursor jump group learned to counter for the rotation of the cursor at a faster rate than the non-instructed group. The hand view group, however, did not differ significantly from the non-instructed group. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular deviation of the hand, accounted for by the difference between the given group and the control, Non-Instructed group.
+In block one, when each group was compared to the Non-instructed group, only the Instructed group differed significantly. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor. In block two, however, no groups significantly differed from the non-instructed group, suggesting that the learning rates across groups did not differ from each other for this block.Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular deviation of the hand, accounted for by the difference between the given group and the control, Non-Instructed group.
 
 To summarize, instruction on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, our other manipulations, despite the error being more clearly external in nature, do not produce a similar initial advantage.
+
+## Confirmatory Analyses for follow-up tests
+
+In addition to our planned follow-up tests, we also conducted extra analyses that will support our findings. First, in the multiple pairwise comparisons we conduct above, contrasts were specified specifically for blocks 1 and 2. However, if we include the last block into these contrasts and comparisons, the calculated results will differ in some manner.
+
+```{r}
+getComparisonEffSize(method='sidak', type='all')
+```
+
+The main different result would be that the Cursor Jump group is now statistically different from the Non-Instructed group, within the second block. This suggests that the Cursor Jump group's rate of learning was faster than the Non-Instructed group for this block, but this does not provide any further advantage, as the magnitude of asymptotic learning across all groups do not differ from each other by the end of adaptation training. Support for this comes from the lack of statistical significance for comparisons within the last block (as shown above), as well as an additional One-way ANOVA we conduct on reach deviations for only the last block (as shown below).
+
+```{r}
+lastblockANOVA()
+```
 
 
 # Reach aftereffects
@@ -199,7 +213,7 @@ First, we run a one way ANOVA to test for the effect of group on passive localiz
 localizationANOVA(test='passive')
 ```
 
-We see that there are no significant differences across the groups. This suggests that passive localization changes were not affected by our manipulation of error attribution. *NOTE: (In the instance that we might be interested in testing for the effect of group on active localization changes, the function can also run the one way ANOVA on active localization changes. I do not show it here, but in that test, there is a significant difference between groups).*
+We see that there are no significant differences across the groups. This suggests that passive localization changes were not affected by our manipulation of error attribution.
 
 Next, we wanted to test whether each group showed any recalibration in proprioception. We ran t-tests that compared each group's magnitude of shifts in passive localization estimates against 0. These were one-tailed t-tests, where the null hypothesis was that the mean is greater than or equal to 0; the alternative hypothesis was that the mean is less than 0. Hence confidence intervals are all from minus infinity. Note that we do not need to control for multiplicity here, as each group is independently compared to zero (i.e., these are not pairwise comparisons).
 
@@ -226,7 +240,24 @@ However, from the plot we generated above, it seems that only the Hand View grou
 predConsTtests()
 ```
 
-From the tests, we see that only the Hand View group did not significantly differ from 0, suggesting that the Hand View group did not show any updates in predicted sensory consequences. Note that effect sizes are provided with Cohen's d, which is in standard deviation units. Thus, it indicates how many standard deviations the mean shift for a group is different from zero. Here, only the Hand View group has a very small effect size.
+From the tests, we see that only the Hand View group did not significantly differ from 0, suggesting that the Hand View group had a reduction of updates in predicted sensory consequences. Note that effect sizes are provided with Cohen's d, which is in standard deviation units. Thus, it indicates how many standard deviations the mean shift for a group is different from zero. Here, only the Hand View group has a very small effect size.
+
+## Confirmatory Analyses on Active Localization
+
+For completeness, we also conducted the same one way ANOVA to test the effect of group on active localization changes.
+
+```{r}
+localizationANOVA(test='active')
+```
+
+We observe a statistical significance, suggesting that at least one group has different mean shifts in active localization, compared to the other groups. We investigate this further by conducting follow-up tests, comparing mean active localizations shifts for each group to the control, Non-Instructed group.
+
+```{r}
+activelocComparisonMeans()
+activelocComparisons(method = 'sidak')
+```
+
+Results from these follow-up comparisons show that only the Hand View group significantly differed from mean active localization shifts from the Non-Instructed group. Given that shifts in active localization are informed by changes in both proprioception and predictions, this supports our finding that, although shifts in proprioceptive estimates of hand location persisted across all groups, only the Hand View group showed reduced changes in updating of predicted sensory consequences.
 
 # Contributions of Proprioception and Predicted Sensory Consequences on Reach Aftereffects
 
