@@ -138,10 +138,18 @@ We see that there were implicit reach aftereffects after adaptation due to the s
 
 ```{r}
 NoCursorComparisonMeans()
-getNoCurComparisonEffSize(method='sidak')
+getNoCurComparisonEffSize(method='sidak', type='all')
 ```
 
 Planned follow-up tests show that the aligned and rotated sessions differed significantly for each group. Note that this test does not definitively tell us which of the groups differed from the others, in terms of differences between sessions. However, we see from our figure that it is the Hand View group which exhibited a lower angular deviation of the hand in exclusive trials compared to the other three groups. For the purpose of answering the question we are investigating in this subsection, it is sufficient that the follow-ups showed that sessions differed for each group. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular deviation of the hand, accounted for by the difference between the two sessions.
+
+To investigate which group differed from each other in the exclusive (without strategy) no-cursor trials, we conducted pairwise comparisons of each group compared to the Non-instructed group, as well as a comparison between the Cursor Jump and Hand View group.
+
+```{r}
+getNoCurComparisonEffSize(type='exclusive')
+```
+
+We find that the Cursor Jump and Hand View groups are statistically significant from the Non-instructed group, suggesting that implicit reach aftereffects for these groups are lower. Moreover, a significant difference between the Cursor Jump and Hand View group, suggests how implicit reach aftereffects are further reduced for the Hand View group.
 
 ## PDP-type analysis (Strategy Use)
 

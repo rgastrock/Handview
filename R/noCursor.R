@@ -459,8 +459,53 @@ NoCursorComparisons <- function(method='sidak'){
   print(comparisons)
 }
 
-getNoCurComparisonEffSize <- function(method = 'sidak'){
-  comparisons <- NoCursorComparisons(method=method)
+# we can also do comparisons for just without strategy (exclusive) data, comparing each group to Non-instructed group
+NoCursorExclusiveComparisonMeans <- function(method='sidak'){
+  styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  NoC4aov <- getNoC4ANOVA(styles) 
+  NoC4aov <- NoC4aov[which(NoC4aov$session=='exclusive'),]
+  
+  NoC4aov$participant <- as.factor(NoC4aov$participant)
+  secondAOV <- aov_ez("participant","reachdeviation",NoC4aov,between="diffgroup")
+  
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('diffgroup'))
+  print(cellmeans)
+}
+
+NoCursorExclusiveComparisons <- function(method='sidak'){
+  styles <- getStyle()
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  NoC4aov <- getNoC4ANOVA(styles) 
+  NoC4aov <- NoC4aov[which(NoC4aov$session=='exclusive'),]
+  secondAOV <- aov_ez("participant","reachdeviation",NoC4aov,between="diffgroup")
+  
+  #contrats will compare each group to implicit
+  #add contrast comparing CJ to HV?
+  EXvsIM <- c(1,-1,0,0)
+  CJvsIM <- c(0,-1,1,0)
+  HVvsIM <- c(0,-1,0,1)
+  CJvsHV <- c(0,0,1,-1) #remember to add this to the list
+  
+  
+  
+  contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM, 
+  'Cursor Jump vs. Hand View'=CJvsHV)
+  
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup')), contrastList, adjust=method)
+  
+  print(comparisons)
+}
+
+getNoCurComparisonEffSize <- function(method = 'sidak', type=c('all','exclusive')){
+  if (type == 'exclusive'){
+    comparisons <- NoCursorExclusiveComparisons(method=method)
+  } else if (type == 'all'){
+    comparisons <- NoCursorComparisons(method=method)
+  }
+  
   #we can use eta-squared as effect size
   #% of variance in DV(angular deviation of hand) accounted for 
   #by the difference between group1 and group2
