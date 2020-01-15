@@ -27,6 +27,7 @@ source('R/learningCurves.R')
 source('R/noCursor.R')
 source('R/localization.R')
 source('R/awareness.R')
+source('R/cursortrajectory.R')
 source('R/data.R')
 ```
 
@@ -55,6 +56,13 @@ plotBlockedLearningCurves(target='inline')
 ```
 
 We see that, during training, the Instructed Group countered the rotation immediately, while the other groups took longer (within 15-20 trials) to compensate for the cursor-rotation. The Cursor Jump group's rate of learning seems to suggest that their rate of learning was much faster than the Non-instructed, control group (i.e. the slope of the learning curve is steep). Lastly, all groups performed similar reaching movements at the end of training.
+
+We also show individual and average reach trajectories for all groups, during the aligned session, early adaptation training, and late adaptation training. From this plot, we observe that reach trajectories are similar in pattern across all groups, regardless of manipulations to the extent of external error attribution.
+
+```{r fig.width=8, fig.height=8}
+plotAllTrajectories()
+```
+
 
 ## ANOVAs
 
