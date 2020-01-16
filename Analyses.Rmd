@@ -217,7 +217,24 @@ Since localization estimates shifted after rotated training, we tested whether t
 localizationANOVA(test = 'shifts')
 ```
 
-We see that there is a main effect of group and movement type, but no significant interaction. This suggests that the effects of movement type on shifts in hand position estimates were not modulated by group, and vice-versa. Our main research question aimed to see changes in estimates of hand location due to proprioceptive recalibration and updating of predicted sensory consequences, which we investigated next.
+We see that there is a main effect of group and movement type, but no significant interaction. This suggests that the effects of movement type on shifts in hand position estimates were not modulated by group, and vice-versa. Thus we investigate group differences within Active and Passive Localization.
+
+## Active Localization
+
+We conduct a one way ANOVA to test the effect of group on active localization changes.
+
+```{r}
+localizationANOVA(test='active')
+```
+
+We observe a statistical significance, suggesting that at least one group has different mean shifts in active localization, compared to the other groups. We investigate this further by conducting follow-up tests, comparing mean active localizations shifts for each group to the control, Non-Instructed group.
+
+```{r}
+activelocComparisonMeans()
+activelocComparisons(method = 'sidak')
+```
+
+Results from these follow-up comparisons show that only the Hand View group significantly differed from mean active localization shifts from the Non-Instructed group. Given that shifts in active localization are informed by changes in both proprioception and predictions, we further investigate passive localization shits and updates in predictions separately.
 
 ## Proprioceptive Recalibration
 
@@ -258,22 +275,7 @@ predConsTtests()
 
 From the tests, we see that only the Hand View group did not significantly differ from 0, suggesting that the Hand View group had a reduction of updates in predicted sensory consequences. Note that effect sizes are provided with Cohen's d, which is in standard deviation units. Thus, it indicates how many standard deviations the mean shift for a group is different from zero. Here, only the Hand View group has a very small effect size.
 
-## Confirmatory Analyses on Active Localization
 
-For completeness, we also conducted the same one way ANOVA to test the effect of group on active localization changes.
-
-```{r}
-localizationANOVA(test='active')
-```
-
-We observe a statistical significance, suggesting that at least one group has different mean shifts in active localization, compared to the other groups. We investigate this further by conducting follow-up tests, comparing mean active localizations shifts for each group to the control, Non-Instructed group.
-
-```{r}
-activelocComparisonMeans()
-activelocComparisons(method = 'sidak')
-```
-
-Results from these follow-up comparisons show that only the Hand View group significantly differed from mean active localization shifts from the Non-Instructed group. Given that shifts in active localization are informed by changes in both proprioception and predictions, this supports our finding that, although shifts in proprioceptive estimates of hand location persisted across all groups, only the Hand View group showed reduced changes in updating of predicted sensory consequences.
 
 # Contributions of Proprioception and Predicted Sensory Consequences on Reach Aftereffects
 
