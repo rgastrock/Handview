@@ -230,8 +230,7 @@ localizationANOVA(test='active')
 We observe a statistical significance, suggesting that at least one group has different mean shifts in active localization, compared to the other groups. We investigate this further by conducting follow-up tests, comparing mean active localizations shifts for each group to the control, Non-Instructed group.
 
 ```{r}
-activelocComparisonMeans()
-activelocComparisons(method = 'sidak')
+getactivelocComparisonEffSize(method='sidak')
 ```
 
 Results from these follow-up comparisons show that only the Hand View group significantly differed from mean active localization shifts from the Non-Instructed group. Given that shifts in active localization are informed by changes in both proprioception and predictions, we further investigate passive localization shits and updates in predictions separately.
