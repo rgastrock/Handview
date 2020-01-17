@@ -270,7 +270,7 @@ plotAllTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig4_AllTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_AllTrajectories.svg', width=6.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
@@ -289,7 +289,7 @@ plotAllTrajectories <- function(target='inline') {
   # how do we know npoints? for now this is, unfortunately, a magic number...
   averageGroupTrajectories <- array(data=NA, dim=c(length(groups),nconditions,npoints,2))
   
-  plot(c(-100,-100),c(-100,-100),type='n',asp=1,col=rgb(0,0,0,0),main="Individual and Average Trajectories", xlab="Group", ylab="Cursor Training",xlim=c(0, 16*length(groups)), ylim=c(0, 16*nconditions), yaxt='n', xaxt='n',axes=F)
+  plot(c(-100,-100),c(-100,-100),type='n',asp=1,col=rgb(0,0,0,0), xlab="Group", ylab="Cursor Training",xlim=c(0, 16*length(groups)), ylim=c(0, 16*nconditions), yaxt='n', xaxt='n',axes=F,cex.lab=.8)
   
   for (group.id in 1:length(groups)) {
     
@@ -450,8 +450,8 @@ plotAllTrajectories <- function(target='inline') {
     
   }
   
-  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','CursorJump', 'HandView'))
-  axis(2, at=(c(1:nconditions)*16) - 8, labels=c('Late Adaptation','Early Adaptation','Aligned'))
+  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
+  axis(2, at=(c(1:nconditions)*16) - 8, labels=c('Late\nAdaptation','Early\nAdaptation','Aligned'), cex.axis=.8)
   
   #close everything if you saved plot as svg
   if (target=='svg') {

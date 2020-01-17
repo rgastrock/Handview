@@ -89,7 +89,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig5_reachaftereffects.svg', width=8, height=6, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig5_reachaftereffects.svg', width=6.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -100,12 +100,12 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   #ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #as -.1 and .2 before
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4) #+4 added here to fit in individual points
   plot(NA, NA, xlim = c(0,2.6), ylim = ylims, #c(-5,35),
-       xlab = "Strategy Use", ylab = "Angular Deviation of Hand (°)", frame.plot = FALSE, #frame.plot takes away borders
-       xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+       xlab = "Strategy Use", ylab = "Angular Reach Deviation (°)", frame.plot = FALSE, #frame.plot takes away borders
+       xaxt = 'n', yaxt = 'n', cex.lab=.75) #xaxt and yaxt to allow to specify tick marks
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
   #abline(h = c(0,0), col = rgb(0.5,0.5,0.5), lty = 2) 
-  axis(1, at=c(0.75, 1.75), labels=c('Without Strategy', 'With Strategy'), cex.axis=0.85) #tick marks for x axis
-  axis(2, at = c(0, 10, 20, 30), cex.axis=0.85) #tick marks for y axis
+  axis(1, at=c(0.75, 1.75), labels=c('Without Strategy', 'With Strategy'), cex.axis=.75) #tick marks for x axis
+  axis(2, at = c(0, 10, 20, 30), cex.axis=.75) #tick marks for y axis
   
   
   for (group in groups) {
@@ -182,7 +182,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   #add legend
   legend(0.10,44.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
-         lty=1,lwd=5,bty='n',cex=0.85)
+         lty=1,lwd=5,bty='n',cex=0.75)
   
   #close everything if you saved plot as svg
   if (target=='svg') {

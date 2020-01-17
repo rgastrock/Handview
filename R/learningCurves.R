@@ -115,7 +115,7 @@ plotBlockedLearningCurves <- function(target='inline') {
   
   par(mar=c(4,4,1,0.2))
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #was -.1 and .2 before
-  plot(c(-15,50),c(0,0),col=rgb(0.5,0.5,0.5),xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Deviation of Hand (°)",xaxt='n',yaxt='n',bty='n')
+  plot(c(-15,50),c(0,0),col=rgb(0.5,0.5,0.5),xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Reach Deviation (°)",xaxt='n',yaxt='n',bty='n',cex.lab=1.10)
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -135,11 +135,11 @@ plotBlockedLearningCurves <- function(target='inline') {
   }
   
   # axis(side=1, at=c(1,10,20,30))
-  axis(side=1, at=c(1,5,10,25,30,35), labels=c('1','5','10','80','85','90'),cex.axis=0.85)
-  axis(side=2, at=c(0,10,20,30),cex.axis=0.85)
+  axis(side=1, at=c(1,5,10,25,30,35), labels=c('1','5','10','80','85','90'),cex.axis=1.13)
+  axis(side=2, at=c(0,10,20,30),cex.axis=1.13)
   
   
-  legend(17,12,styles$label,col=as.character(styles$color),lty=styles$linestyle,bty='n', cex=0.85, lwd=5)
+  legend(17,15,styles$label,col=as.character(styles$color),lty=styles$linestyle,bty='n', cex=1.10, lwd=5)
   
   #close everything if you saved plot as svg
   if (target=='svg') {
@@ -182,7 +182,7 @@ plotLearningCurves <- function(target='inline') {
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig3_learningcurve.svg', width=6, height=7, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig3_learningcurve.svg', width=6.5, height=7, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
@@ -207,7 +207,7 @@ plotLearningCurves <- function(target='inline') {
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 1 - 3',ylab='Angular Deviation of Hand (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 1 - 3',ylab='Angular Reach Deviation (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.10)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
   mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
@@ -255,8 +255,8 @@ plotLearningCurves <- function(target='inline') {
   }
   
   
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
-  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=0.85)
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.13)
+  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=1.13)
   
   
   # # # # # # # # # #
@@ -265,7 +265,7 @@ plotLearningCurves <- function(target='inline') {
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 4 - 6',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 4 - 6',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1,cex.lab=1.10)
   
   #mtext('C', side=3, outer=FALSE, at=c(2.5/7,1), line=-1, adj=0, padj=1)
   mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
@@ -313,8 +313,8 @@ plotLearningCurves <- function(target='inline') {
   }
   
   
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
-  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=0.85)
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.13)
+  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=1.13)
   
   
   # # # # # # # # # #
@@ -323,7 +323,7 @@ plotLearningCurves <- function(target='inline') {
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 76 - 90',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 76 - 90',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1,cex.lab=1.10)
   
   #mtext('D', side=3, outer=TRUE, at=c(4.7/7,1), line=-1, adj=0, padj=1)
   mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
@@ -371,8 +371,8 @@ plotLearningCurves <- function(target='inline') {
   }
   
   
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'))
-  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=0.85)
+  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.13)
+  axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=1.13)
   
   
   if (target == 'svg') {
