@@ -323,7 +323,7 @@ getLocalizationTdistributionConfidenceIntervals <- function(groups=c('30implicit
 plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorjump','handview'), target='inline') {
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig6_SuppFig1_localization.svg', width=8, height=3.5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig5_SuppFig1_localization.svg', width=8, height=3.5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -496,7 +496,7 @@ plotLocalizations <- function(target='inline'){
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig6_localization.svg', width=6.5, height=7, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig5_localization.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))
@@ -523,7 +523,7 @@ plotLocalizations <- function(target='inline'){
            xlab = "", ylab="Localization Shift (°)", frame.plot = FALSE, #frame.plot takes away borders
            main = sprintf('\n\n%s Localization \n (Proprioception and\nPrediction)', reachtype),cex.main = 1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception + Prediction)", cex = 1)
-      abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+      abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130),cex.axis=1.2) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15), cex.axis=1.2) #tick marks for y axis
       mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
@@ -532,7 +532,7 @@ plotLocalizations <- function(target='inline'){
            xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
            main = sprintf('\n%s Localization \n (Proprioception)', reachtype),cex.main=1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
-      abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+      abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130), cex.axis=1.2) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15), cex.axis=1.2) #tick marks for y axis
     }
@@ -586,7 +586,7 @@ plotLocalizations <- function(target='inline'){
        xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
        main = '\n\nPredicted Sensory \n Consequences \n (Prediction)',cex.main=1.2, cex.lab=1.2, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   #mtext("(Prediction)", cex=1)
-  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0 and 30
+  abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
   axis(1, at=c(50, 90, 130), cex.axis=1.2) #tick marks for x axis
   axis(2, at = c(0, -5, -10, -15), cex.axis=1.2) #tick marks for y axis
   
@@ -1253,7 +1253,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig1_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig1_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -1263,20 +1263,20 @@ plotPropGroupCorrelations <- function(target='inline'){
   #still need to separate points by group
   data <- getPropExcData(styles)
   colourscheme <- getColourScheme()
-  expcol <- colourscheme[['30explicit']][['S']]
-  impcol <- colourscheme[['30implicit']][['S']]
-  cujcol <- colourscheme[['cursorjump']][['S']]
-  hancol <- colourscheme[['handview']][['S']]
+  expcol <- colourscheme[['30explicit']][['T']]
+  impcol <- colourscheme[['30implicit']][['T']]
+  cujcol <- colourscheme[['cursorjump']][['T']]
+  hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Reach Aftereffects and \nProprioceptive Recalibration", ylab = 'No Cursor Reaches \n Without Strategy (°)', xlab = 'Shifts in Passive Localization (°)',
-       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.7, cex.lab=.7)
+       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)#.7
   #add dashed lines at 0
-  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
-  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-10,0,10,20), cex.axis=.7)
-  axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.7)
-  mtext('A', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.6)
+  axis(side=2, at=c(-10,0,10,20), cex.axis=.9)
+  axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.9)
+  mtext('A', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
   
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
@@ -1293,11 +1293,11 @@ plotPropGroupCorrelations <- function(target='inline'){
   
   polyX <- c(x,rev(x))
   polyY <- c(pred1[,2], rev(pred1[,3]))
-  polygon(polyX, polyY, col='#dadada', border=NA)
+  polygon(polyX, polyY, col='#bdbdbd', border=NA)
   
   #add in data points of all pp's
   points(data$prop_recal, data$reachdeviation, pch=16, cex=1.5,
-       col= alpha(cols, 0.5)) #library(scales) needed for alpha to work
+       col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #Reg line
   reglinex <- seq(range(prop_recal)[1],range(prop_recal)[2],.1)
@@ -1310,7 +1310,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.7)
+  legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.9)
 
   # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
   #        col=c(impcol,expcol,cujcol,hancol),
@@ -1359,7 +1359,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig2_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig2_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -1369,20 +1369,20 @@ plotPredGroupCorrelations <- function(target='inline'){
   #still need to separate points by group
   data <- getPredExcData(styles)
   colourscheme <- getColourScheme()
-  expcol <- colourscheme[['30explicit']][['S']]
-  impcol <- colourscheme[['30implicit']][['S']]
-  cujcol <- colourscheme[['cursorjump']][['S']]
-  hancol <- colourscheme[['handview']][['S']]
+  expcol <- colourscheme[['30explicit']][['T']]
+  impcol <- colourscheme[['30implicit']][['T']]
+  cujcol <- colourscheme[['cursorjump']][['T']]
+  hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Reach Aftereffects and \nPredicted Sensory Consequences", ylab = 'No Cursor Reaches \n Without Strategy (°)', xlab = 'Shifts in Predictions (°)',
-       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.7, cex.lab=.7)
+       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
   #add dashed lines at 0
-  abline(h = 0, col = 8, lty = 2) #creates horizontal dashed lines through y =  0
-  abline(v = 0, col = 8, lty = 2) #creates vertical dashed lines through x =  0
+  abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2)#creates horizontal dashed lines through y =  0
+  abline(v = 0, col = rgb(0.5,0.5,0.5), lty = 2)#creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-10,0,10,20), cex.axis=.7)
-  axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.7)
-  mtext('B', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.6)
+  axis(side=2, at=c(-10,0,10,20), cex.axis=.9)
+  axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.9)
+  mtext('B', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
   
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
@@ -1401,11 +1401,11 @@ plotPredGroupCorrelations <- function(target='inline'){
   
   polyX <- c(x,rev(x))
   polyY <- c(pred1[,2], rev(pred1[,3]))
-  polygon(polyX, polyY, col='#dadada', border=NA)
+  polygon(polyX, polyY, col='#bdbdbd', border=NA)
   
   #add in data points of all pp's
   points(data$pred_update, data$reachdeviation, pch=16, cex=1.5,
-         col= alpha(cols, 0.5)) #library(scales) needed for alpha to work
+         col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #Reg line
   reglinex <- seq(range(pred_update)[1],range(pred_update)[2],.1)
@@ -1418,7 +1418,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=.7)
+  legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=.9)
 
   
   # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
@@ -1524,29 +1524,29 @@ plotLinesPredActRAE <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig3_line_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig3_line_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   data <- getPredActRAE()
   mod1 <- lm(data$RAE_pred ~ data$reachdeviation)
   
   colourscheme <- getColourScheme()
-  expcol <- colourscheme[['30explicit']][['S']]
-  impcol <- colourscheme[['30implicit']][['S']]
-  cujcol <- colourscheme[['cursorjump']][['S']]
-  hancol <- colourscheme[['handview']][['S']]
+  expcol <- colourscheme[['30explicit']][['T']]
+  impcol <- colourscheme[['30implicit']][['T']]
+  cujcol <- colourscheme[['cursorjump']][['T']]
+  hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Actual and Predicted\n Reach Aftereffects", xlab = 'Actual No Cursor Reaches \n Without Strategy (°)', ylab = 'Predicted No Cursor Reaches \n Without Strategy (°)',
-       bty='n', ylim= c(-5,25), xlim= c(-5,25), xaxt='n', yaxt='n', cex.main=.7, cex.lab=.7)
+       bty='n', ylim= c(-5,25), xlim= c(-5,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
 
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-5,0,5,10,15,20), cex.axis=.7)
-  axis(side=1, at=c(-5,0,5,10,15,20), cex.axis=.7)
-  mtext('C', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.6)
+  axis(side=2, at=c(-5,0,5,10,15,20), cex.axis=.9)
+  axis(side=1, at=c(-5,0,5,10,15,20), cex.axis=.9)
+  mtext('C', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
   
   #add in data points of all pp's
   points(data$reachdeviation, data$RAE_pred, pch=16, cex=.5,
-         col= alpha(cols, 0.5)) #library(scales) needed for alpha to work
+         col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #add line, need intercept and slope
   #create glm based on predicted RAE and Actual RAE
@@ -1563,15 +1563,19 @@ plotLinesPredActRAE <- function(target='inline'){
   
   # # We can just plot the diagonal
   # diagonal is intercept at 0 and slope of 1
-  segments(-5.3, -5.3, 20, 20, col=8)
+  segments(-5.3, -5.3, 20, 20, col=rgb(0.5,0.5,0.5))
   
   #we can plot distances from point to diagonal by specifying (x,y) for from and to
   segments(data$reachdeviation, data$RAE_pred, data$reachdeviation, data$reachdeviation, col= alpha(cols, .3))
   
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
   
   legend(-3,27,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='n',cex=.7)
+         pch=16,bty='n',cex=.9)
   
   
   #print(summary(mod1))
@@ -1587,7 +1591,7 @@ plotPredActRAE <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig4_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig4_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   data <- getPredActRAE()
@@ -1672,7 +1676,7 @@ plotPropPredRelationships <- function(target='inline') {
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig7_correlation.svg', width=6.5, height=4, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig6_correlation.svg', width=8.5, height=4, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
   par(mfrow=c(1,3), mar=c(7,4.8,7,0))
@@ -1948,7 +1952,7 @@ plotRelationships <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig5_correlationwres.svg', width=12, height=10, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig5_correlationwres.svg', width=12, height=10, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow = c(2,2))
@@ -2283,7 +2287,7 @@ plotMeanCorrectedPropCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig6_PropMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig6_PropMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2368,7 +2372,7 @@ plotMeanCorrectedPredCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig7_PredMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig7_PredMeanCorrectedCorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2455,7 +2459,7 @@ plotNoHVPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig8_NoHVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig8_NoHVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2542,7 +2546,7 @@ plotNoHVPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig9_NoHVPredcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig9_NoHVPredcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2663,7 +2667,7 @@ plotHVPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig10_HVcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig10_HVcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2765,7 +2769,7 @@ plotCJPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig11_CJcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig11_CJcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2867,7 +2871,7 @@ plotNIPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig12_NIcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig12_NIcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -2969,7 +2973,7 @@ plotIPredGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig13_Icorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig13_Icorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3098,7 +3102,7 @@ plotHVPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig14_HVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig14_HVPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3200,7 +3204,7 @@ plotCJPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig15_CJPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig15_CJPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3302,7 +3306,7 @@ plotNIPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig16_NIPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig16_NIPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
@@ -3404,7 +3408,7 @@ plotIPropGroupCorrelations <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig7_SuppFig17_IPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig6_SuppFig17_IPropcorrelation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   styles <- getStyle()
