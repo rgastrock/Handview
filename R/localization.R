@@ -1296,7 +1296,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   polygon(polyX, polyY, col='#bdbdbd', border=NA)
   
   #add in data points of all pp's
-  points(data$prop_recal, data$reachdeviation, pch=16, cex=1.5,
+  points(data$prop_recal, data$reachdeviation, pch=16, cex=1,
        col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #Reg line
@@ -1404,7 +1404,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   polygon(polyX, polyY, col='#bdbdbd', border=NA)
   
   #add in data points of all pp's
-  points(data$pred_update, data$reachdeviation, pch=16, cex=1.5,
+  points(data$pred_update, data$reachdeviation, pch=16, cex=1,
          col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #Reg line
@@ -1545,7 +1545,7 @@ plotLinesPredActRAE <- function(target='inline'){
   mtext('C', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
   
   #add in data points of all pp's
-  points(data$reachdeviation, data$RAE_pred, pch=16, cex=.5,
+  points(data$reachdeviation, data$RAE_pred, pch=16, cex=.85,
          col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #add line, need intercept and slope
