@@ -1,5 +1,47 @@
 source('R/shared.R')
 
+getTrajectories <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'handview'), block=c(1,2,3)){
+  
+  for (group in groups){
+    load(sprintf('data/%s_trajectories.dat',group))
+    exp <- c('exp001','exp002','exp003','exp004','exp005','exp006','exp007','exp008','exp009','exp010','exp011','exp012','exp013','exp014','exp015','exp016','exp017','exp018','exp019','exp020','exp021')
+    imp <- c('imp001','imp002','imp003','imp004','imp005','imp006','imp007','imp008','imp009','imp010','imp011','imp012','imp013','imp014','imp015','imp016','imp017','imp018','imp019','imp020')
+    cur <- c('cur001','cur002','cur003','cur004','cur005','cur006','cur007','cur008','cur009','cur010','cur011','cur012','cur013','cur014','cur015','cur016','cur017','cur018','cur019','cur020')
+    han <- c('han001','han002','han003','han004','han005','han006','han007','han008','han009','han010','han011','han012','han013','han014','han015','han016','han017','han018','han019','han020','han021','han022','han023','han024','han025','han026','han027','han028','han029')
+    for(blockno in block){
+      # do the x samples first: 1st block
+      # transpose it to reflect participants in every column
+      xdat <- t(groupaveragetrajectories[,blockno,,1])
+      # then get the y samples: 1st block and transpose
+      ydat <- t(groupaveragetrajectories[,blockno,,2])
+      #then combine x and y together for this block
+      alldat <- rbind(xdat,ydat)
+      if (group == '30implicit'){
+        colnames(alldat) <- imp
+      } else if (group == '30explicit'){
+        colnames(alldat) <- exp
+      } else if (group == 'cursorjump'){
+        colnames(alldat) <- cur
+      } else if (group == 'handview'){
+        colnames(alldat) <- han
+      }
+      coordx <- rep('x',length(xdat[,1]))
+      sampx <- seq(1, length(coordx), 1)
+      coordy <- rep('y',length(ydat[,1]))
+      sampy <- seq(1, length(coordy), 1)
+      coord <- c(coordx,coordy)
+      samp <- c(sampx,sampy)
+      
+      alldat <- cbind(coord, samp, alldat)
+      
+      write.csv(alldat, file=sprintf('data/%s_block%s_trajectories.csv', group, blockno),quote=FALSE,row.names=FALSE)
+    }
+    
+  }
+  
+  
+}
+
 getAverageTrajectories <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'handview')) {
   
   # define which trials we want
@@ -267,7 +309,7 @@ plotAverageTrajectories <- function(target='inline') {
 }
 
 #do all confidence ellipses AND/OR do each individual one but faintly
-plotAllTrajectories <- function(target='inline') {
+plotOLDAllTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
@@ -461,6 +503,144 @@ plotAllTrajectories <- function(target='inline') {
   }
   
 }
+
+plotAllTrajectories <- function(target='inline') {
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig3_AllTrajectories.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  par(mfrow=c(1,1))
+  
+  groups <- c('30implicit', '30explicit', 'cursorjump','handview')
+  conditions <- c()
+  colors <- getColourScheme(groups)
+  
+  #trialRanges <- read.csv('data/trialRanges.csv')
+  #trialRanges <- getAverageTrajectories()
+  
+  #npoints <- 50
+  nconditions <- c(1,2,3)
+  # how do we know npoints? for now this is, unfortunately, a magic number...
+  averageGroupTrajectories <- array(data=NA, dim=c(length(groups),nconditions,npoints,2))
+  
+  plot(c(-100,-100),c(-100,-100),type='n',asp=1,col=rgb(0,0,0,0), xlab="Group", ylab="Cursor Training",xlim=c(0, 16*length(groups)), ylim=c(0, 16*length(nconditions)), yaxt='n', xaxt='n',axes=F,cex.lab=.8)
+  
+  for (group.id in 1:length(groups)) {
+    for (condition.id in 1:length(nconditions)){
+      group <- groups[group.id]
+      color <- colors[[group.id]][['T']]
+      
+      dat <- read.csv(file = sprintf('data/%s_block%s_trajectories.csv', group, condition.id), stringsAsFactors = F)
+      
+      xdat <- dat[which(dat$coord == 'x'),]
+      xdat <- xdat[,-1:-2]
+      ydat <- dat[which(dat$coord == 'y'),]
+      ydat <- ydat[,-1:-2]
+      ngroup <- ncol(xdat)
+      
+      for (ppno in 1:ngroup){
+        #print(condition)
+        X <- xdat[,ppno]
+        Y <- ydat[,ppno]
+        
+        
+        # first rotated to desired orientation:
+        hand <- rotateTrajectory(X,Y,90)
+        X <- hand[,1]
+        Y <- hand[,2]
+        
+        # then translate to fit on the plot nicely
+        Xmod <- ((group.id-1) * 16) + 8
+        if (condition.id == 1){
+          Ymod <- (((condition.id-1) * 16) + 4) + 32
+        } else if (condition.id == 3){
+          Ymod <- (((condition.id-1) * 16) + 4) - 32
+        } else {
+          Ymod <- ((condition.id-1) * 16) + 4
+        }
+        
+        X <- X + Xmod
+        Y <- Y + Ymod
+        
+        lines(X,Y,type='l',col= alpha(color, 0.1), lty=1, lw=2)
+        
+        if (condition.id == 2) {
+          
+          unrotate <- -30
+          
+          cursor <- rotateTrajectory(hand[,1],hand[,2],unrotate)
+          X <- cursor[,1] #+ Xmod; scaling factors removed, used later on
+          Y <- cursor[,2] #+ Ymod
+          
+          # we only show the part where cursor has jumped (1/3 of distance from home to target, but dependent on participant movement)
+          if (group == 'cursorjump') {
+            
+            dist <- sqrt(X^2 + Y^2)
+            idx <- which(dist > 4)
+            
+            newX <- X[idx] + Xmod
+            newY <- Y[idx] + Ymod
+            
+            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=2, lw=2)
+            
+          } else {
+            newX <- X + Xmod
+            newY <- Y + Ymod
+            
+            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=2, lw=2)
+            
+          }
+        } else if (condition.id == 3){
+          unrotate <- -30
+          
+          cursor <- rotateTrajectory(hand[,1],hand[,2],unrotate)
+          X <- cursor[,1] #+ Xmod; scaling factors removed, used later on
+          Y <- cursor[,2] #+ Ymod
+          
+          # we only show the part where cursor has jumped (1/3 of distance from home to target, but dependent on participant movement)
+          if (group == 'cursorjump') {
+            
+            dist <- sqrt(X^2 + Y^2)
+            idx <- which(dist > 4)
+            
+            newX <- X[idx] + Xmod
+            newY <- Y[idx] + Ymod
+            
+            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=2, lw=2)
+            
+          } else {
+            newX <- X + Xmod
+            newY <- Y + Ymod
+            
+            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=2, lw=2)
+            
+          }
+        }
+        
+      }
+      
+      #plot the mean for every row as a line, may need to do transformations here too
+      
+      # draw in home and target position
+      points(c(0,0)+Xmod,c(0,12)+Ymod,col=rgb(0,0,0),bg=rgb(1,1,1,0),cex=2)
+      
+    }
+  }
+  
+  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
+  axis(2, at=(c(1:length(nconditions))*16) - 8, labels=c('Late\nAdaptation','Early\nAdaptation','Aligned'), cex.axis=.8)
+
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+
+}
+
+
+
 
 #function below checks each individual trajectory plotted for a specified group
 #check for handview since it seems like certain people there are deviating by 60 degrees, to know what is going on:
