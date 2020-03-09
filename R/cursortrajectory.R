@@ -20,10 +20,10 @@ getAverageTrajectories <- function(groups=c('30implicit', '30explicit', 'cursorj
   }
   
   # when reading in the dat files, we want to know what's in them:
-  write.csv(trialRanges, file='data/trialRanges.csv',quote=FALSE,row.names=FALSE)
+  #write.csv(trialRanges, file='data/trialRanges.csv',quote=FALSE,row.names=FALSE)
   
   # return findings
-  #return(TRUE)
+  return(trialRanges)
   
 }
 
@@ -168,7 +168,8 @@ plotAverageTrajectories <- function(target='inline') {
   #colors <- c(rgb(.7,.7,.7),rgb(0,0,0),rgb(1,0,0),rgb(.7,.7,.7),rgb(0,0,0))
   colors <- getColourScheme(groups)
 
-  trialRanges <- read.csv('data/trialRanges.csv')
+  #trialRanges <- read.csv('data/trialRanges.csv')
+  trialRanges <- getAverageTrajectories()
   
   npoints <- 50
   nconditions <- nrow(trialRanges)
@@ -282,7 +283,8 @@ plotAllTrajectories <- function(target='inline') {
   #colors <- c(rgb(.7,.7,.7),rgb(0,0,0),rgb(1,0,0),rgb(.7,.7,.7),rgb(0,0,0))
   colors <- getColourScheme(groups)
   
-  trialRanges <- read.csv('data/trialRanges.csv')
+  #trialRanges <- read.csv('data/trialRanges.csv')
+  trialRanges <- getAverageTrajectories()
   
   npoints <- 50
   nconditions <- nrow(trialRanges)
