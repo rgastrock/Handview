@@ -8,7 +8,7 @@ getGroupAwarenessScores <- function(groups = c('30implicit','30explicit','cursor
   # loop through participants:
   for (group in groups) {
     
-    # get localization data for participant:
+    # get data
     df <- read.csv(sprintf('data/%s_ppawareness_scores.csv',group), stringsAsFactors=FALSE)
     
     # concatenate all dataframes into one:
@@ -32,7 +32,7 @@ plotAwareness <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'ha
     svglite(file='doc/fig/Fig8_awareness.svg', width=8, height=5, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
-  df <- getGroupAwarenessScores()
+  df <- read.csv('data/ppawareness_scores.csv', stringsAsFactors=FALSE)
   
   par(mfrow=c(1,2),mar=c(4,4,2,.3))
   

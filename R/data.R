@@ -55,7 +55,12 @@ getPreprocessedData <- function(check=TRUE,participantsOnly=FALSE) {
                   'handview_block2_trajectories.csv'      =	  'https://osf.io/a6duz/download',
                   'handview_block3_trajectories.csv'      =	  'https://osf.io/6cxd7/download',
                   
-                  'participant_demographics.csv'          =   'https://osf.io/jc2ug/download'
+                  'participant_demographics.csv'          =   'https://osf.io/jc2ug/download',
+                  'ppawareness_scores.csv'                =   'https://osf.io/d9eug/download',
+                  'aligned_train_deletedtrials.csv'       =   'https://osf.io/96u7v/download',
+                  'aligned_nocursor_deletedtrials.csv'    =   'https://osf.io/4wbth/download',
+                  'rotated_train_deletedtrials.csv'       =   'https://osf.io/423ha/download',
+                  'rotated_nocursor_deletedtrials.csv'    =   'https://osf.io/bs32u/download',
                   
   )
   

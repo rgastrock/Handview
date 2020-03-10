@@ -46,38 +46,18 @@ getDemographics <- function(type = c('all','grouped'), groups = c('30explicit','
 source('R/shared.R')
 
 #Deleted Trials from Selection-----
-#note that this is dependent on raw data (in Explicit Project, which is not shared on github)
-#function getParticipantTaskData is reliant on different directory, so I changed path to make this work here
+
 countGroupDeletedTrials<- function (group, session, task) {
   #session: aligned or rotated, task: train or nocursor
   #get list of participants in group
   #go through each pp data, and grabe unselected trials
   #divide by total trials to get a percentage
-  pplist <- getGroupParticipants(group = group)
-  delsum <- data.frame()
-  for (pp in pplist){
-    data <- getParticipantTaskData(group = group , id = pp, session = session , task = task)
-    total <- length(unique(data$trial))
-    
-    subdf <- data[which(data$trialselected_bool == 0),]
-    deleted <- length(unique(subdf$trial))
-    percentdeleted<- (deleted/total)*100
-    del_trial <- data.frame(deleted, total, percentdeleted)
-    colnames(del_trial) <- c('deleted_trials', 'total_trials', 'percent_deleted')
-    
-    if (prod(dim(delsum)) == 0){
-      delsum <- del_trial
-      row.names(delsum) <- NULL
-    } else {
-      delsum <- rbind(delsum, del_trial)
-      row.names(delsum) <- NULL
-    }
-    
-  }
-  #return(delsum)
-  #code above does it for each pp, but we want whole group
-  groupdeleted <- sum(delsum$deleted_trials)
-  grouptotal <- sum(delsum$total_trials)
+  
+  dat <- read.csv(file = sprintf('data/%s_%s_deletedtrials.csv', session,task), stringsAsFactors = F)
+  subdat <- dat[which(dat$group == group),]
+  
+  groupdeleted <- sum(subdat$deleted_trials)
+  grouptotal <- sum(subdat$total_trials)
   grouppercent <- (groupdeleted/grouptotal)*100
   
   groupdelsum <- data.frame(group, groupdeleted, grouptotal, grouppercent)
@@ -116,7 +96,8 @@ countParticipantDeletedTrials<- function (groups=c('30explicit','30implicit','cu
   
   }
   
-  return(delsum)
+  #return(delsum)
+  write.csv(delsum, file=sprintf('data/%s_%s_deletedtrials.csv', session, task),quote=FALSE,row.names=FALSE)
 }
 
 
@@ -135,6 +116,7 @@ countAllGroupDeletedTrials <- function(groups=c('30explicit','30implicit','curso
     }
   }
   return(alldeletion)
+  #(alldeletion, file=sprintf('data/%s_%s_deletedtrials.csv', session, task),quote=FALSE,row.names=FALSE)
 }
 
 #now we can write a function that does it for both sessions, and both tasks
@@ -187,20 +169,20 @@ getKWTotalDeletions <- function(){
   #rotated train, rotated nocursor
   
   cat('Aligned Train:\n')
-  df <- countParticipantDeletedTrials(session = 'aligned', task = 'train')
+  df <- read.csv(file = 'data/aligned_train_deletedtrials.csv', stringsAsFactors = F)
   print(kruskal.test(deleted_trials ~ group, data = df))
 
   
   cat('Aligned No Cursor:\n')
-  df <- countParticipantDeletedTrials(session = 'aligned', task = 'nocursor')
+  df <- read.csv(file = 'data/aligned_nocursor_deletedtrials.csv', stringsAsFactors = F)
   print(kruskal.test(deleted_trials ~ group, data = df))
   
   cat('Rotated Train:\n')
-  df <- countParticipantDeletedTrials(session = 'rotated', task = 'train')
+  df <- read.csv(file = 'data/rotated_train_deletedtrials.csv', stringsAsFactors = F)
   print(kruskal.test(deleted_trials ~ group, data = df))
   
   cat('Rotated No Cursor:\n')
-  df <- countParticipantDeletedTrials(session = 'rotated', task = 'nocursor')
+  df <- read.csv(file = 'data/rotated_nocursor_deletedtrials.csv', stringsAsFactors = F)
   print(kruskal.test(deleted_trials ~ group, data = df))
 }
 #only aligned train is significant. This shouldn't be a problem, probably just connected to how cursor jump group was collected

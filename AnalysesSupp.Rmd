@@ -10,7 +10,7 @@ output:
 
 # Overview
 
-This document discusses analyses conducted to support and justify the main tests conducted for the study. These tests are not included in the Results and Discussion sections of the manuscript, but are provided as supplementary material.
+This document discusses analyses conducted to support and justify the main tests conducted for the study. These tests are not included in the Results and Discussion sections of the manuscript, but are available for interested readers.
 
 # Setting up the R environment
 
@@ -98,7 +98,7 @@ We would want to run the multiple regression again, both when only the Hand View
 getHVPropPredGLM()
 ```
 
-When considering only the Hand View group, we find that only changes in proprioceptive estimates are a significant predictor of implicit reach aftereffects. This supports results from our other statistical analyses, as we found that changes in proprioceptive estimates persisted, but efferent-based estimates (updates in predicted sensory consequences) were greatly reduced (not significantly different from zero) for the Hand View group. Effects sizes further show that the percentage of variance in implicit reach aftereffects is attributed more to changes in proprioceptive estimates, rather than updates in prediction.
+When considering only the Hand View group, we find that only changes in proprioceptive estimates are a significant predictor of implicit reach aftereffects. This supports results from our other statistical analyses, as we found that changes in proprioceptive estimates persisted, but efferent-based estimates (updates in predicted sensory consequences) were greatly reduced (not significantly different from zero) for the Hand View group. Effect sizes further show that the percentage of variance in implicit reach aftereffects is attributed more to changes in proprioceptive estimates, rather than updates in prediction.
 
 Next, we conduct the multiple regression without the Hand View group.
 
@@ -110,7 +110,7 @@ We find that both changes in proprioceptive estimates and updates in prediction 
 
 ## Pearson correlation test between implicit reach aftereffects and passive localization
 
-Here, we tested whether the shifts in passive localization are correlated with the angular reach deviations of the hand in *No Cursor - Without Strategy* trials. We performed a Pearson product-moment correlation test, which included all participants regardless of group.
+Here, we tested whether the shifts in passive localization are correlated with the angular reach deviations in No Cursor - Without Strategy trials. We performed a Pearson product-moment correlation test, which included all participants regardless of group.
 
 ```{r}
 getRAEPropCorrelation()
@@ -133,7 +133,7 @@ Performing these two correlations bring about two possible criticisms:
 ## Justification for pooling data across participants from all groups
 
 ### 1)
-First, we looked into the possibility of a spurious correlation existing within our dataset. Essentially, we are looking for the existence of a group effect. One way of looking into group effects is to see how the relationships of predictions and proprioception with aftereffects change with the removal of the Hand View group (Note that we only remove the Hand View group because it was the group observed to be different from the others in measures of aftereffects and predicted sensory consequences). First, we investigate the relationship of predictions and aftereffects, without the Hand View group.
+First, we looked into the possibility of a spurious correlation existing within our dataset. Essentially, we are looking for the existence of a group effect. One way of looking into group effects is to see how the relationships of predictions and proprioception with aftereffects change with the removal of the Hand View group (Note that we only remove the Hand View group because it was the group observed to be different from the others in measures of aftereffects and localization). First, we investigate the relationship of predictions and aftereffects, without the Hand View group.
 
 ```{r fig.width=7, fig.height=5}
 plotNoHVPredGroupCorrelations()
