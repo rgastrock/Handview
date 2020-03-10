@@ -60,7 +60,7 @@ getPreprocessedData <- function(check=TRUE,participantsOnly=FALSE) {
                   'aligned_train_deletedtrials.csv'       =   'https://osf.io/96u7v/download',
                   'aligned_nocursor_deletedtrials.csv'    =   'https://osf.io/4wbth/download',
                   'rotated_train_deletedtrials.csv'       =   'https://osf.io/423ha/download',
-                  'rotated_nocursor_deletedtrials.csv'    =   'https://osf.io/bs32u/download',
+                  'rotated_nocursor_deletedtrials.csv'    =   'https://osf.io/bs32u/download'
                   
   )
   
