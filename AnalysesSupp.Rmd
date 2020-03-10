@@ -198,15 +198,9 @@ getMeanCorrectedRAEPredCorrelation()
 
 We found the predictions did not have a significant relationship with aftereffects (p=0.21, r = -0.13), and r-squared values were reduced from 0.09 to 0.02.
 
-Next, we quantified the difference between this mean corrected model (mod2) from the original model (mod1). From the AIC values, we found that mod1 (AIC = 535.74) seems to be a better model than mod 2 (AIC = 556.36). To test this more formally, we conducted a Cox test. Note that an ANOVA would be inappropriate as these two models are non-nested. A Cox test would investigate whether the second model would add any explanatory value to the first model. Below is the definition from the R help file:
+Next, we quantified the difference between this mean corrected model (mod2) from the original model (mod1). From the AIC values, we found that mod1 (AIC = 535.74) seems to be a better model than mod 2 (AIC = 556.36). 
 
-"If the first model contains the correct set of regressors, then a fit of the regressors from the second model to the fitted values from first model should have no further explanatory value. But if it has, it can be concluded that model 1 does not contain the correct set of regressors."
-
-```{r}
-getOrigCorrRegComp()
-```
-
-Given that mod1 should contain the group effects, we consider the second result (fitted(M2) ~ M1; p < .001), suggesting that mod 1 does add explanatory value to mod2. Note that the Cox test also does the comparison the other way. Nevertheless, these results show that there is indeed a group effect present (which was expected given the design of the experiment), and this is partially explaining the variance in the data. Despite accounting for groups, we found that both predictors were still significant when we conducted the multiple regression. This suggests that, although a group effect does exist, our conclusion that changes in proprioception and predictions could be contributing to reach aftereffects are justified.
+Nevertheless, these results show that there is indeed a group effect present (which was expected given the design of the experiment), and this is partially explaining the variance in the data. Despite accounting for groups, we found that both predictors were still significant when we conducted the multiple regression. This suggests that, although a group effect does exist, our conclusion that changes in proprioception and predictions could be contributing to reach aftereffects are justified.
 
 
 ## Independence of changes in proprioception from prediction
@@ -240,14 +234,14 @@ First, we generated simulated PAS scores. To do this, we shuffled the PSC scores
 getACTResidByFakePASCorrelation()
 ```
 
-We found that the simulated PAS scores do not significantly correlate (p = 0.81, r = -0.03) with the residuals of regressing aftereffects on ACT, even if ACT was a significant predictor of aftereffects (p < 0.001). The VIF score between the simulated PAS scores and PSC was still low (vif = 1.11). We also repeated this analysis the other way around and generated simulated ACT scores instead. 
+We found that the simulated PAS scores do not significantly correlate with the residuals of regressing aftereffects on ACT, even if ACT was a significant predictor of aftereffects. The VIF score between the simulated PAS scores and PSC was still low. We also repeated this analysis the other way around and generated simulated ACT scores instead. 
 
 ```{r}
 getPASResidByFakeACTCorrelation()
 ```
 
 
-We found that the simulated ACT scores do not significantly correlate (p = 0.92, r = 0.01) with the residuals of regressing aftereffects on PAS, even if PAS was a significant predictor of aftereffects (p < 0.001). The VIF score between the simulated ACT scores and PSC was still low (vif = 1.08). 
+We found that the simulated ACT scores do not significantly correlate with the residuals of regressing aftereffects on PAS, even if PAS was a significant predictor of aftereffects. The VIF score between the simulated ACT scores and PSC was still low. 
 
 Another simple check is to show that ACT and PAS VIF scores are high, as these are considered to be collinear. This is exactly what we found (vif = 3.37), as shown below.
 

@@ -1091,7 +1091,7 @@ predConsTtests <- function() {
   df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == '30explicit'),]
   
-  cat('Instructed group predicted sensory consequences compared to 0:\n')
+  cat('\n\nInstructed group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$pred_update, mu=0))
@@ -1101,7 +1101,7 @@ predConsTtests <- function() {
   df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == '30implicit'),]
   
-  cat('Non-Instructed group predicted sensory consequences compared to 0:\n')
+  cat('\n\nNon-Instructed group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$pred_update, mu=0))
@@ -1111,7 +1111,7 @@ predConsTtests <- function() {
   df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == 'cursorjump'),]
   
-  cat('Cursor Jump group predicted sensory consequences compared to 0:\n')
+  cat('\n\nCursor Jump group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$pred_update, mu=0))
@@ -1201,7 +1201,7 @@ pasLocTtests <- function() {
   df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == '30explicit'),]
   
-  cat('Instructed group proprioceptive recalibration compared to 0:\n')
+  cat('\n\nInstructed group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$prop_recal, mu=0))
@@ -1211,7 +1211,7 @@ pasLocTtests <- function() {
   df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == '30implicit'),]
   
-  cat('Non-Instructed group proprioceptive recalibration compared to 0:\n')
+  cat('\n\nNon-Instructed group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$prop_recal, mu=0))
@@ -1221,7 +1221,7 @@ pasLocTtests <- function() {
   df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == 'cursorjump'),]
   
-  cat('Cursor Jump group proprioceptive recalibration compared to 0:\n')
+  cat('\n\nCursor Jump group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$prop_recal, mu=0))
@@ -1312,9 +1312,9 @@ plotPropGroupCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.9)
 
-  # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
-  #        col=c(impcol,expcol,cujcol,hancol),
-  #        pch=16,bty='o',cex=.25)
+  legend(5,20,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -1916,6 +1916,10 @@ testPropResByPred <- function(){
   
   #add legend and r-squared
   legend(12, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.1794"))), col='#a6a6a6', bty='n', cex=.85)
+  
+  legend(10,20,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+         col=c(impcol,expcol,cujcol,hancol),
+         pch=16,bty='o',cex=.8)
 }
 
 #We can also get the correlation of the residual plots
@@ -2083,7 +2087,7 @@ getACTResidByFakePASCorrelation <- function(){
   mod1 <- glm(RAE ~ ACT)
   mod1_Res <- resid(mod1)
   #plot(dat$reachdeviation, dat$prop_recal)
-  print(summary(mod1))
+  #print(summary(mod1))
   print(cor.test(mod1_Res, PAS))
   
   #VIF of ACT and fake PAS?
@@ -2138,7 +2142,7 @@ getPASResidByFakeACTCorrelation <- function(){
   mod1 <- glm(RAE ~ PAS)
   mod1_Res <- resid(mod1)
   #plot(dat$reachdeviation, dat$prop_recal)
-  print(summary(mod1))
+  #print(summary(mod1))
   print(cor.test(mod1_Res, ACT))
   
   #vif of ACT and PAS?
@@ -2348,7 +2352,7 @@ plotMeanCorrectedPropCorrelations <- function(target='inline'){
   
   legend(5,-7,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -2433,7 +2437,7 @@ plotMeanCorrectedPredCorrelations <- function(target='inline'){
   
   legend(5,-7,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -2522,7 +2526,7 @@ plotNoHVPropGroupCorrelations <- function(target='inline'){
   
   legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump'),
          col=c(impcol,expcol,cujcol),
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -2611,7 +2615,7 @@ plotNoHVPredGroupCorrelations <- function(target='inline'){
   
   legend(15,-5,legend=c('Non-instructed','Instructed','Cursor Jump'),
          col=c(impcol,expcol,cujcol),
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -2728,7 +2732,7 @@ plotHVPredGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Hand View',
          col=hancol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -2830,7 +2834,7 @@ plotCJPredGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Cursor Jump',
          col=cujcol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -2932,7 +2936,7 @@ plotNIPredGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Non-Instructed',
          col=impcol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -3034,7 +3038,7 @@ plotIPredGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Instructed',
          col=expcol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -3163,7 +3167,7 @@ plotHVPropGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Hand View',
          col=hancol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -3265,7 +3269,7 @@ plotCJPropGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Cursor Jump',
          col=cujcol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -3367,7 +3371,7 @@ plotNIPropGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Non-Instructed',
          col=impcol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -3469,7 +3473,7 @@ plotIPropGroupCorrelations <- function(target='inline'){
   
   legend(15,-25,legend='Instructed',
          col=expcol,
-         pch=16,bty='o',cex=.25)
+         pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   

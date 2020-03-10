@@ -564,7 +564,11 @@ plotAllTrajectories <- function(target='inline') {
         X <- X + Xmod
         Y <- Y + Ymod
         
-        lines(X,Y,type='l',col= alpha(color, 0.1), lty=1, lw=2)
+        if (condition.id == 1){
+          lines(X,Y,type='l',col=color,lty=1,lw=2)
+        } else {
+          lines(X,Y,type='l',col= color, lty=2, lw=2)
+        }
         
         if (condition.id == 2 || condition.id == 3) {
           
@@ -583,13 +587,13 @@ plotAllTrajectories <- function(target='inline') {
             newX <- X[idx] + Xmod
             newY <- Y[idx] + Ymod
             
-            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=2, lw=2)
+            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=1, lw=2)
             
           } else {
             newX <- X + Xmod
             newY <- Y + Ymod
             
-            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=2, lw=2)
+            lines(newX,newY,type='l',col=alpha(color, 0.1), lty=1, lw=2)
             
           }
         }  
@@ -620,8 +624,12 @@ plotAllTrajectories <- function(target='inline') {
       
       X <- X + Xmod
       Y <- Y + Ymod
+      if (condition.id == 1){
+        lines(X,Y,type='l',col=color,lty=1,lw=2)
+      } else {
+        lines(X,Y,type='l',col= color, lty=2, lw=2)
+      }
       
-      lines(X,Y,type='l',col= color, lty=1, lw=2)
       
       if (condition.id == 2 || condition.id == 3) {
         
@@ -640,13 +648,13 @@ plotAllTrajectories <- function(target='inline') {
           newX <- X[idx] + Xmod
           newY <- Y[idx] + Ymod
           
-          lines(newX,newY,type='l',col=color, lty=2, lw=2)
+          lines(newX,newY,type='l',col=color, lty=1, lw=2)
           
         } else {
           newX <- X + Xmod
           newY <- Y + Ymod
           
-          lines(newX,newY,type='l',col=color, lty=2, lw=2)
+          lines(newX,newY,type='l',col=color, lty=1, lw=2)
           
         }
       }  
