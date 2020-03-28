@@ -206,7 +206,7 @@ Nevertheless, these results show that there is indeed a group effect present (wh
 ## Independence of changes in proprioception from prediction
 Aside from how proprioceptive changes and updates in predictions are calculated. Here, we show semi-partial correlations through regression models, to show the independence of the two.
 
-To show that changes in predictions and proprioception are independent predictors/contributors to reach aftereffects, proprioception should be able to predict the residuals of regressing aftereffects on predictions. That is, the r values here are equivalent to the square root of the squared semi-partial correlations used as effect sizes in the regression we do in our main analyses (see Analyses.Rmd). Hence, the tests here are a more detailed version of the information provided in the main analyses.
+To show that changes in predictions and proprioception are independent predictors/contributors to reach aftereffects, proprioception should be able to predict the residuals of regressing aftereffects on predictions. That is, the r values here are equivalent to the square root of the squared semi-partial correlations used as effect sizes in the regression we do in our main analyses (see Analyses.Rmd). Hence, the tests here are a more detailed version of the information provided in the main analyses. Note that if we do correlations of the residuals of each predictor with RAE, that would be similar to partial correlations (which is the correlation between one predictor and RAE, after partialling out the effects of both the other predictor and RAE).
 
 ```{r}
 getPredResidByPropCorrelation()
