@@ -89,7 +89,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig4_reachaftereffects.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig5_reachaftereffects.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   # create plot
@@ -195,7 +195,7 @@ plotReachAfterEffects <- function(target='inline'){
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig4_SuppFig1_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'), pointsize=14)
+    svglite(file='doc/fig/Fig5_SuppFig1_reachaftereffects.svg', width=10, height=7, system_fonts=list(sans='Arial'), pointsize=14)
   }
   
   #par(mfrow=c(1,2), mar=c(4,4,2,0.1))

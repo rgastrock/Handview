@@ -199,7 +199,7 @@ plotAverageTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig3_SuppFig1_AverageTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_SuppFig1_AverageTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
@@ -313,7 +313,7 @@ plotOLDAllTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig3_AllTrajectories.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_AllTrajectories.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
@@ -508,7 +508,7 @@ plotAllTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig3_AllTrajectories.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_AllTrajectories.svg', width=8.5, height=7, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
@@ -684,7 +684,7 @@ plotINDTrajectories <- function(target='inline') {
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig3_SuppFig2_HVTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
+    svglite(file='doc/fig/Fig4_SuppFig2_HVTrajectories.svg', width=8, height=6, pointsize=10, system_fonts=list(sans="Arial"))
   }
   
   par(mfrow=c(1,1))
