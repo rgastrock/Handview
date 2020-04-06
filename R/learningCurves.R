@@ -227,7 +227,8 @@ plotLearningCurves <- function(target='inline') {
     col <- colourscheme[[group]][['T']]
     points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
     if (group == '30implicit'){
-      abline(h = c(0,mean(c(blocked))), col = col, lty = 2)
+      col <- colourscheme[[group]][['S']]
+      abline(h = mean(c(blocked)), col = alpha(col, 0.7), lty = 2)
     }
     
     meandist <- getConfidenceInterval(data=c(blocked), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
@@ -285,7 +286,8 @@ plotLearningCurves <- function(target='inline') {
     col <- colourscheme[[group]][['T']]
     points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
     if (group == '30implicit'){
-      abline(h = c(0,mean(c(blocked))), col = col, lty = 2)
+      col <- colourscheme[[group]][['S']]
+      abline(h = mean(c(blocked)), col = alpha(col, 0.7), lty = 2)
     }
     
     meandist <- getConfidenceInterval(data=c(blocked), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
@@ -343,7 +345,8 @@ plotLearningCurves <- function(target='inline') {
     col <- colourscheme[[group]][['T']]
     points(x=X,y=Y,pch=16,cex=1.5,col=col)#as.character(styles$color_trans[groupno]))
     if (group == '30implicit'){
-      abline(h = c(0,mean(c(blocked))), col = col, lty = 2)
+      col <- colourscheme[[group]][['S']]
+      abline(h = mean(c(blocked)), col = alpha(col, 0.7), lty = 2)
     }
     
     meandist <- getConfidenceInterval(data=c(blocked), method='bootstrap', resamples=5000, FUN=mean, returndist=TRUE)
