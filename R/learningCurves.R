@@ -626,7 +626,7 @@ learningcurveComparisons <- function(method='sidak'){
                        'Block2: Instr vs. Non-instr'=EXvsIM_b2, 'Block2: Cursor Jump vs. Non-instr'=CJvsIM_b2, 'Block2: Hand View vs. Non-instr'=HVvsIM_b2)
   
   comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('diffgroup','block')), contrastList, adjust=method)
-  
+ 
   print(comparisons)
 }
 
