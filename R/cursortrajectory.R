@@ -659,8 +659,11 @@ plotAllTrajectories <- function(target='inline') {
         }
       }  
       
-      # draw in home and target position
-      points(c(0,0)+Xmod,c(0,12)+Ymod,col=rgb(0,0,0),bg=rgb(1,1,1,0),cex=2)
+      # draw in home and target position, we would want the position and sizes of these to be in scale
+      #points(c(0,0)+Xmod,c(0,12)+Ymod,col=rgb(0,0,0),bg=rgb(1,1,1,0),cex=2) #this could work, but cex is an unintuitive value
+      a = seq( 0, 2*pi, length.out = 181 ) # increase length.out if the circles don't look round
+      lines( x=(cos(a)*.5)+Xmod, y=(sin(a)*.5)+Ymod, col=rgb(0,0,0) )
+      lines( x=(cos(a)*.5)+Xmod, y=(sin(a)*.5)+Ymod+12, col=rgb(0,0,0) )
       
     }
   }
