@@ -520,17 +520,17 @@ plotLocalizations <- function(target='inline'){
     ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
     if (reachtype.idx == 0){
       plot(NA, NA, xlim = c(40,140), ylim = ylims, 
-           xlab = "", ylab="Localization Shift (°)", frame.plot = FALSE, #frame.plot takes away borders
-           main = sprintf('\n\n%s Localization \n (Proprioception and\nPrediction)', reachtype),cex.main = 1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
+           xlab = "", ylab="Localization shift (°)", frame.plot = FALSE, #frame.plot takes away borders
+           main = sprintf('\n\n%s localization \n (proprioception and\nprediction)', reachtype),cex.main = 1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception + Prediction)", cex = 1)
       abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130),cex.axis=1.2) #tick marks for x axis
       axis(2, at = c(0, -5, -10, -15), cex.axis=1.2) #tick marks for y axis
-      mtext('A', side=3, outer=TRUE, line=-1, adj=0, padj=1)
+      mtext('a', side=3, outer=TRUE, line=-1, adj=0, padj=1, font=2)
     } else if (reachtype.idx == 1){
       plot(NA, NA, xlim = c(40,140), ylim = ylims, 
-           xlab = expression(paste("Hand Angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
-           main = sprintf('\n%s Localization \n (Proprioception)', reachtype),cex.main=1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
+           xlab = expression(paste("Hand angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
+           main = sprintf('\n%s localization \n (proprioception)', reachtype),cex.main=1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
       abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
       axis(1, at=c(50, 90, 130), cex.axis=1.2) #tick marks for x axis
@@ -584,7 +584,7 @@ plotLocalizations <- function(target='inline'){
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
   plot(NA, NA, xlim = c(40,140), ylim = ylims, 
        xlab = "", ylab="", frame.plot = FALSE, #frame.plot takes away borders
-       main = '\n\nPredicted Sensory \n Consequences \n (Prediction)',cex.main=1.2, cex.lab=1.2, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
+       main = '\n\nPredicted sensory \n consequences \n (prediction)',cex.main=1.2, cex.lab=1.2, xaxt = 'n', yaxt = 'n') #xaxt and yaxt to allow to specify tick marks
   #mtext("(Prediction)", cex=1)
   abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
   axis(1, at=c(50, 90, 130), cex.axis=1.2) #tick marks for x axis
@@ -620,7 +620,7 @@ plotLocalizations <- function(target='inline'){
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
   
-  legend(35,.3,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
+  legend(35,.3,legend=c('Non-Instructed','Instructed','Cursor Jump','Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n', cex=1.2)
   
@@ -630,10 +630,10 @@ plotLocalizations <- function(target='inline'){
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Active Localization',ylab='Localization Shift (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Active localization',ylab='Localization shift (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('b', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -700,10 +700,10 @@ plotLocalizations <- function(target='inline'){
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Passive Localization',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Passive localization',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('c', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -769,10 +769,10 @@ plotLocalizations <- function(target='inline'){
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Predicted Sensory\nConsequences',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Predicted sensory\nconsequences',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
   
   
-  mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('d', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   #abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -1268,7 +1268,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['T']]
   hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Reach Aftereffects and \nProprioceptive Recalibration", ylab = 'No Cursor Reaches \n Without Strategy (°)', xlab = 'Shifts in Passive Localization (°)',
+  plot(NA, NA, main="Reach aftereffects and \nproprioceptive recalibration", ylab = 'No cursor reaches \n without strategy (°)', xlab = 'Shifts in passive localization (°)',
        bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)#.7
   #add dashed lines at 0
   abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0
@@ -1276,7 +1276,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   # this puts tick marks exactly where we want them:
   axis(side=2, at=c(-10,0,10,20), cex.axis=.9)
   axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.9)
-  mtext('A', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
+  mtext('a', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8, font=2)
   
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
@@ -1312,9 +1312,9 @@ plotPropGroupCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.9)
 
-  legend(5,20,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
-         col=c(impcol,expcol,cujcol,hancol),
-         pch=16,bty='o',cex=.8)
+  # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  #        col=c(impcol,expcol,cujcol,hancol),
+  #        pch=16,bty='o',cex=.8)
   
   print(summary(mod1))
   
@@ -1374,7 +1374,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['T']]
   hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Reach Aftereffects and \nPredicted Sensory Consequences", ylab = 'No Cursor Reaches \n Without Strategy (°)', xlab = 'Shifts in Predictions (°)',
+  plot(NA, NA, main="Reach aftereffects and \npredicted sensory consequences", ylab = 'No cursor reaches \n without strategy (°)', xlab = 'Shifts in predictions (°)',
        bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
   #add dashed lines at 0
   abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2)#creates horizontal dashed lines through y =  0
@@ -1382,7 +1382,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   # this puts tick marks exactly where we want them:
   axis(side=2, at=c(-10,0,10,20), cex.axis=.9)
   axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.9)
-  mtext('B', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
+  mtext('b', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8, font=2)
   
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
@@ -1536,13 +1536,13 @@ plotLinesPredActRAE <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['T']]
   hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
-  plot(NA, NA, main="Actual and Predicted\n Reach Aftereffects", xlab = 'Actual No Cursor Reaches \n Without Strategy (°)', ylab = 'Predicted No Cursor Reaches \n Without Strategy (°)',
+  plot(NA, NA, main="Actual and predicted\n reach aftereffects", xlab = 'Actual no cursor reaches \n without strategy (°)', ylab = 'Predicted no cursor reaches \n without strategy (°)',
        bty='n', ylim= c(-5,25), xlim= c(-5,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
 
   # this puts tick marks exactly where we want them:
   axis(side=2, at=c(-5,0,5,10,15,20), cex.axis=.9)
   axis(side=1, at=c(-5,0,5,10,15,20), cex.axis=.9)
-  mtext('C', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8)
+  mtext('c', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8, font=2)
   
   #add in data points of all pp's
   points(data$reachdeviation, data$RAE_pred, pch=16, cex=.85,
@@ -1573,7 +1573,7 @@ plotLinesPredActRAE <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   
-  legend(-3,27,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(-3,27,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='n',cex=.9)
   

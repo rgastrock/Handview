@@ -107,7 +107,7 @@ plotBlockedLearningCurves <- function(target='inline') {
   rotations = c(30,30,30,30)
   colors = c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']], colourscheme[['handview']][['S']])
   linestyles = c(1,1,1,1)
-  labels <- c('Non-instructed','Instructed','Cursor Jump','Hand View')
+  labels <- c('Non-Instructed','Instructed','Cursor Jump','Hand View')
   
   
   styles <- data.frame(groups,rotations,colors,linestyles,labels)
@@ -115,7 +115,7 @@ plotBlockedLearningCurves <- function(target='inline') {
   
   par(mar=c(4,4,1,0.2))
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #was -.1 and .2 before
-  plot(c(-15,50),c(0,0),col=rgb(0.5,0.5,0.5),xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular Reach Deviation (°)",xaxt='n',yaxt='n',bty='n',cex.lab=1.10)
+  plot(c(-15,50),c(0,0),col=rgb(0.5,0.5,0.5),xlim=c(-1,36),ylim=ylims,xlab='Trial',ylab="Angular reach deviation (°)",xaxt='n',yaxt='n',bty='n',cex.lab=1.10)
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) 
   
   for (groupno in c(1:length(styles$group))) {
@@ -198,7 +198,7 @@ plotLearningCurves <- function(target='inline') {
   # panel A: Learning Curves for all groups across 90 trials
   plotBlockedLearningCurves()
   #mtext('A', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
-  mtext('A', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('a', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   
   
   # # # # # # # # # #
@@ -207,10 +207,10 @@ plotLearningCurves <- function(target='inline') {
   # essentially, we want to show that we are confident that the mean for each group lies here
   # and if any CIs overlap mean of Non Instructed, that means they are not different
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation)))
-  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 1 - 3',ylab='Angular Reach Deviation (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.10)
+  plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 1 - 3',ylab='Angular reach deviation (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.10)
   
   #mtext('B', side=3, outer=FALSE, at=c(0,1), line=-1, adj=0, padj=1)
-  mtext('B', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('b', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   
   blockdefs <- list(c(1,3))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -269,7 +269,7 @@ plotLearningCurves <- function(target='inline') {
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 4 - 6',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1,cex.lab=1.10)
   
   #mtext('C', side=3, outer=FALSE, at=c(2.5/7,1), line=-1, adj=0, padj=1)
-  mtext('C', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('c', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   
   blockdefs <- list(c(4,3))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
@@ -328,7 +328,7 @@ plotLearningCurves <- function(target='inline') {
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Trials 76 - 90',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1,cex.lab=1.10)
   
   #mtext('D', side=3, outer=TRUE, at=c(4.7/7,1), line=-1, adj=0, padj=1)
-  mtext('D', side=3, outer=FALSE, line=-1, adj=0, padj=1)
+  mtext('d', side=3, outer=FALSE, line=-1, adj=0, padj=1, font=2)
   
   blockdefs <- list(c(76,15))
   #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))

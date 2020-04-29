@@ -100,11 +100,11 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   #ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))) #as -.1 and .2 before
   ylims=c(-.35*max(styles$rotation),max(styles$rotation)+(.35*max(styles$rotation))+4) #+4 added here to fit in individual points
   plot(NA, NA, xlim = c(0,2.6), ylim = ylims, #c(-5,35),
-       xlab = "Strategy Use", ylab = "Angular Reach Deviation (°)", frame.plot = FALSE, #frame.plot takes away borders
+       xlab = "Strategy use", ylab = "Angular reach deviation (°)", frame.plot = FALSE, #frame.plot takes away borders
        xaxt = 'n', yaxt = 'n', cex.lab=.75) #xaxt and yaxt to allow to specify tick marks
   abline(h = c(0,30), col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
   #abline(h = c(0,0), col = rgb(0.5,0.5,0.5), lty = 2) 
-  axis(1, at=c(0.75, 1.75), labels=c('Without Strategy', 'With Strategy'), cex.axis=.75) #tick marks for x axis
+  axis(1, at=c(0.75, 1.75), labels=c('Without strategy', 'With strategy'), cex.axis=.75) #tick marks for x axis
   axis(2, at = c(0, 10, 20, 30), cex.axis=.75) #tick marks for y axis
   
   
@@ -180,7 +180,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   } 
 
   #add legend
-  legend(0.10,44.5,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(0.10,44.5,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n',cex=0.75)
   

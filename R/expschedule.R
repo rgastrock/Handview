@@ -72,7 +72,7 @@ plotExpSched <- function(target='inline'){
   
   #but we can save plot as svg file
   if (target=='svg') {
-    svglite(file='doc/fig/Fig2_expsched.svg', width=8.5, height=4, pointsize=14, system_fonts=list(sans="Arial"))#width is 7, height is 2.25, pointsize is 6
+    svglite(file='doc/fig/Fig2_expsched.svg', width=8.5, height=4, pointsize=14, system_fonts=list(sans="Arial"))#width is 8.5, height is 4, pointsize is 14
   }
   #8,5,14
   #9.5, 3.5, 10
@@ -90,7 +90,7 @@ plotExpSched <- function(target='inline'){
   # lines(c(0:17), rep(0,18))
   
   #combine aligned and rotated
-  par(mar=c(2,1,2,1), mfrow = c(2,1))
+  par(mar=c(4,1,1.5,1), mfrow = c(2,1)) #2,1,2,1
   
   #Aligned Session
   #might need to specify different X and Y for each trial
@@ -126,7 +126,7 @@ plotExpSched <- function(target='inline'){
   Y <- c(0, 1)
   
   plot(c(1:length(aligned_df$trial)), seq (0,30, length.out = length(aligned_df$trial)), type = 'n', axes = FALSE,
-       xlab = '', ylab = '', main = 'Aligned Session',
+       xlab = '', ylab = '', main = 'Aligned session',
        xlim = c(0,636), ylim = c(-0.2,1.2), cex.main=.65, cex.lab=.65)
   
   #set variables for colours
@@ -185,7 +185,7 @@ plotExpSched <- function(target='inline'){
   # axis(side=2, at=c(0.1,0.9), labels=c('0','30'))
   #Ncols <- ceiling(6/4) #6 labels, 4 rows
   
-  legend(350,1.3,legend=c('Cursor Training', 'No Cursor', 'No Cursor: Without Strategy', 'No Cursor: With Strategy','Active Localization','Passive Localization',''),
+  legend(350,1.3,legend=c('Cursor training', 'No cursor', 'No cursor: without strategy', 'No cursor: with strategy','Active localization','Passive localization',''),
          col=c(grcur,drkgr,midgr,lgtgr,drkbl,lgtbl,'#ffffff'),
          #text.col=c("#000000","#76BA1B","#4C9A2A","#A4DE02",drkbl,lgtbl),
          lty=1,bty='n',cex=.65,lwd=5, ncol=2)
@@ -230,7 +230,7 @@ plotExpSched <- function(target='inline'){
   Y <- c(0, 1)
   
   plot(c(1:length(rot_df_EI$trial)), seq (0,30, length.out = length(rot_df_EI$trial)), type = 'n', axes = FALSE,
-       xlab = 'Trial', ylab = '', main = 'Rotated Session',
+       xlab = 'Trial', ylab = '', main = 'Rotated session',
        xlim = c(0,635), ylim = c(-0.2,1.2), cex.main=.65, cex.lab=.65)#.45
   
   #localization

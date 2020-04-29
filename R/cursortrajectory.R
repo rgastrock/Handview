@@ -525,7 +525,7 @@ plotAllTrajectories <- function(target='inline') {
   # how do we know npoints? for now this is, unfortunately, a magic number...
   #averageGroupTrajectories <- array(data=NA, dim=c(length(groups),nconditions,npoints,2))
   
-  plot(c(-100,-100),c(-100,-100),type='n',asp=1,col=rgb(0,0,0,0), xlab="Group", ylab="Cursor Training",xlim=c(0, 16*length(groups)), ylim=c(0, 16*length(nconditions)), yaxt='n', xaxt='n',axes=F,cex.lab=.8)
+  plot(c(-100,-100),c(-100,-100),type='n',asp=1,col=rgb(0,0,0,0), xlab="Group", ylab="Cursor training",xlim=c(0, 16*length(groups)), ylim=c(0, 16*length(nconditions)), yaxt='n', xaxt='n',axes=F,cex.lab=.8)
   
   for (group.id in 1:length(groups)) {
     for (condition.id in 1:length(nconditions)){
@@ -669,7 +669,7 @@ plotAllTrajectories <- function(target='inline') {
   }
   
   axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
-  axis(2, at=(c(1:length(nconditions))*16) - 8, labels=c('Late\nAdaptation','Early\nAdaptation','Aligned'), cex.axis=.8)
+  axis(2, at=(c(1:length(nconditions))*16) - 8, labels=c('Late\nadaptation','Early\nadaptation','Aligned'), cex.axis=.8)
 
   #close everything if you saved plot as svg
   if (target=='svg') {
