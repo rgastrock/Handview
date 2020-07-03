@@ -896,7 +896,6 @@ localizationANOVA <- function(test = 'omnibus') {
     LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
     LOC4aov$participant <- as.factor(LOC4aov$participant)
     LocalizationAOV <- ezANOVA(data=LOC4aov, wid=participant, dv=bias_deg, within=passive_b, between=group, type=3, return_aov=TRUE)
-    
     print(LocalizationAOV[1])
     
   }
@@ -921,6 +920,81 @@ localizationANOVA <- function(test = 'omnibus') {
     print(LocalizationAOV[1:2])
 
   }
+}
+
+#These changes are necessary given recent feedback *make sure to change other aspects later on*
+#Since 2x4 anova with movement type and groups found significant main effects but no interaction, then we can't investigate 
+#a group effect separately for active and passive.
+#So movement type effect is expected because active is larger than passive by nature (has afferent and efferent)
+#Group effect can be investigated by doing follow-up tests, comparing each group to Non-instructed, regardless of movement type.
+#We can get the mean shift from both active and passive, for each participant.
+
+localizationshiftComparisonMeans <- function(){
+  
+  styles <- getStyle()
+  #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+  #get mean localization shift, regardless of movement type
+  LOC4aov <- aggregate(bias_deg ~ group* participant, data=LOC4aov, FUN=mean)
+  LOC4aov$participant <- as.factor(LOC4aov$participant)
+  secondAOV <- aov_ez("participant","bias_deg",LOC4aov,between="group")
+  
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('group'))
+  print(cellmeans)
+}
+
+localizationshiftComparisons <- function(method='sidak'){
+  styles <- getStyle()
+  
+  
+  LOC4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+  #get mean localization shift, regardless of movement type
+  LOC4aov <- aggregate(bias_deg ~ group* participant, data=LOC4aov, FUN=mean)
+  LOC4aov$participant <- as.factor(LOC4aov$participant)
+  secondAOV <- aov_ez("participant","bias_deg",LOC4aov,between="group")
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  #contrats will compare each group to implicit
+  #add contrast comparing CJ to HV?
+  #Levels of group are NI, I, CJ, HV
+  EXvsIM <- c(-1,1,0,0)
+  CJvsIM <- c(-1,0,1,0)
+  HVvsIM <- c(-1,0,0,1)
+  
+  CJvsEX <- c(0,-1,1,0)
+  HVvsEX <- c(0,-1,0,1)
+  
+  CJvsHV <- c(0,0,1,-1) #remember to add this to the list
+  
+  
+  
+  contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM, 
+                       'Cursor Jump vs. Instr'=CJvsEX, 'Hand View vs. Instr'=HVvsEX,'Cursor Jump vs. Hand View'=CJvsHV)
+  
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('group')), contrastList, adjust=method)
+  
+  print(comparisons)
+  
+  #only I is different from HV. This is driving the main effect of group.
+}
+
+#effect size
+getlocalizationshiftComparisonEffSize <- function(method = 'sidak'){
+  comparisons <- localizationshiftComparisons(method=method)
+  #we can use eta-squared as effect size
+  #% of variance in DV(active localization shift) accounted for 
+  #by the difference between group1 and group2
+  comparisonsdf <- as.data.frame(comparisons)
+  etasq <- ((comparisonsdf$t.ratio)^2)/(((comparisonsdf$t.ratio)^2)+(comparisonsdf$df))
+  comparisons1 <- cbind(comparisonsdf,etasq)
+  
+  effectsize <- data.frame(comparisons1$contrast, comparisons1$etasq)
+  colnames(effectsize) <- c('contrast', 'etasquared')
+  #print(comparisons)
+  print(effectsize)
 }
 
 #follow-up for significant ANOVA in active localization
@@ -960,9 +1034,10 @@ activelocComparisons <- function(method='sidak'){
   
   #contrats will compare each group to implicit
   #add contrast comparing CJ to HV?
-  EXvsIM <- c(1,-1,0,0)
-  CJvsIM <- c(0,-1,1,0)
-  HVvsIM <- c(0,-1,0,1)
+  #Levels of group go from NI, I, CJ, HV
+  EXvsIM <- c(-1,1,0,0)
+  CJvsIM <- c(-1,0,1,0)
+  HVvsIM <- c(-1,0,0,1)
   #CJvsHV <- c(0,0,1,-1) #remember to add this to the list
 
   
@@ -974,8 +1049,7 @@ activelocComparisons <- function(method='sidak'){
   
   print(comparisons)
   
-  #when including CJvsHV, only HVvsIM is significant. That is, CJvsHV is not significant.
-  #not including CJvsHV, only HVvsIM is significant.
+  #no significant differences
 }
 
 #effect size
@@ -1463,6 +1537,7 @@ getPropPredGLM <- function(){
   #we can also get squared semi-partial correlations as a measure of effect size
   # This is the contribution of one predictor to the DV, after controlling for the other predictor.
   mod1 <- lm(RAE ~ pred_update + prop_recal)
+  print(summary(mod1))
   getDeltaRsquare(mod1)
   
   #test for collinearity
@@ -1529,6 +1604,7 @@ plotLinesPredActRAE <- function(target='inline'){
   
   data <- getPredActRAE()
   mod1 <- lm(data$RAE_pred ~ data$reachdeviation)
+  print(summary(mod1))
   
   colourscheme <- getColourScheme()
   expcol <- colourscheme[['30explicit']][['T']]
