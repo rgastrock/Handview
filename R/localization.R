@@ -529,7 +529,7 @@ plotLocalizations <- function(target='inline'){
       mtext('a', side=3, outer=TRUE, line=-1, adj=0, padj=1, font=2)
     } else if (reachtype.idx == 1){
       plot(NA, NA, xlim = c(40,140), ylim = ylims, 
-           xlab = expression(paste("Hand angle (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
+           xlab = expression(paste("Hand position on arc (",degree,")")), ylab="", frame.plot = FALSE, #frame.plot takes away borders; ylab coded as such to print degree symbol correctly
            main = sprintf('\n%s localization \n (proprioception)', reachtype),cex.main=1.2, xaxt = 'n', yaxt = 'n',cex.lab=1.2) #xaxt and yaxt to allow to specify tick marks
       #mtext("(Proprioception)", cex = 1)
       abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0 and 30
