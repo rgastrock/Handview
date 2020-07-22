@@ -665,3 +665,39 @@ getRAEComparisonEffSize <- function(method = 'sidak'){
   print(effectsize)
 }
 #effect size is interpreted as % of variance in angular deviation of hand accounted for by difference in strategy use
+
+#Bayesian statistics----
+getNoCData <- function(){
+  #get the data needed for ANOVA, then write it to a file
+  styles <- getStyle()
+  
+  NoC4aov <- getNoC4ANOVA(styles) 
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(NoC4aov, 'data/master_bayesian_aftereffects.csv', row.names = F)
+}
+#analyses will be in JASP, so data needs to be formatted differently
+#function below formats data for JASP to compare frequentist ANOVA 
+#results in JASP with those we got here in R
+getJASPNoC <- function(){
+  dat <- read.csv('data/master_bayesian_aftereffects.csv', header = TRUE)
+  
+  ndat <- spread(dat, session, reachdeviation)
+  write.csv(ndat, 'data/bayesian_aftereffects.csv', row.names = F)
+}
+getPDPData <- function(){
+  #get the data needed for ANOVA, then write it to a file
+  styles <- getStyle()
+  
+  RAE4aov <- getRAE4ANOVA(styles) 
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(RAE4aov, 'data/master_bayesian_pdp.csv', row.names = F)
+}
+#analyses will be in JASP, so data needs to be formatted differently
+#function below formats data for JASP to compare frequentist ANOVA 
+#results in JASP with those we got here in R
+getJASPPDP <- function(){
+  dat <- read.csv('data/master_bayesian_pdp.csv', header = TRUE)
+  
+  ndat <- spread(dat, strategy, reachdeviation)
+  write.csv(ndat, 'data/bayesian_pdp.csv', row.names = F)
+}

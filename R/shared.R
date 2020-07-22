@@ -11,6 +11,7 @@ library('usdm')
 library('lmtest')
 library('car')
 library('rockchalk')
+library('tidyr')
 
 # library('WRS2')
 # library('vioplot')

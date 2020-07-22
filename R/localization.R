@@ -1301,6 +1301,145 @@ pasLocTtests <- function() {
   print(cohensD(subdf$prop_recal, mu=0))
 }
 
+#Bayesian statistics----
+#2x2x4 ANOVA, note that suiting this dataset for JASP was done manually instead
+getLocData <- function(){
+  #get the data needed for ANOVA, then write it to a file
+  styles <- getStyle()
+  
+  Loc4aov <- getLocalization4ANOVA(styles)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(Loc4aov, 'data/master_bayesian_localization.csv', row.names = F)
+}
+#then do below to suplement 2x4 anova
+getLocShiftsData <- function(){
+  #get the data needed for ANOVA, then write it to a file
+  styles <- getStyle()
+  
+  Loc4aov <- getLocalization4ANOVA(styles, shifts=TRUE)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(Loc4aov, 'data/bayesian_localizationshifts.csv', row.names = F)
+}
+
+getJASPLocShifts <- function(){
+  dat <- read.csv('data/bayesian_localizationshifts.csv', header = TRUE)
+  
+  ndat <- spread(dat, passive_b, bias_deg)
+  write.csv(ndat, 'data/bayesian_locshifts.csv', row.names = F)
+}
+#then use below to generate data for t-tests
+getPasLocShiftsData <- function(){
+  #get the data needed for ttest, then write it to a file
+  styles <- getStyle()
+  
+  dat <- getPasLocShifts(styles)
+  dat <- aggregate(prop_recal ~ participant*group, data=dat, FUN=mean)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(dat, 'data/master_bayesian_passiveshifts.csv', row.names = F)
+}
+
+getJASPPasLocShifts <- function(){
+  dat <- read.csv('data/master_bayesian_passiveshifts.csv', header = TRUE)
+  groups <- unique(dat$group)
+  
+  for (group in groups){
+    ndat <- dat[which(dat$group == group), ]
+    write.csv(ndat, sprintf('data/bayesian_passhifts_%s.csv', group), row.names = F)
+  }
+
+}
+
+getPredLocShiftsData <- function(){
+  #get the data needed for ttest, then write it to a file
+  styles <- getStyle()
+  
+  dat <- getPredictedSensoryConsequences(styles)
+  dat <- aggregate(pred_update ~ participant*group, data=dat, FUN=mean)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(dat, 'data/master_bayesian_predictionshifts.csv', row.names = F)
+}
+
+getJASPPredLocShifts <- function(){
+  dat <- read.csv('data/master_bayesian_predictionshifts.csv', header = TRUE)
+  groups <- unique(dat$group)
+  
+  for (group in groups){
+    ndat <- dat[which(dat$group == group), ]
+    write.csv(ndat, sprintf('data/bayesian_predshifts_%s.csv', group), row.names = F)
+  }
+  
+}
+
+#correlations
+getPropExcCorDat <- function(){
+  #get the data needed for Cor, then write it to a file
+  styles <- getStyle()
+  
+  dat <- getPropExcData(styles)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(dat, 'data/master_bayesian_propexccor.csv', row.names = F)
+}
+
+getPredExcCorDat <- function(){
+  #get the data needed for cor, then write it to a file
+  styles <- getStyle()
+  
+  dat <- getPredExcData(styles)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(dat, 'data/master_bayesian_predexccor.csv', row.names = F)
+}
+
+#Regression
+getPropPredRegDat <- function(){
+  #get the data needed for Regression, then write it to a file
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(newdf, 'data/master_bayesian_regression.csv', row.names = F)
+}
+#Validate regression model: Using Bayesian analysis produces different values for regression equation
+#Here, I use the values from Bayesian regression to predict RAE, then will compare these predictions to actual RAE
+#as a correlation in JASP
+
+getJASPPredActRAE <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  RAE <- newdf$reachdeviation
+  
+  # A + Bx + Cy = predicted RAE + error term
+  #x is pred_update, y is prop_recal
+  # A, B, C come from mod1
+  A <- as.numeric(7.840)
+  B <- as.numeric(-.648) #B is pred_update coefficient
+  C <- as.numeric(-.402) #C is prop_recal coefficient
+  meanpred <- as.numeric(-1.311)
+  meanprop <- as.numeric(-4.528)
+  
+  for(participant in 1:length(newdf$participant)){
+    pred <- newdf[participant,]$pred_update
+    prop <- newdf[participant,]$prop_recal
+    
+    RAEpred <- A + (B*(pred - meanpred)) + (C*(prop - meanprop))
+    
+    newdf$RAE_pred[participant] <- RAEpred
+  }
+  write.csv(newdf, 'data/master_bayesian_regvalidate.csv', row.names = F)
+}
+
+
 #Grouped Correlation Section -----
 #Proprioceptive Recalibration
 getPropExcData <- function(styles){

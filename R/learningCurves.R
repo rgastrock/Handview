@@ -653,3 +653,23 @@ getComparisonEffSize <- function(method = 'sidak', type=c('all','two')){
   #print(comparisons)
   print(effectsize)
 }
+
+#Bayesian stats----
+
+getLCData <- function(){
+  #get the data needed for ANOVA, then write it to a file
+  blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  LC4aov <- getBlockedLearningCurvesAOV(blockdefs=blockdefs)
+  #this will be our master file (long format of data, which we can transform for particular tests)
+  write.csv(LC4aov, 'data/master_bayesian_learningcurves.csv', row.names = F)
+}
+#analyses will be in JASP, so data needs to be formatted differently
+#function below formats data for JASP to compare frequentist ANOVA 
+#results in JASP with those we got here in R
+getJASPLC <- function(){
+  dat <- read.csv('data/master_bayesian_learningcurves.csv', header = TRUE)
+  
+  ndat <- spread(dat, block, reachdev)
+  write.csv(ndat, 'data/bayesian_learningcurves.csv', row.names = F)
+}

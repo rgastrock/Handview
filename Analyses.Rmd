@@ -16,7 +16,7 @@ This document discusses figures and statistics for the Hand View project. The fo
 
 Our scripts require the use of certain packages. If some packages are not available in your own system, run the command:
 
-> install.packages(c('ez', 'svglite', 'phia', 'afex', 'lsmeans', 'scales', 'lsr', 'tools', 'usdm', 'lmtest', 'car', 'rockchalk'))
+> install.packages(c('ez', 'svglite', 'phia', 'afex', 'lsmeans', 'scales', 'lsr', 'tools', 'usdm', 'lmtest', 'car', 'rockchalk', 'tidyr'))
 
 
 We have written code that pre-processes the data, plots figures, and runs statistical tests. Import the sources below:
