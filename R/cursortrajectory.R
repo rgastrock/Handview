@@ -668,7 +668,7 @@ plotAllTrajectories <- function(target='inline') {
     }
   }
   
-  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
+  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Control', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
   axis(2, at=(c(1:length(nconditions))*16) - 8, labels=c('Late\nadaptation','Early\nadaptation','Aligned'), cex.axis=.8)
 
   #close everything if you saved plot as svg

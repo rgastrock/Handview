@@ -620,7 +620,7 @@ plotLocalizations <- function(target='inline'){
     lines(x=c(50,90,130), y = c(stuff[1], stuff[2], stuff[3]), col=col, lty=1)
   }
   
-  legend(35,.3,legend=c('Non-Instructed','Instructed','Cursor Jump','Hand View'),
+  legend(35,.3,legend=c('Control','Instructed','Cursor Jump','Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n', cex=1.2)
   
@@ -690,7 +690,7 @@ plotLocalizations <- function(target='inline'){
     #print(meandist$CI95)
     points(x=groupno,y=mean(c(shift)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
   }
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.2)
+  axis(side=1, at=c(1,2,3,4),labels=c('C','I','CJ','HV'),cex.axis=1.2)
   axis(side=2, at=c(0,-5,-10,-15),labels=c('0','-5','-10','-15'),cex.axis=1.2)
   
   
@@ -760,7 +760,7 @@ plotLocalizations <- function(target='inline'){
     #print(meandist$CI95)
     points(x=groupno,y=mean(c(shift)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
   }
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.2)
+  axis(side=1, at=c(1,2,3,4),labels=c('C','I','CJ','HV'),cex.axis=1.2)
   axis(side=2, at=c(0,-5,-10,-15),labels=c('0','-5','-10','-15'),cex.axis=1.2)
   
   # # # # # # # # # #
@@ -826,7 +826,7 @@ plotLocalizations <- function(target='inline'){
     #print(meandist$CI95)
     points(x=groupno,y=mean(c(shift)),pch=16,cex=1.5,col=col) #as.character(styles$color_solid[groupno]))
   }
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.2)
+  axis(side=1, at=c(1,2,3,4),labels=c('C','I','CJ','HV'),cex.axis=1.2)
   axis(side=2, at=c(0,-5,-10,-15),labels=c('0','-5','-10','-15'),cex.axis=1.2)
   
   
@@ -1788,7 +1788,7 @@ plotLinesPredActRAE <- function(target='inline'){
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   
-  legend(-3,27,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(-3,27,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='n',cex=.9)
   

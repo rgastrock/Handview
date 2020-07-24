@@ -180,7 +180,7 @@ plotGroupReachAfterEffects <- function(groups=c('30implicit', '30explicit', 'cur
   } 
 
   #add legend
-  legend(0.10,44.5,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(0.10,44.5,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,lwd=5,bty='n',cex=0.75)
   

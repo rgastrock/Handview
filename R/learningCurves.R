@@ -107,7 +107,7 @@ plotBlockedLearningCurves <- function(target='inline') {
   rotations = c(30,30,30,30)
   colors = c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']], colourscheme[['handview']][['S']])
   linestyles = c(1,1,1,1)
-  labels <- c('Non-Instructed','Instructed','Cursor Jump','Hand View')
+  labels <- c('Control','Instructed','Cursor Jump','Hand View')
   
   
   styles <- data.frame(groups,rotations,colors,linestyles,labels)
@@ -256,7 +256,7 @@ plotLearningCurves <- function(target='inline') {
   }
   
   
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.13)
+  axis(side=1, at=c(1,2,3,4),labels=c('C','I','CJ','HV'),cex.axis=1.13)
   axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=1.13)
   
   
@@ -315,7 +315,7 @@ plotLearningCurves <- function(target='inline') {
   }
   
   
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.13)
+  axis(side=1, at=c(1,2,3,4),labels=c('C','I','CJ','HV'),cex.axis=1.13)
   axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=1.13)
   
   
@@ -374,7 +374,7 @@ plotLearningCurves <- function(target='inline') {
   }
   
   
-  axis(side=1, at=c(1,2,3,4),labels=c('NI','I','CJ','HV'),cex.axis=1.13)
+  axis(side=1, at=c(1,2,3,4),labels=c('C','I','CJ','HV'),cex.axis=1.13)
   axis(side=2, at=c(0,10,20,30),labels=c('0','10','20','30'),cex.axis=1.13)
   
   
