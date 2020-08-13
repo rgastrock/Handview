@@ -1451,12 +1451,13 @@ getPropExcData <- function(styles){
   #then we want to add exclusive angular deviations to the df above
   df2 <- getRAE4ANOVA(styles)
   #we want only exclusive data
-  df2 <- df2[which(df2$strategy == 'exclusive'),]
-  
+  df2exc <- df2[which(df2$strategy == 'exclusive'),]
+  #added the include data to look into regression better
+  df2inc <- df2[which(df2$strategy == 'inclusive'),]
   #newdf <- merge(df, df2, by='participant') #merge two df's together, according to participant
   #newdf <- newdf[,-c(4:5)] #removes these columns to avoid duplication
-  newdf <- cbind(df, df2$reachdeviation)
-  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation')
+  newdf <- cbind(df, df2exc$reachdeviation, df2inc$reachdeviation)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'exclude', 'include')
   
   
   return(newdf)
@@ -1482,21 +1483,21 @@ plotPropGroupCorrelations <- function(target='inline'){
   hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Reach aftereffects and \nproprioceptive recalibration", ylab = 'No cursor reaches \n without strategy (°)', xlab = 'Shifts in passive localization (°)',
-       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)#.7
+       bty='n', xlim= c(-30,10), ylim= c(-6,21), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)#.7
   #add dashed lines at 0
   abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0
   abline(v = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-10,0,10,20), cex.axis=.9)
-  axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.9)
-  mtext('a', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8, font=2)
+  axis(side=2, at=c(-5,0,5,10,15,20), cex.axis=.9)
+  axis(side=1, at=c(-25,-20,-15,-10,-5,0,5), cex.axis=.9)
+  mtext('a', side=3, outer=FALSE, line=3, adj=0, padj=1, cex=.8, font=2)
   
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
   
   #CIs
   prop_recal <- data$prop_recal
-  reachdev <- data$reachdeviation
+  reachdev <- data$exclude
   mod1 <- lm(reachdev ~ prop_recal)
   
   
@@ -1509,7 +1510,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   polygon(polyX, polyY, col='#bdbdbd', border=NA)
   
   #add in data points of all pp's
-  points(data$prop_recal, data$reachdeviation, pch=16, cex=1,
+  points(prop_recal, reachdev, pch=16, cex=1,
        col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
   
   #Reg line
@@ -1523,7 +1524,8 @@ plotPropGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.9)
+  legend(-3, -2, expression('r'['adj']^2*'= 0.111'), col='#a6a6a6', bty='n', cex=.9)
+  #legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.9)
 
   # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
   #        col=c(impcol,expcol,cujcol,hancol),
@@ -1588,14 +1590,14 @@ plotPredGroupCorrelations <- function(target='inline'){
   hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Reach aftereffects and \npredicted sensory consequences", ylab = 'No cursor reaches \n without strategy (°)', xlab = 'Shifts in predictions (°)',
-       bty='n', xlim= c(-30,20), ylim= c(-15,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
+       bty='n', xlim= c(-10,13), ylim= c(-6,21), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
   #add dashed lines at 0
   abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2)#creates horizontal dashed lines through y =  0
   abline(v = 0, col = rgb(0.5,0.5,0.5), lty = 2)#creates vertical dashed lines through x =  0
   # this puts tick marks exactly where we want them:
-  axis(side=2, at=c(-10,0,10,20), cex.axis=.9)
-  axis(side=1, at=c(-30,-20,-10,0,10,20), cex.axis=.9)
-  mtext('b', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8, font=2)
+  axis(side=2, at=c(-5,0,5,10,15,20), cex.axis=.9)
+  axis(side=1, at=c(-10,-5,0,5,10), cex.axis=.9)
+  mtext('b', side=3, outer=FALSE, line=3, adj=0, padj=1, cex=.8, font=2)
   
   #library(car)
   #scatterplot(data$prop_recal~data$reachdeviation, data=data)
@@ -1631,7 +1633,8 @@ plotPredGroupCorrelations <- function(target='inline'){
   #as of now, I add this value in manually below
   
   #add legend and r-squared
-  legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=.9)
+  legend(5, -2, expression('r'['adj']^2*'= 0.079'), col='#a6a6a6', bty='n', cex=.9)
+  #legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=.9)
 
   
   # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
@@ -1701,13 +1704,13 @@ getPredActRAE <- function(){
   preddf <- getPredExcData(styles)
   
   newdf <- cbind(propdf, preddf$pred_update)
-  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'exclude', 'include', 'pred_update')
   #newdf <- newdf[(newdf$group == 'handview'),]
   
   pred_update <- newdf$pred_update
   prop_recal <- newdf$prop_recal
-  RAE <- newdf$reachdeviation
-  
+  #RAE <- newdf$reachdeviation
+  RAE <- newdf$exclude
   mod1 <- glm(RAE ~ pred_update + prop_recal)
   
   # A + Bx + Cy = predicted RAE + error term
@@ -1726,6 +1729,7 @@ getPredActRAE <- function(){
     newdf$RAE_pred[participant] <- RAEpred
   }
   return(newdf)
+  #write.csv(newdf, 'data/regression.csv', row.names=FALSE)
 }
 
 #this plot below is essentially, the check for our model. We see that it undershoots data on the lower end, and overshoots those in the higher end.
@@ -1742,7 +1746,7 @@ plotLinesPredActRAE <- function(target='inline'){
   }
   
   data <- getPredActRAE()
-  mod1 <- lm(data$RAE_pred ~ data$reachdeviation)
+  mod1 <- lm(data$RAE_pred ~ data$exclude)
   print(summary(mod1))
   
   colourscheme <- getColourScheme()
@@ -1752,17 +1756,17 @@ plotLinesPredActRAE <- function(target='inline'){
   hancol <- colourscheme[['handview']][['T']]
   cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
   plot(NA, NA, main="Actual and predicted\n reach aftereffects", xlab = 'Actual no cursor reaches \n without strategy (°)', ylab = 'Predicted no cursor reaches \n without strategy (°)',
-       bty='n', ylim= c(-5,25), xlim= c(-5,25), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
+       bty='n', ylim= c(-6,21), xlim= c(-6,21), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
 
   # this puts tick marks exactly where we want them:
   axis(side=2, at=c(-5,0,5,10,15,20), cex.axis=.9)
   axis(side=1, at=c(-5,0,5,10,15,20), cex.axis=.9)
-  mtext('c', side=3, outer=FALSE, line=5, adj=0, padj=1, cex=.8, font=2)
+  mtext('c', side=3, outer=FALSE, line=3, adj=0, padj=1, cex=.8, font=2)
   
   #add in data points of all pp's
-  points(data$reachdeviation, data$RAE_pred, pch=16, cex=.85,
+  points(data$exclude, data$RAE_pred, pch=16, cex=.85,
          col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
-  
+
   #add line, need intercept and slope
   #create glm based on predicted RAE and Actual RAE
   # mod <- glm(data$RAE_pred ~ data$reachdeviation)
@@ -1781,16 +1785,17 @@ plotLinesPredActRAE <- function(target='inline'){
   segments(-5.3, -5.3, 20, 20, col=rgb(0.5,0.5,0.5))
   
   #we can plot distances from point to diagonal by specifying (x,y) for from and to
-  segments(data$reachdeviation, data$RAE_pred, data$reachdeviation, data$reachdeviation, col= alpha(cols, .3))
+  segments(data$exclude, data$RAE_pred, data$exclude, data$exclude, col= alpha(cols, .3))
   
   expcol <- colourscheme[['30explicit']][['S']]
   impcol <- colourscheme[['30implicit']][['S']]
   cujcol <- colourscheme[['cursorjump']][['S']]
   hancol <- colourscheme[['handview']][['S']]
   
-  legend(-3,27,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
+  legend(-6,21,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='n',cex=.9)
+  legend(12, -2, expression('r'['adj']^2*'= 0.276'), col='#a6a6a6', bty='n', cex=.9)
   
   
   #print(summary(mod1))
@@ -1891,13 +1896,13 @@ plotPropPredRelationships <- function(target='inline') {
   styles <- getStyle()
   
   if (target == 'svg') {
-    svglite(file='doc/fig/Fig7_correlation.svg', width=8.5, height=4, pointsize=14, system_fonts=list(sans='Arial'))
+    svglite(file='doc/fig/Fig7_correlation.svg', width=9.5, height=6, pointsize=14, system_fonts=list(sans='Arial'))
   }
   
-  par(mfrow=c(1,3), mar=c(7,4.8,7,0))
+  par(mfrow=c(2,3), mar=c(4.5,5,3.5,0)) #, mar=c(7,4.8,7,0))
   
   
-  #layout(matrix(c(1,2,3), nrow=1, ncol=3, byrow = TRUE), widths=c(2,2,2), heights=c(1,1))
+  #layout(matrix(c(1,2,3,4,5,6), nrow=2, ncol=3, byrow = TRUE), widths=c(10,10,10), heights=c(5,5))
   
   
   # # # # # # # # # #
@@ -1918,12 +1923,319 @@ plotPropPredRelationships <- function(target='inline') {
   #mtext('C', side=3, outer=TRUE, at=c(0,1), line=-1, adj=0, padj=1)
   #mtext('C', side=3, outer=TRUE, line=-1, adj=0, padj=1)
   
+  # # # # # # # # # #
+  # panel D: Prop Recal and explicit
+  plotPropGroupExpCorrelations()
+
+  
+  # # # # # # # # # #
+  # panel E: PSC and explicit
+  plotPredGroupExpCorrelations()
+
+  
+  # # # # # # # # # #
+  # panel F: Predicted and Actual EXP
+  plotLinesPredActEXP()
+
+  
   if (target == 'svg') {
     dev.off()
   }
   
 }
 
+# Multiple regression test-----
+
+getSqrtPasLoc <- function(){
+  dat <- getPredActRAE()
+  #take the square root values of passive localization, but keep the sign
+  dat$prop_recal_sqrt <- sqrt(abs(dat$prop_recal)) * sign(dat$prop_recal)
+  #then do the regression again with these values
+  #exclude is without strategy no cursor trials
+  model <- lm(exclude ~ prop_recal_sqrt + pred_update, data=dat)
+  print(summary(model))
+  #we can also show results of the older model
+  model1 <- lm(exclude ~ prop_recal + pred_update, data=dat)
+  print(summary(model1))
+}
+
+#We can also look into how both predictors are related to explicit learning.
+#The absence of such a relationship will support the relationships we see between the predictors and implicit RAE.
+
+getPropPredExpRelationships <- function(){
+  dat <- getPredActRAE()
+  explicit <- dat$include - dat$exclude
+  
+  #we show the relationship of each predictor with explicit, then the multiple regression
+  print(summary(lm(explicit ~ prop_recal, data=dat)))
+  print(summary(lm(explicit ~ pred_update, data=dat)))
+  
+  model <- lm(explicit ~ prop_recal + pred_update, data=dat)
+  print(summary(model))
+  
+}
+
+#We can generate a new plot for the regression data
+plotPropGroupExpCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig7_SuppFig18_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  #styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getPredActRAE()
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['T']]
+  impcol <- colourscheme[['30implicit']][['T']]
+  cujcol <- colourscheme[['cursorjump']][['T']]
+  hancol <- colourscheme[['handview']][['T']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Explicit learning and \nproprioceptive recalibration", ylab = 'No cursor reaches \n with minus without strategy (°)', xlab = 'Shifts in passive localization (°)',
+       bty='n', xlim= c(-30,10), ylim= c(-11,45), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)#.7
+  #add dashed lines at 0
+  abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20,30,40), cex.axis=.9)
+  axis(side=1, at=c(-25,-20,-15,-10,-5,0,5), cex.axis=.9)
+  mtext('d', side=3, outer=FALSE, line=3, adj=0, padj=1, cex=.8, font=2)
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  prop_recal <- data$prop_recal
+  #note that reachdev is explicit
+  reachdev <- data$include - data$exclude
+  mod1 <- lm(reachdev ~ prop_recal)
+  
+  
+  x <- seq(-28,7,.1) #min and max of pror_recal
+  
+  pred1 <- predict(mod1, newdata=data.frame(prop_recal=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#bdbdbd', border=NA)
+  
+  #add in data points of all pp's
+  points(prop_recal, reachdev, pch=16, cex=1,
+         col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(prop_recal)[1],range(prop_recal)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(-3, -3, expression('r'['adj']^2*'= -0.007'), col='#a6a6a6', bty='n', cex=.9)
+  
+  #legend(-30, -5, c(as.expression(bquote("Adjusted "~ r^2 ~ "= -0.007"))), col='#a6a6a6', bty='n', cex=.9)
+  
+  # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  #        col=c(impcol,expcol,cujcol,hancol),
+  #        pch=16,bty='o',cex=.8)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+plotPredGroupExpCorrelations <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig7_SuppFig19_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  #styles <- getStyle()
+  #plot change in localization on y, and Without Strategy on X
+  #data points will be coloured according to groups
+  #one regression line
+  #still need to separate points by group
+  data <- getPredActRAE()
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['T']]
+  impcol <- colourscheme[['30implicit']][['T']]
+  cujcol <- colourscheme[['cursorjump']][['T']]
+  hancol <- colourscheme[['handview']][['T']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Explicit learning and \npredicted sensory consequences", ylab = 'No cursor reaches \n with minus without strategy (°)', xlab = 'Shifts in predictions (°)',
+       bty='n', xlim= c(-10,13), ylim= c(-11,45), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)#.7
+  #add dashed lines at 0
+  abline(h = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates horizontal dashed lines through y =  0
+  abline(v = 0, col = rgb(0.5,0.5,0.5), lty = 2) #creates vertical dashed lines through x =  0
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20,30,40), cex.axis=.9)
+  axis(side=1, at=c(-10,-5,0,5,10), cex.axis=.9)
+  mtext('e', side=3, outer=FALSE, line=3, adj=0, padj=1, cex=.8, font=2)
+  
+  #library(car)
+  #scatterplot(data$prop_recal~data$reachdeviation, data=data)
+  
+  #CIs
+  pred_update <- data$pred_update
+  #note that reachdev is explicit
+  reachdev <- data$include - data$exclude
+  mod1 <- lm(reachdev ~ pred_update)
+  
+  
+  x <- seq(-9,12,.1) #min and max of pred_update
+  
+  pred1 <- predict(mod1, newdata=data.frame(pred_update=x), interval='confidence')
+  
+  polyX <- c(x,rev(x))
+  polyY <- c(pred1[,2], rev(pred1[,3]))
+  polygon(polyX, polyY, col='#bdbdbd', border=NA)
+  
+  #add in data points of all pp's
+  points(pred_update, reachdev, pch=16, cex=1,
+         col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
+  
+  #Reg line
+  reglinex <- seq(range(pred_update)[1],range(pred_update)[2],.1)
+  abX <- range(reglinex)
+  abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  lines(abX, abY, col='#343434')
+  
+  #add in r-squared value to plot
+  #this is just the value from mod1 under multiple R squared
+  #as of now, I add this value in manually below
+  
+  #add legend and r-squared
+  legend(5, -3, expression('r'['adj']^2*'= 0.022'), col='#a6a6a6', bty='n', cex=.9)
+  
+  #legend(-30, -5, c(as.expression(bquote("Adjusted "~ r^2 ~ "= -0.007"))), col='#a6a6a6', bty='n', cex=.9)
+  
+  # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  #        col=c(impcol,expcol,cujcol,hancol),
+  #        pch=16,bty='o',cex=.8)
+  
+  print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+}
+
+getPredActEXP <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'exclude', 'include', 'pred_update')
+  #newdf <- newdf[(newdf$group == 'handview'),]
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  #RAE <- newdf$reachdeviation
+  explicit <- newdf$include - newdf$exclude
+  mod1 <- glm(explicit ~ pred_update + prop_recal)
+  
+  # A + Bx + Cy = predicted RAE + error term
+  #x is pred_update, y is prop_recal
+  # A, B, C come from mod1
+  A <- as.numeric(mod1[[1]][1])
+  B <- as.numeric(mod1[[1]][2]) #B is pred_update coefficient
+  C <- as.numeric(mod1[[1]][3]) #C is prop_recal coefficient
+  
+  for(participant in 1:length(newdf$participant)){
+    pred <- newdf[participant,]$pred_update
+    prop <- newdf[participant,]$prop_recal
+    
+    EXPpred <- A + (B*pred) + (C*prop)
+    
+    newdf$EXP_pred[participant] <- EXPpred
+  }
+  return(newdf)
+  #write.csv(newdf, 'data/regression.csv', row.names=FALSE)
+}
+
+plotLinesPredActEXP <- function(target='inline'){
+  
+  #but we can save plot as svg file
+  if (target=='svg') {
+    svglite(file='doc/fig/Fig7_SuppFig20_line_correlation.svg', width=5, height=5, pointsize=14, system_fonts=list(sans="Arial"))
+  }
+  
+  data <- getPredActEXP()
+  data$explicit <- data$include - data$exclude
+  mod1 <- lm(data$EXP_pred ~ data$explicit)
+  print(summary(mod1))
+  
+  colourscheme <- getColourScheme()
+  expcol <- colourscheme[['30explicit']][['T']]
+  impcol <- colourscheme[['30implicit']][['T']]
+  cujcol <- colourscheme[['cursorjump']][['T']]
+  hancol <- colourscheme[['handview']][['T']]
+  cols <- c(expcol,impcol,cujcol,hancol)[unclass(data$group)] #order matters, because of levels in group
+  plot(NA, NA, main="Actual and predicted\n explicit learning", xlab = 'Actual no cursor reaches \n with minus without strategy (°)', ylab = 'Predicted no cursor reaches \n with minus without strategy (°)',
+       bty='n', ylim= c(-11,45), xlim= c(-11,45), xaxt='n', yaxt='n', cex.main=.9, cex.lab=.9)
+  
+  # this puts tick marks exactly where we want them:
+  axis(side=2, at=c(-10,0,10,20,30,40), cex.axis=.9)
+  axis(side=1, at=c(-10,0,10,20,30,40), cex.axis=.9)
+  mtext('f', side=3, outer=FALSE, line=3, adj=0, padj=1, cex=.8, font=2)
+  
+  #add in data points of all pp's
+  points(data$explicit, data$EXP_pred, pch=16, cex=.85,
+         col= alpha(cols, 0.3)) #library(scales) needed for alpha to work
+  
+  #add line, need intercept and slope
+  #create glm based on predicted RAE and Actual RAE
+  # mod <- glm(data$RAE_pred ~ data$reachdeviation)
+  # INT <- as.numeric(mod[[1]][1])
+  # SLOPE <- as.numeric(mod[[1]][2])
+  # abline(a=INT,b=SLOPE,col="#343434")
+  
+  # #Reg line
+  # reglinex <- seq(range(pred)[1],range(pred)[2],.1)
+  # abX <- range(reglinex)
+  # abY <- abX * mod1$coefficients[2] + mod1$coefficients[1]
+  # lines(abX, abY, col='#343434')
+  
+  # # We can just plot the diagonal
+  # diagonal is intercept at 0 and slope of 1
+  segments(-10.3, -10.3, 44, 44, col=rgb(0.5,0.5,0.5))
+  
+  #we can plot distances from point to diagonal by specifying (x,y) for from and to
+  segments(data$explicit, data$EXP_pred, data$explicit, data$explicit, col= alpha(cols, .3))
+  
+  expcol <- colourscheme[['30explicit']][['S']]
+  impcol <- colourscheme[['30implicit']][['S']]
+  cujcol <- colourscheme[['cursorjump']][['S']]
+  hancol <- colourscheme[['handview']][['S']]
+  
+  #legend(-6,21,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
+   #      col=c(impcol,expcol,cujcol,hancol),
+    #     pch=16,bty='n',cex=.9)
+  legend(27, -3, expression('r'['adj']^2*'= 0.026'), col='#a6a6a6', bty='n', cex=.9)
+  
+  
+  #print(summary(mod1))
+  
+  #close everything if you saved plot as svg
+  if (target=='svg') {
+    dev.off()
+  }
+  
+}
 
 # Additional checks (Not included in Manuscript)----
 

@@ -1,3 +1,4 @@
 # Ignore these files
 distributionplots.R
 exacttest.R
+regression.R
