@@ -2237,6 +2237,40 @@ plotLinesPredActEXP <- function(target='inline'){
   
 }
 
+getJASPPredActEXP <- function(){
+  
+  styles <- getStyle()
+  propdf <- getPropExcData(styles)
+  preddf <- getPredExcData(styles)
+  
+  newdf <- cbind(propdf, preddf$pred_update)
+  newdf$explicit <- newdf$include - newdf$exclude
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'exclude', 'include', 'pred_update', 'explicit')
+  
+  pred_update <- newdf$pred_update
+  prop_recal <- newdf$prop_recal
+  EXP <- newdf$include - newdf$exclude
+  
+  # A + Bx + Cy = predicted RAE + error term
+  #x is pred_update, y is prop_recal
+  # A, B, C come from mod1
+  A <- as.numeric(16.441)
+  B <- as.numeric(0.295) #B is pred_update coefficient
+  C <- as.numeric(0.051) #C is prop_recal coefficient
+  meanpred <- as.numeric(-1.311)
+  meanprop <- as.numeric(-4.528)
+  
+  for(participant in 1:length(newdf$participant)){
+    pred <- newdf[participant,]$pred_update
+    prop <- newdf[participant,]$prop_recal
+    
+    EXPpred <- A + (B*(pred - meanpred)) + (C*(prop - meanprop))
+    
+    newdf$EXP_pred[participant] <- EXPpred
+  }
+  write.csv(newdf, 'data/master_bayesian_regvalidateexplicit.csv', row.names = F)
+}
+
 # Additional checks (Not included in Manuscript)----
 
 # We would want to run the multiple regression again, both with only the HandView group and without the Hand View group to see if findings hold
