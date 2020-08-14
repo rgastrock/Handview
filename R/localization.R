@@ -1795,7 +1795,7 @@ plotLinesPredActRAE <- function(target='inline'){
   legend(-6,21,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='n',cex=.9)
-  legend(12, -2, expression('r'['adj']^2*'= 0.276'), col='#a6a6a6', bty='n', cex=.9)
+  legend(12, -2, expression('r'['adj']^2*'= 0.285'), col='#a6a6a6', bty='n', cex=.9)
   
   
   #print(summary(mod1))
@@ -2225,7 +2225,7 @@ plotLinesPredActEXP <- function(target='inline'){
   #legend(-6,21,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
    #      col=c(impcol,expcol,cujcol,hancol),
     #     pch=16,bty='n',cex=.9)
-  legend(27, -3, expression('r'['adj']^2*'= 0.026'), col='#a6a6a6', bty='n', cex=.9)
+  legend(27, -3, expression('r'['adj']^2*'= 0.037'), col='#a6a6a6', bty='n', cex=.9)
   
   
   #print(summary(mod1))
