@@ -2,3 +2,4 @@
 distributionplots.R
 exacttest.R
 regression.R
+powercalc.R
