@@ -83,7 +83,7 @@ plotFullLearningCurves <- function(groups=c('30implicit', '30explicit', 'cursorj
   }
   
   #add legend
-  legend(50,16,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(50,16,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,bty='n',cex=1)
   

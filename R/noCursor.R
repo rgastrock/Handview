@@ -459,7 +459,7 @@ NoCursorComparisons <- function(method='sidak'){
   print(comparisons)
 }
 
-# we can also do comparisons for just without strategy (exclusive) data, comparing each group to Non-instructed group
+# we can also do comparisons for just without strategy (exclusive) data, comparing each group to Control group
 NoCursorExclusiveComparisonMeans <- function(method='sidak'){
   styles <- getStyle()
   blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))

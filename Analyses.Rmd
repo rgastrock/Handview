@@ -73,7 +73,7 @@ To analyze the effects of our manipulation on rates of learning, we blocked the 
 plotLearningCurves()
 ```
 
-We proceeded to investigate how the four groups and their performance during adaptation training, compared with each other, for each of these three blocks. We performed a 3X4 mixed design ANOVA with block as a within-subject factor (blocks 1, 2, and 3) and group as a between-subject factor (Non-instructed, Instructed, Cursor Jump, Hand View). For this and the following tests, the alpha level was set to 0.05 and, when necessary, Greenhouse Geisser corrections were applied.
+We proceeded to investigate how the four groups and their performance during adaptation training, compared with each other, for each of these three blocks. We performed a 3X4 mixed design ANOVA with block as a within-subject factor (blocks 1, 2, and 3) and group as a between-subject factor (Control, Instructed, Cursor Jump, Hand View). For this and the following tests, the alpha level was set to 0.05 and, when necessary, Greenhouse Geisser corrections were applied.
 
 ```{r}
 learningCurveANOVA()
@@ -82,7 +82,7 @@ We see that the main effects of group and block, and their interaction, were sta
 
 ## Planned follow-up tests
 
-We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Non-instructed group as a reference (since it is the control group) and compare all the other groups to it. We then compare all groups to the non-instructed group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using the Sidak method. Note that the Sidak method is the default used in R when an alternative test, such as Tukey, is inappropriate for a given dataset. The Tukey method would be appropriate if we were comparing each mean with every other mean, but comparing only a selection of means would require the Bonferroni or Sidak. The Sidak method offers the slight advantage of being a less conservative method than the Bonferroni. Another option would be to use the Dunnett method when comparing a group with a control group. Nevertheless, all of these are just for adjusting p values. Our results do not change, however, regardless of the method used in terms of which comparisons reached significance. Hence, we chose to stick with the default Sidak method.
+We first display the means and 95% CI's for each group in each block. This table gives us an idea of which contrasts we want to test further. That is, if the mean of a group falls outside the confidence interval range of another group then the two groups must differ significantly from each other. For these contrasts, we use the Control group as a reference and compare all the other groups to it. We then compare all groups to the Control group for blocks one and two, respectively. To control for multiplicity, we adjusted for p values using the Sidak method. Note that the Sidak method is the default used in R when an alternative test, such as Tukey, is inappropriate for a given dataset. The Tukey method would be appropriate if we were comparing each mean with every other mean, but comparing only a selection of means would require the Bonferroni or Sidak. The Sidak method offers the slight advantage of being a less conservative method than the Bonferroni. Another option would be to use the Dunnett method when comparing a group with a control group. Nevertheless, all of these are just for adjusting p values. Our results do not change, however, regardless of the method used in terms of which comparisons reached significance. Hence, we chose to stick with the default Sidak method.
 
 ```{r}
 learningcurveComparisonMeans()
@@ -92,7 +92,7 @@ learningcurveComparisonMeans()
 getComparisonEffSize(method='sidak', type='two')
 ```
 
-In block one, when each group was compared to the Non-instructed group, only the Instructed group differed significantly. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor. In block two, however, no groups significantly differed from the non-instructed group, suggesting that the learning across groups did not differ from each other for this block. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular reach deviation that is accounted for by the difference between the given group and the control, Non-Instructed group.
+In block one, when each group was compared to the Control group, only the Instructed group differed significantly. This suggests that only the instructed group had an initial advantage in learning to counter for the rotation of the cursor. In block two, however, no groups significantly differed from the Control group, suggesting that the learning across groups did not differ from each other for this block. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular reach deviation that is accounted for by the difference between the given group and the control, Control group.
 
 To summarize, instruction on the nature of the perturbation and being given a strategy to counter it, creates an initial advantage in reducing hand direction error when reaching towards a target with a rotated cursor. However, our other manipulations, despite the error being more clearly external in nature, do not produce a similar initial advantage.
 
@@ -104,7 +104,7 @@ In addition to our planned follow-up tests, we also conducted extra analyses tha
 getComparisonEffSize(method='sidak', type='all')
 ```
 
-The main different result would be that the Cursor Jump group is now statistically different from the Non-Instructed group, within the second block. This suggests that the Cursor Jump group's rate of learning was faster than the Non-Instructed group for this block, but this does not provide any further advantage, as the magnitude of asymptotic learning across all groups do not differ from each other by the end of adaptation training. Support for this comes from the lack of statistical significance for comparisons within the last block (as shown above), as well as an additional One-way ANOVA we conduct on reach deviations for only the last block (as shown below).
+The main different result would be that the Cursor Jump group is now statistically different from the Control group, within the second block. This suggests that the Cursor Jump group's rate of learning was faster than the Control group for this block, but this does not provide any further advantage, as the magnitude of asymptotic learning across all groups do not differ from each other by the end of adaptation training. Support for this comes from the lack of statistical significance for comparisons within the last block (as shown above), as well as an additional One-way ANOVA we conduct on reach deviations for only the last block (as shown below).
 
 ```{r}
 lastblockANOVA()
@@ -125,7 +125,7 @@ Below is a plot of the mean angular reach deviation for each group as a function
 plotGroupReachAfterEffects()
 ```
 
-We see from the figure that when including or excluding the strategy learned to counter the rotation, only the non-instructed group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, all groups still showed angular reach deviations to some degree during without strategy trials, showing that implicit reach aftereffects were still observed in all groups. Note, however, that implicit reach aftereffects were smaller for the Hand View group compared to the other groups.
+We see from the figure that when including or excluding the strategy learned to counter the rotation, only the Control group could not switch their strategy on or off at will. This suggests unawareness of learning for this group. Importantly, all groups still showed angular reach deviations to some degree during without strategy trials, showing that implicit reach aftereffects were still observed in all groups. Note, however, that implicit reach aftereffects were smaller for the Hand View group compared to the other groups.
 
 Below is a plot showing individual data points for reach aftereffects and strategy use across all groups. The left panel is the same as the plot shown above. For the centre and right panels, solid dots and error bars represent the mean and bootstrapped 95% confidence intervals, and transparent dots represent individual participant data.
 
@@ -151,13 +151,13 @@ getNoCurComparisonEffSize(method='sidak', type='all')
 
 Planned follow-up tests show that the aligned and rotated sessions differed significantly for each group. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular reach deviation that is accounted for by the difference between the two sessions.
 
-To investigate which group differed from each other in the exclusive (without strategy) no-cursor trials, we conducted pairwise comparisons of each group compared to the Non-instructed group, as well as a comparison between the Cursor Jump and Hand View group.
+To investigate which group differed from each other in the exclusive (without strategy) no-cursor trials, we conducted pairwise comparisons of each group compared to the Control group, as well as a comparison between the Cursor Jump and Hand View group.
 
 ```{r}
 getNoCurComparisonEffSize(type='exclusive')
 ```
 
-We find that the Cursor Jump and Hand View groups are significantly different from the Non-instructed group, suggesting that implicit reach aftereffects for these groups are lower. Moreover, a significant difference between the Cursor Jump and Hand View group, suggests how implicit reach aftereffects are further reduced for the Hand View group.
+We find that the Cursor Jump and Hand View groups are significantly different from the Control group, suggesting that implicit reach aftereffects for these groups are lower. Moreover, a significant difference between the Cursor Jump and Hand View group, suggests how implicit reach aftereffects are further reduced for the Hand View group.
 
 ## PDP-type analysis (Strategy Use)
 
@@ -174,7 +174,7 @@ RAEComparisonMeans()
 getRAEComparisonEffSize(method='sidak')
 ```
 
-The tests confirmed our conclusions from the figure. All groups, except the non-instructed group, showed significantly different angular reach deviations when comparing reaches using a strategy to reaches when they are not using a strategy. This suggests unawareness of learning for the non-instructed group. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular reach deviation that is accounted for by the difference between using and not using a strategy.
+The tests confirmed our conclusions from the figure. All groups, except the Control group, showed significantly different angular reach deviations when comparing reaches using a strategy to reaches when they are not using a strategy. This suggests unawareness of learning for the Control group. Note that effect sizes are provided with eta-squared, which is interpreted as the percent of variance in angular reach deviation that is accounted for by the difference between using and not using a strategy.
 
 # Localization
 
@@ -204,7 +204,7 @@ plotLocalizations()
 ## Localization errors differ after rotated training
 
 We first confirmed whether hand position estimates did shift after adaptation to a visuomotor rotation. To do this, we compared
-hand localization errors in the aligned session from those in the rotated session. We ran a 2X2X4 mixed design ANOVA with session (*rotated_b* in data; aligned and rotated) and movement type (*passive_b* in data; active and passive) as within-subjects factors and group (instructed, non-instructed, cursor jump, and hand view) as a between-subject factor.
+hand localization errors in the aligned session from those in the rotated session. We ran a 2X2X4 mixed design ANOVA with session (*rotated_b* in data; aligned and rotated) and movement type (*passive_b* in data; active and passive) as within-subjects factors and group (instructed, Control, cursor jump, and hand view) as a between-subject factor.
 
 ```{r}
 localizationANOVA(test='omnibus')

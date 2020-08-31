@@ -88,7 +88,7 @@ At the end of the experiment, participants had to answer a series of questions t
 plotAwareness()
 ```
 
-The plots confirm our findings with the PDP-type analysis. The Non-Instructed group scored lower on the questionnaire compared to the other groups, suggesting unawareness of the nature of the perturbation.
+The plots confirm our findings with the PDP-type analysis. The Control group scored lower on the questionnaire compared to the other groups, suggesting unawareness of the nature of the perturbation.
 
 ## Supplementary multiple regression tests conducted
 
@@ -106,7 +106,7 @@ Next, we conduct the multiple regression without the Hand View group.
 getNoHVPropPredGLM()
 ```
 
-We find that both changes in proprioceptive estimates and updates in prediction are significant predictors of implicit reach aftereffects. This is expected, as the Instructed, Non-Instructed, and Cursor Jump groups all showed persistent shifts in both proprioception and predictions.
+We find that both changes in proprioceptive estimates and updates in prediction are significant predictors of implicit reach aftereffects. This is expected, as the Instructed, Control, and Cursor Jump groups all showed persistent shifts in both proprioception and predictions.
 
 ## Pearson correlation test between implicit reach aftereffects and passive localization
 
@@ -160,7 +160,7 @@ plotPGPropCorr()
 ```
 
 
-We see that only the Hand View group exhibits a significant relationship between proprioception and aftereffects (p < 0.01, r = -0.50, r-squared = 0.25), while other groups did not exhibit such a relationship (Cursor Jump: p > 0.10, r = -0.34, r-squared = 0.12; Instructed: p > 0.10, r = -0.29, r-squared = 0.03; Non-Instructed: p > 0.10, r = -0.17, r-squared = 0.08). 
+We see that only the Hand View group exhibits a significant relationship between proprioception and aftereffects (p < 0.01, r = -0.50, r-squared = 0.25), while other groups did not exhibit such a relationship (Cursor Jump: p > 0.10, r = -0.34, r-squared = 0.12; Instructed: p > 0.10, r = -0.29, r-squared = 0.03; Control: p > 0.10, r = -0.17, r-squared = 0.08). 
 
 We then repeat the same analyses for predictions and aftereffects.
 
@@ -169,7 +169,7 @@ getPGPredCorr()
 plotPGPredCorr()
 ```
 
-We see that none of the groups exhibited a significant relationship between predictions and aftereffects (Hand View: p > 0.10, r = -0.003, r-squared = 0.00001; Cursor Jump: p > 0.10, r = -0.009, r-squared = 0.00007; Instructed: p > 0.10, r = -0.30, r-squared = 0.09; Non-Instructed: p > 0.10, r = -0.30, r-squared = 0.09).
+We see that none of the groups exhibited a significant relationship between predictions and aftereffects (Hand View: p > 0.10, r = -0.003, r-squared = 0.00001; Cursor Jump: p > 0.10, r = -0.009, r-squared = 0.00007; Instructed: p > 0.10, r = -0.30, r-squared = 0.09; Control: p > 0.10, r = -0.30, r-squared = 0.09).
 
 Taken together, these results show that the significant relationship we found, specifically for updates in predictions seem to be spurious. That is, there seems to be a group effect. According to Makin & Orban de Xivry (2019), if a relationship is spurious, then one would need to take into account group differences when pooling data across participants together. 
 

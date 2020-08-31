@@ -65,7 +65,7 @@ plotAwareness <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'ha
   }
   
   awareness <- as.matrix(awareness)
-  rownames(awareness) <- c('NI','I','CJ','HV')
+  rownames(awareness) <- c('C','I','CJ','HV')
   colnames(awareness) <- c(1:4)
   
   # barplot(awareness,main="group awareness score counts",xlab="group",ylab="count",col=colors,beside=TRUE,legend=groups,border=NA,args.legend=c(x='topleft',border=NA))
@@ -83,7 +83,7 @@ plotAwareness <- function(groups=c('30implicit', '30explicit', 'cursorjump', 'ha
     points(c(0,1,2,3),rep(length(groups)-groupno+1,4),cex=sqrt(a)*10,col=(alpha(colors[groupno],0.6)),pch=16)
   }
 
-  axis(2, at=c(length(groups):1), labels=c('NI','I','CJ','HV'))
+  axis(2, at=c(length(groups):1), labels=c('C','I','CJ','HV'))
   axis(1, at=c(0,3), labels=c('low','high'))
   
   #close everything if you saved plot as svg

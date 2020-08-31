@@ -298,7 +298,7 @@ plotAverageTrajectories <- function(target='inline') {
     
   }
   
-  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','CursorJump', 'HandView'))
+  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Control', 'Instructed','CursorJump', 'HandView'))
   axis(2, at=(c(1:nconditions)*16) - 8, labels=c('Late Adaptation','Early Adaptation','Aligned'))
   
   #close everything if you saved plot as svg
@@ -494,7 +494,7 @@ plotOLDAllTrajectories <- function(target='inline') {
     
   }
   
-  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
+  axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Control', 'Instructed','Cursor Jump', 'Hand View'),cex.axis=.8)
   axis(2, at=(c(1:nconditions)*16) - 8, labels=c('Late\nAdaptation','Early\nAdaptation','Aligned'), cex.axis=.8)
   
   #close everything if you saved plot as svg
@@ -784,7 +784,7 @@ plotINDTrajectories <- function(target='inline') {
         
         # draw in home and target position
         points(c(0,0)+Xmod,c(0,12)+Ymod,col=rgb(0,0,0),bg=rgb(1,1,1,0),cex=2)
-        #axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Non-Instructed', 'Instructed','CursorJump', 'HandView'))
+        #axis(1, at=(c(1:length(groups))*16) - 8, labels=c('Control', 'Instructed','CursorJump', 'HandView'))
         axis(2, at=(c(1:nconditions)*16) - 8, labels=c('Late Adaptation','Early Adaptation','Aligned'))
       }
     }

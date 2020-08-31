@@ -481,7 +481,7 @@ plotLocalizationShift <- function(groups=c('30implicit', '30explicit', 'cursorju
     points(xloc, mean(shift), col=col, pch=19)
 
   }
-  legend(40,-17,legend=c('Non-instructed','Instructed','Cursor Jump','Hand View'),
+  legend(40,-17,legend=c('Control','Instructed','Cursor Jump','Hand View'),
          col=c(colourscheme[['30implicit']][['S']],colourscheme[['30explicit']][['S']],colourscheme[['cursorjump']][['S']],colourscheme[['handview']][['S']]),
          lty=1,bty='n', cex=0.85)
   
@@ -628,7 +628,7 @@ plotLocalizations <- function(target='inline'){
   # panel B: individual participants in the Active Localization
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
-  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  # and if any CIs overlap mean of Control, that means they are not different
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Active localization',ylab='Localization shift (°)',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
   
@@ -698,7 +698,7 @@ plotLocalizations <- function(target='inline'){
   # panel C: individual participants in Passive Localization
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
-  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  # and if any CIs overlap mean of Control, that means they are not different
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Passive localization',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
   
@@ -767,7 +767,7 @@ plotLocalizations <- function(target='inline'){
   # panel D: individual participants in Predicted Sensory Consequences
   # bootstrap method for better visualization, but is close enough to the t-distribution
   # essentially, we want to show that we are confident that the mean for each group lies here
-  # and if any CIs overlap mean of Non Instructed, that means they are not different
+  # and if any CIs overlap mean of Control, that means they are not different
   ylims=c(-.7*-15,-15+(.7*-15)) #as -.1 and .2 before; -15 is the constant here
   plot(c(0,5),c(0,0),col=rgb(0.5,0.5,0.5),type='l',lty=2,xlim=c(0.5,4.5),ylim=ylims,xlab='Predicted sensory\nconsequences',ylab='',xaxt='n',yaxt='n',bty='n',main='',font.main=1, cex.lab=1.2)
   
@@ -1170,12 +1170,12 @@ predConsTtests <- function() {
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$pred_update, mu=0))
   
-  #Non-instructed t-test
+  #Control t-test
   df <- getPredictedSensoryConsequences(styles)
   df <- aggregate(pred_update ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == '30implicit'),]
   
-  cat('\n\nNon-Instructed group predicted sensory consequences compared to 0:\n')
+  cat('\n\nControl group predicted sensory consequences compared to 0:\n')
   print(t.test(subdf$pred_update, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$pred_update, mu=0))
@@ -1280,12 +1280,12 @@ pasLocTtests <- function() {
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$prop_recal, mu=0))
   
-  #Non-instructed t-test
+  #Control t-test
   df <- getPasLocShifts(styles)
   df <- aggregate(prop_recal ~ participant*group, data=df, FUN=mean)
   subdf <- df[which(df$group == '30implicit'),]
   
-  cat('\n\nNon-Instructed group proprioceptive recalibration compared to 0:\n')
+  cat('\n\nControl group proprioceptive recalibration compared to 0:\n')
   print(t.test(subdf$prop_recal, mu=0, alternative='less'))
   cat('Effect Size - Cohen d:\n')
   print(cohensD(subdf$prop_recal, mu=0))
@@ -1527,7 +1527,7 @@ plotPropGroupCorrelations <- function(target='inline'){
   legend(-3, -2, expression('r'['adj']^2*'= 0.111'), col='#a6a6a6', bty='n', cex=.9)
   #legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.121"))), col='#a6a6a6', bty='n', cex=.9)
 
-  # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  # legend(5,20,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
   #        col=c(impcol,expcol,cujcol,hancol),
   #        pch=16,bty='o',cex=.8)
   
@@ -1543,7 +1543,7 @@ getRAEPropCorrelation <- function(){
   styles <- getStyle()
   dat <- getPropExcData(styles)
   #plot(dat$reachdeviation, dat$prop_recal)
-  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  print(cor.test(dat$exclude, dat$prop_recal))
   
 }
 
@@ -1637,7 +1637,7 @@ plotPredGroupCorrelations <- function(target='inline'){
   #legend(-2, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=.9)
 
   
-  # legend(10,-8,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  # legend(10,-8,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
   #        col=c(impcol,expcol,cujcol,hancol),
   #        pch=16,bty='o',cex=.25)
   
@@ -1878,7 +1878,7 @@ plotPredActRAE <- function(target='inline'){
   #add legend and r-squared
   #legend(12, 0, c(as.expression(bquote(""~ r^2 ~ "= 0.089"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(12,-3,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(12,-3,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.25)
   
@@ -2052,7 +2052,7 @@ plotPropGroupExpCorrelations <- function(target='inline'){
   
   #legend(-30, -5, c(as.expression(bquote("Adjusted "~ r^2 ~ "= -0.007"))), col='#a6a6a6', bty='n', cex=.9)
   
-  # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  # legend(5,20,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
   #        col=c(impcol,expcol,cujcol,hancol),
   #        pch=16,bty='o',cex=.8)
   
@@ -2130,7 +2130,7 @@ plotPredGroupExpCorrelations <- function(target='inline'){
   
   #legend(-30, -5, c(as.expression(bquote("Adjusted "~ r^2 ~ "= -0.007"))), col='#a6a6a6', bty='n', cex=.9)
   
-  # legend(5,20,legend=c('Non-Instructed','Instructed','Cursor Jump', 'Hand View'),
+  # legend(5,20,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
   #        col=c(impcol,expcol,cujcol,hancol),
   #        pch=16,bty='o',cex=.8)
   
@@ -2294,12 +2294,12 @@ getHVPropPredGLM <- function(){
   preddf <- preddf[which(preddf$group == 'handview'),]
   
   newdf <- cbind(propdf, preddf$pred_update)
-  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'exclude', 'include', 'pred_update')
   #newdf <- newdf[(newdf$group == 'handview'),]
   
   pred_update <- newdf$pred_update
   prop_recal <- newdf$prop_recal
-  RAE <- newdf$reachdeviation
+  RAE <- newdf$exclude
   
   mod1 <- glm(RAE ~ pred_update + prop_recal)
   print(summary(mod1))
@@ -2333,12 +2333,12 @@ getNoHVPropPredGLM <- function(){
   preddf <- preddf[-which(preddf$group == 'handview'),]
   
   newdf <- cbind(propdf, preddf$pred_update)
-  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'reachdeviation', 'pred_update')
+  colnames(newdf) <- c('participant', 'group', 'prop_recal', 'exclude', 'include', 'pred_update')
   #newdf <- newdf[(newdf$group == 'handview'),]
   
   pred_update <- newdf$pred_update
   prop_recal <- newdf$prop_recal
-  RAE <- newdf$reachdeviation
+  RAE <- newdf$exclude
   
   mod1 <- glm(RAE ~ pred_update + prop_recal)
   print(summary(mod1))
@@ -2369,7 +2369,7 @@ testPredResByProp <- function(){
   
   data <- getPredActRAE()
   
-  RAE <- data$reachdeviation
+  RAE <- data$exclude
   pred <- data$pred_update
   prop <- data$prop_recal
   
@@ -2431,7 +2431,7 @@ testPropResByPred <- function(){
   
   data <- getPredActRAE()
   
-  RAE <- data$reachdeviation
+  RAE <- data$exclude
   pred <- data$pred_update
   prop <- data$prop_recal
   
@@ -2488,7 +2488,7 @@ testPropResByPred <- function(){
   #add legend and r-squared
   legend(12, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.1794"))), col='#a6a6a6', bty='n', cex=.85)
   
-  legend(10,20,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(10,20,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.8)
 }
@@ -2498,7 +2498,7 @@ testPropResByPred <- function(){
 getPropResidByPredCorrelation <- function(){
   data <- getPredActRAE()
   
-  RAE <- data$reachdeviation
+  RAE <- data$exclude
   pred <- data$pred_update
   prop <- data$prop_recal
   
@@ -2512,7 +2512,7 @@ getPropResidByPredCorrelation <- function(){
 getPredResidByPropCorrelation <- function(){
   data <- getPredActRAE()
   
-  RAE <- data$reachdeviation
+  RAE <- data$exclude
   pred <- data$pred_update
   prop <- data$prop_recal
   
@@ -2921,7 +2921,7 @@ plotMeanCorrectedPropCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.056"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(5,-7,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(5,-7,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.8)
   
@@ -3006,7 +3006,7 @@ plotMeanCorrectedPredCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.018"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(5,-7,legend=c('Non-instructed','Instructed','Cursor Jump', 'Hand View'),
+  legend(5,-7,legend=c('Control','Instructed','Cursor Jump', 'Hand View'),
          col=c(impcol,expcol,cujcol,hancol),
          pch=16,bty='o',cex=.8)
   
@@ -3066,7 +3066,7 @@ plotNoHVPropGroupCorrelations <- function(target='inline'){
   
   #CIs
   prop_recal <- data$prop_recal
-  reachdev <- data$reachdeviation
+  reachdev <- data$exclude
   mod1 <- lm(reachdev ~ prop_recal)
   
   
@@ -3079,7 +3079,7 @@ plotNoHVPropGroupCorrelations <- function(target='inline'){
   polygon(polyX, polyY, col='#dadada', border=NA)
   
   #add in data points of all pp's
-  points(data$prop_recal, data$reachdeviation, pch=16, cex=1.5,
+  points(data$prop_recal, data$exclude, pch=16, cex=1.5,
          col= alpha(cols, 0.6)) #library(scales) needed for alpha to work
   
   #Reg line
@@ -3095,7 +3095,7 @@ plotNoHVPropGroupCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(2, -2, c(as.expression(bquote(""~ r^2 ~ "= 0.081"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(5,-5,legend=c('Non-instructed','Instructed','Cursor Jump'),
+  legend(5,-5,legend=c('Control','Instructed','Cursor Jump'),
          col=c(impcol,expcol,cujcol),
          pch=16,bty='o',cex=.8)
   
@@ -3112,7 +3112,7 @@ getNoHVRAEPropCorrelation <- function(){
   dat <- getPropExcData(styles)
   dat <- dat[-which(dat$group == 'handview'),]
   #plot(dat$reachdeviation, dat$prop_recal)
-  print(cor.test(dat$reachdeviation, dat$prop_recal))
+  print(cor.test(dat$exclude, dat$prop_recal))
   
 }
 # So for Prop without HV, correlation is still significant (p = 0.03, r = -0.28, r^2 = 0.08).
@@ -3184,7 +3184,7 @@ plotNoHVPredGroupCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(12, 0, c(as.expression(bquote(""~ r^2 ~ "= 0.043"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(15,-5,legend=c('Non-instructed','Instructed','Cursor Jump'),
+  legend(15,-5,legend=c('Control','Instructed','Cursor Jump'),
          col=c(impcol,expcol,cujcol),
          pch=16,bty='o',cex=.8)
   
@@ -3505,7 +3505,7 @@ plotNIPredGroupCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.091"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(15,-25,legend='Non-Instructed',
+  legend(15,-25,legend='Control',
          col=impcol,
          pch=16,bty='o',cex=.8)
   
@@ -3639,7 +3639,7 @@ getPGPredCorr <- function(){
   cat('Instructed group - Predictions and Reach Aftereffects:\n')
   getIRAEPredCorrelation()
   
-  cat('Non Instructed group - Predictions and Reach Aftereffects:\n')
+  cat('Control group - Predictions and Reach Aftereffects:\n')
   getNIRAEPredCorrelation()
   
 }
@@ -3940,7 +3940,7 @@ plotNIPropGroupCorrelations <- function(target='inline'){
   #add legend and r-squared
   legend(12, -10, c(as.expression(bquote(""~ r^2 ~ "= 0.0294"))), col='#a6a6a6', bty='n', cex=1)
   
-  legend(15,-25,legend='Non-Instructed',
+  legend(15,-25,legend='Control',
          col=impcol,
          pch=16,bty='o',cex=.8)
   
@@ -4074,7 +4074,7 @@ getPGPropCorr <- function(){
   cat('Instructed group - Propriocetive Recalibration and Reach Aftereffects:\n')
   getIRAEPropCorrelation()
   
-  cat('Non Instructed group - Propriocetive Recalibration and Reach Aftereffects:\n')
+  cat('Control group - Propriocetive Recalibration and Reach Aftereffects:\n')
   getNIRAEPropCorrelation()
   
 }
