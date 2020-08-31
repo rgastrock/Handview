@@ -220,33 +220,16 @@ The other effects show that estimates of hand position do shift despite external
 localizationANOVA(test = 'shifts')
 ```
 
-We see that there is a main effect of group and movement type, but no significant interaction. This suggests that the effects of movement type on shifts in hand position estimates were not modulated by group, and vice-versa. Thus, we investigate group differences within Active and Passive Localization shifts separately.
-
-## Active Localization
-
-We conduct a one way ANOVA to test the effect of group on active localization changes.
+We see that there is a main effect of group and movement type, but no significant interaction. This suggests that the effects of movement type on shifts in hand position estimates were not modulated by group, and vice-versa. The effect of movement type is expected, given that active movements have both afferent and efferent-based contributions to hand localization, while passive movements only had afferent information. For the group effect, pairwise comparisons show that the Hand View group differs from the Instructed group.
 
 ```{r}
-localizationANOVA(test='active')
+getlocalizationshiftComparisonEffSize()
 ```
 
-We observe a statistical significance, suggesting that at least one group has different mean shifts in active localization, compared to the other groups. We investigate this further by conducting follow-up tests, comparing mean active localization shifts for each group to the control, Non-Instructed group.
-
-```{r}
-getactivelocComparisonEffSize(method='sidak')
-```
-
-Results from these follow-up comparisons show that only the Hand View group significantly differed from mean active localization shifts of the Non-Instructed group. Given that shifts in active localization are informed by changes in both proprioception and predictions, we further investigate passive localization shits and updates in predictions.
 
 ## Proprioceptive Recalibration
 
-First, we run a one way ANOVA to test for the effect of group on passive localization changes.
-
-```{r}
-localizationANOVA(test='passive')
-```
-
-We see that there are no significant differences across the groups. However, we also wanted to test whether each group showed shifts in passive localization. We ran t-tests that compared each group's magnitude of shifts in passive localization estimates against 0. These were one-tailed t-tests, where the null hypothesis was that the mean is greater than or equal to 0; the alternative hypothesis was that the mean is less than 0. Hence confidence intervals are all from minus infinity. Note that we do not need to control for multiplicity here, as each group is independently compared to zero (i.e., these are not pairwise comparisons).
+We wanted to test whether each group showed shifts in passive localization. We ran t-tests that compared each group's magnitude of shifts in passive localization estimates against 0. These were one-tailed t-tests, where the null hypothesis was that the mean is greater than or equal to 0; the alternative hypothesis was that the mean is less than 0. Hence confidence intervals are all from minus infinity. Note that we do not need to control for multiplicity here, as each group is independently compared to zero (i.e., these are not pairwise comparisons).
 
 ```{r}
 pasLocTtests()
@@ -257,13 +240,7 @@ From the tests, we see that all groups differed significantly from 0, suggesting
 
 ## Predicted Sensory Consequences
 
-Next, we ran a one way ANOVA to test for the effect of group on changes in predicted sensory consequences. For this ANOVA, we obtained measures of changes in predicted sensory consequences by subtracting the shifts in passive localization from active localization.
-
-```{r}
-predictedConsequencesANOVA()
-```
-
-There were no significant differences across the groups. However, from the plot we generated above, it seems that only the Hand View group is at the 0-degree mark for changes in predicted sensory consequences. Thus, we ran t-tests that compared each group's magnitude of changes in predicted sensory consequences against 0.
+Next, we ran t-tests that compared each group's magnitude of changes in predicted sensory consequences against 0.
 
 ```{r}
 predConsTtests()
@@ -276,13 +253,13 @@ From the tests, we see that only the Hand View group did not significantly diffe
 
 Next, we tested whether both afferent and efferent-based changes predict/contribute to implicit motor changes. 
 
-To visualize the data, we plot the relationship of passive localization and aftereffects, as well as predictions and aftereffects, individually. Note that we did perform a Pearson product moment correlation test for these two and found a significant relationship for both, but we only include it as analyses extra to the manuscript (i.e., the main test is the multiple regression below). For the extra analyses, refer to the other R Markdown document, AnalysesSupp.
+To visualize the data, we plot the relationship of passive localization and aftereffects, as well as predictions and aftereffects, individually (a and b in figure). Note that we did perform a Pearson product moment correlation test for these two and found a significant relationship for both, but we only include it as analyses extra to the manuscript (i.e., the main test is the multiple regression below). For the extra analyses, refer to the other R Markdown document, AnalysesSupp.
 
-```{r fig.width=12, fig.height=4.5}
+```{r fig.width=12, fig.height=5}
 plotPropPredRelationships()
 ```
 
-From the left and centre panels of the plot, we see that there is a relationship between predictions and aftereffects, as well as passive localization and aftereffects. For these plots and the regression below, we pooled data from all individuals across all groups together. One criticism could be that we are only detecting a relationship because of a group effect that is leading to a spurious correlation. However, even after taking into account the group effect, these predictors are still statistically significant. (See AnalysesSupp for these tests).
+From panels a and b of the plot, we see that there is a relationship between predictions and aftereffects, as well as passive localization and aftereffects. For these plots and the regression below, we pooled data from all individuals across all groups together. One concern could be that we are only detecting a relationship because of a group effect that is leading to a spurious correlation. However, even after taking into account the group effect, these predictors are still statistically significant. (See AnalysesSupp for these tests).
 
 We then performed a multiple regression, where measures of aftereffects was the dependent variable, and both passive localization (or recalibrated proprioception) and predicted sensory consequences were the predictors.
 
@@ -292,12 +269,33 @@ getPropPredGLM()
 
 We found that both changes in proprioception (Beta = -0.69, p < .001) and predictions (Beta = -0.43, p < .001) were significant predictors of reach aftereffects. As a measure of effect size, we can use the squared semi-partial correlation coefficient (sr-squared). The square root values of sr-squared is just the correlation of the predictor with RAE, after partialling out the effects of the other predictor. Sr-squared, therefore explains the change in total R-squared, when adding in this predictor. This means that 17% of the variance in reach aftereffects is uniquely accounted for by updates in predictions, after partialling out proprioceptive changes. On the other hand, 20% of the variance in reach aftereffects is accounted for by proprioceptive changes, after partialling out updates in predictions. (See AnalysesSupp.Rmd for a discussion of how these are shown with the use of regression models and residuals).
 
-Importantly, we note that changes in proprioception are independent from predicted sensory consequences due to how we have measured them. Recall that proprioceptive recalibration was measured from Passive localization, while predictions were calculated as a difference of Active and Passive Localization. This process ensures predictions do not have any shared variance with proprioceptive recalibration. Furthermore, predictions and proprioceptive changes are not collinear with each other (vif = 1.09 is considered low; see AnalysesSupp for extra analyses). 
+Importantly, we note that changes in proprioception are independent from predicted sensory consequences due to how we have measured them. Recall that proprioceptive recalibration was measured from Passive localization, while predictions were calculated as a difference of Active and Passive Localization. This process ensures predictions do not have any shared variance with proprioceptive recalibration. Although the two components of hand localization are correlated with each other (see correlation test below), predictions and proprioceptive changes are not collinear with each other (vif = 1.09 is considered low; see AnalysesSupp for extra analyses).
 
-Next, we calculated the predicted reach aftereffects from our model and compared these with the actual/observed reach aftereffects from our experiment (right panel in the plot above).To calculate the predicted reach aftereffects, we refer to values from our model. The equation is:
+```{r}
+getPropPredCorrelation()
+```
+
+
+Next, we calculated the predicted reach aftereffects from our model and compared these with the actual/observed reach aftereffects from our experiment (panel c in the plot above).To calculate the predicted reach aftereffects, we refer to values from our model. The equation is:
 
 predicted RAE = Intercept + Prediction_Coeff(actual_prediction) + Proprioception_Coeff(actual_proprioception)
 
-If the model predicted reach aftereffects perfectly, then points would fall along the diagonal of the plot. We see that the predictions overshoot the data on the lower end, but undershoot the data on the higher end. These could possibly be due to noise, or it could mean that the model is incomplete. It is very likely that another predictor needs to be included in the model, but the current study did not look further into this. 
+If the model predicted reach aftereffects perfectly, then points would fall along the diagonal of the plot. We see that the predictions overshoot the data on the lower end, but undershoot the data on the higher end. These could possibly be due to noise, or it could mean that the model is incomplete. It is very likely that another predictor needs to be included in the model, but the current study did not look further into this. We note that these results do not definitively show that changes in proprioception and predictions are what cause aftereffects. That is, we cannot establish causation from this multiple regression. If we considered the correlations of each predictor with aftereffects (r-squared values from panels a and b of plot), these values are still small in magnitude. It is possible that the significant relationships we found were due to an alternative variable or a common source (e.g. factors such as participant motivation). Therefore, although our results suggest that both proprioception and predictions independently contribute to aftereffects, these should be interpreted with caution.
 
-We note that these results do not definitively show that changes in proprioception and predictions are what cause aftereffects. That is, we cannot establish causation from this multiple regression. If we considered the correlations of each predictor with aftereffects (r-squared values from left and centre panels of plot), these values are still small in magnitude. It is possible that the significant relationships we found were due to an alternative variable or a common source (e.g. factors such as participant motivation). Therefore, although our results suggest that both proprioception and predictions independently contribute to aftereffects, these should be interpreted with caution.
+Alternatively, we provide further support for the relationships of each component of hand localization with implicit aftereffects, by showing the lack of such a relationship with explicit learning (i.e. with minus without strategy no-cursor trials; panels d to f).
+
+```{r}
+getPropPredExpRelationships()
+```
+
+Individually, each component does not have a statistically significant relationship with explicit learning. Combining the two independent variables in a multiple regression where explicit learning is the dependent variable, shows that updates in predictions are statistically significant. However, the coefficient indicates that when the efferent component of hand localization goes up, explicit reach aftereffects go down. Regardless, the adjusted r-squared of this multiple regression model is still low. Moreover, we validate the regression model by comapring predicted with actual explicit learning (panel f in plot above). In short, these suggest that proprioceptive recalibration or updates in predicted sensory consequences do not contribute to explicit learning, but seem to contribute to implicit learning.
+
+## Extra analyses for residual structure in regression
+
+we decided to see if transforming the slightly curvilinear data (in passive localization shifts - panel a in plot) could reduce the residuals. We used a square-root transformation for passive localization shifts and re-ran the multiple regression. Doing so increased the adjusted r-squared from 0.276 to 0.365, which we interpret as a significant improvement.
+
+```{r}
+getSqrtPasLoc()
+```
+
+Even though such a transformation may help to somewhat improve the model, we emphasize that the original (and simpler) model is enough to conclude that proprioceptive recalibration and updated predicted sensory consequences reflect separate processes that are independently related to implicit aftereffects.
