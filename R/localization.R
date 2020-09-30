@@ -1134,15 +1134,67 @@ getPredictedSensoryConsequences <- function(styles) {
   
 }
 
-# predictedConsequencesANOVA <- function() {
-#   styles <- getStyle()
-#   df <- getPredictedSensoryConsequences(styles)
-#   df <- aggregate(pred_update ~ participant * group, data=df, FUN=mean)
-#   df$participant <- as.factor(df$participant)
-#   PSC <- ezANOVA(data = df, wid=participant, dv=pred_update, between=group, type=3, return_aov=TRUE)
-#   print(PSC[1:2])
-#   
-# }
+predictedConsequencesANOVA <- function() {
+  styles <- getStyle()
+  df <- getPredictedSensoryConsequences(styles)
+  df <- aggregate(pred_update ~ participant * group, data=df, FUN=mean)
+  df$participant <- as.factor(df$participant)
+  PSC <- ezANOVA(data = df, wid=participant, dv=pred_update, between=group, type=3, return_aov=TRUE)
+  print(PSC[1:2])
+
+}
+
+predictedConsequencesComparisonMeans <- function(){
+  
+  styles <- getStyle()
+  #blockdefs <- list('first'=c(1,3),'second'=c(4,3),'last'=c(76,15))
+  
+  LOC4aov <- getPredictedSensoryConsequences(styles)
+  #get mean localization shift, regardless of movement type
+  LOC4aov <- aggregate(pred_update ~ participant * group, data=df, FUN=mean)
+  LOC4aov$participant <- as.factor(LOC4aov$participant)
+  secondAOV <- aov_ez("participant","pred_update",LOC4aov,between="group")
+  
+  cellmeans <- lsmeans(secondAOV$aov,specs=c('group'))
+  print(cellmeans)
+}
+
+predictedConsequencesComparisons <- function(method='sidak'){
+  styles <- getStyle()
+  
+  
+  LOC4aov <- getPredictedSensoryConsequences(styles)
+  #get mean localization shift, regardless of movement type
+  LOC4aov <- aggregate(pred_update ~ participant * group, data=df, FUN=mean)
+  LOC4aov$participant <- as.factor(LOC4aov$participant)
+  secondAOV <- aov_ez("participant","pred_update",LOC4aov,between="group")
+  #based on cellmeans, confidence intervals and plots give us an idea of what contrasts we want to compare
+  #we use implicit as a reference and compare all groups to it
+  #compare cursor jump and hand view as well?
+  
+  #contrats will compare each group to implicit
+  #add contrast comparing CJ to HV?
+  #Levels of group are NI, I, CJ, HV
+  EXvsIM <- c(-1,1,0,0)
+  CJvsIM <- c(-1,0,1,0)
+  HVvsIM <- c(-1,0,0,1)
+  
+  # CJvsEX <- c(0,-1,1,0)
+  # HVvsEX <- c(0,-1,0,1)
+  # 
+  # CJvsHV <- c(0,0,1,-1) #remember to add this to the list
+  
+  
+  
+  contrastList <- list('Instr vs. Non-instr'=EXvsIM, 'Cursor Jump vs. Non-instr'=CJvsIM, 'Hand View vs. Non-Instr'=HVvsIM)#, 
+                       #'Cursor Jump vs. Instr'=CJvsEX, 'Hand View vs. Instr'=HVvsEX,'Cursor Jump vs. Hand View'=CJvsHV)
+  
+  comparisons<- contrast(lsmeans(secondAOV$aov,specs=c('group')), contrastList, adjust=method)
+  
+  print(comparisons)
+  
+  #no differences, especially between HV and NI
+}
 
 #we don't see a group effect in Pred Cons
 #but our plot for Pred Cons makes it seem that hand view is almost at 0
